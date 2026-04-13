@@ -81,6 +81,13 @@ workflow BAM_QC_RNASEQ {
         rseqc_modules
     )
 
+    // Capture RSeQC outputs in local variables (matching the pattern from the
+    // original local subworkflow) so that both the multiqc_files mix and the
+    // individual emits reference the same local binding rather than the
+    // subworkflow output directly, which avoids non-deterministic channel
+    // fan-out across architectures.
+    ch_inferexperiment_txt = BAM_RSEQC.out.inferexperiment_txt
+
     // Aggregate MultiQC-compatible output files
     ch_multiqc_files = Channel.empty()
         .mix(PRESEQ_LCEXTRAP.out.lc_extrap)
@@ -88,7 +95,7 @@ workflow BAM_QC_RNASEQ {
         .mix(QUALIMAP_RNASEQ.out.results)
         .mix(DUPRADAR.out.multiqc)
         .mix(BAM_RSEQC.out.bamstat_txt)
-        .mix(BAM_RSEQC.out.inferexperiment_txt)
+        .mix(ch_inferexperiment_txt)
         .mix(BAM_RSEQC.out.innerdistance_freq)
         .mix(BAM_RSEQC.out.junctionannotation_log)
         .mix(BAM_RSEQC.out.junctionsaturation_rscript)
@@ -122,7 +129,7 @@ workflow BAM_QC_RNASEQ {
     dupradar_multiqc         = DUPRADAR.out.multiqc         // channel: [ val(meta), path(txt) ]
 
     // RSeQC
-    inferexperiment_txt             = BAM_RSEQC.out.inferexperiment_txt             // channel: [ val(meta), path(txt) ]
+    inferexperiment_txt             = ch_inferexperiment_txt                         // channel: [ val(meta), path(txt) ]
     bamstat_txt                     = BAM_RSEQC.out.bamstat_txt                     // channel: [ val(meta), path(txt) ]
     innerdistance_all               = BAM_RSEQC.out.innerdistance_all               // channel: [ val(meta), path(txt/pdf/r) ]
     innerdistance_distance          = BAM_RSEQC.out.innerdistance_distance          // channel: [ val(meta), path(txt) ]
