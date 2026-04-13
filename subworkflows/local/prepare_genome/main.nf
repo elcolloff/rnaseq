@@ -99,6 +99,7 @@ workflow PREPARE_GENOME {
         }
         ch_gtf      = GFFREAD(ch_gff, []).gtf.map { tuple -> tuple[1] }
     }
+    ch_gtf = ch_gtf.first()
 
     //-------------------------------------
     // 2) Check if we actually have a FASTA
@@ -168,6 +169,7 @@ workflow PREPARE_GENOME {
     } else {
         ch_gene_bed = EAUTILS_GTF2BED(ch_gtf.map { item -> [ [id: item.baseName], item ] }).bed.map { _meta, bed -> bed }
     }
+    ch_gene_bed = ch_gene_bed.first()
 
     //----------------------------------------------------------------------
     // 6) Transcript FASTA:

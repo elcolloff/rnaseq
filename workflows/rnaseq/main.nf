@@ -99,7 +99,7 @@ workflow RNASEQ {
     def ch_pca_header_multiqc        = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
     def sample_status_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/sample_status_header.txt", checkIfExists: true)
     def ch_clustering_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
-    def ch_biotypes_header_multiqc   = file("$projectDir/workflows/rnaseq/assets/multiqc/biotypes_header.txt", checkIfExists: true)
+    ch_biotypes_header_multiqc       = Channel.value([ [:], file("$projectDir/workflows/rnaseq/assets/multiqc/biotypes_header.txt", checkIfExists: true) ])
     def ch_transcript_fasta_placeholder = ch_pca_header_multiqc
 
     // Pre-build fasta_fai value channels for subworkflows that need [meta, fasta, fai]
@@ -558,7 +558,7 @@ workflow RNASEQ {
                 ch_gtf.map { gtf -> [ [:], gtf ] },
                 ch_gene_bed,
                 ch_fasta_fai,
-                channel.of([ [:], ch_biotypes_header_multiqc ]),
+                ch_biotypes_header_multiqc,
                 qc_tools,
                 ch_biotype
             )

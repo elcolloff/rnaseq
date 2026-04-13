@@ -24,11 +24,6 @@ workflow BAM_QC_RNASEQ {
     main:
     def rseqc_modules = tools.findAll { it.startsWith('rseqc_') }.collect { it.replace('rseqc_', '') }
 
-    // Ensure reference channels are value channels so they replay for each sample
-    ch_gtf             = ch_gtf.first()
-    ch_fasta_fai       = ch_fasta_fai.first()
-    ch_biotypes_header = ch_biotypes_header.first()
-
     ch_genome_bam = ch_bam_bai.map { meta, bam, _bai -> [ meta, bam ] }
 
     //

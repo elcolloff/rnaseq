@@ -47,7 +47,7 @@
                     },
                     "custom/multiqccustombiotype": {
                         "branch": "master",
-                        "git_sha": "c3c8dea59b7181efcdb982557eaa2e6e7695617c",
+                        "git_sha": "7522d954076b38a26238b597a1b37c44daea802f",
                         "installed_by": ["bam_qc_rnaseq"]
                     },
                     "custom/rsemmergecounts": {
@@ -62,7 +62,7 @@
                     },
                     "dupradar": {
                         "branch": "master",
-                        "git_sha": "c3c8dea59b7181efcdb982557eaa2e6e7695617c",
+                        "git_sha": "7522d954076b38a26238b597a1b37c44daea802f",
                         "installed_by": ["bam_qc_rnaseq", "modules"]
                     },
                     "ea-utils/gtf2bed": {
@@ -418,7 +418,7 @@
                     },
                     "bam_qc_rnaseq": {
                         "branch": "master",
-                        "git_sha": "c3c8dea59b7181efcdb982557eaa2e6e7695617c",
+                        "git_sha": "7522d954076b38a26238b597a1b37c44daea802f",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_rseqc": {
