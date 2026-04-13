@@ -23,7 +23,6 @@ include { BAM_DEDUP_UMI                         } from '../../subworkflows/nf-co
 
 include { checkSamplesAfterGrouping      } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 include { defineQcTools                  } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
-include { biotypeInGtf                   } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 include { multiqcTsvFromList             } from '../../subworkflows/nf-core/fastq_qc_trim_filter_setstrandedness'
 include { getInferexperimentStrandedness } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 include { methodsDescriptionText         } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
@@ -504,14 +503,6 @@ workflow RNASEQ {
     def biotype = params.gencode ? "gene_type" : params.featurecounts_group_type
     def qc_tools = defineQcTools(params)
 
-    // Validate biotype attribute exists in GTF; clear it if not found
-    // (prevents featureCounts running with an invalid grouping attribute)
-    ch_biotype = ch_gtf.map { gtf ->
-        (biotype && 'biotype_qc' in qc_tools)
-            ? (biotypeInGtf(gtf, biotype) ? biotype : '')
-            : biotype
-    }
-
     ch_inferexperiment_txt = channel.empty()
 
     if (!params.skip_qc) {
@@ -560,7 +551,7 @@ workflow RNASEQ {
                 ch_fasta_fai,
                 ch_biotypes_header_multiqc,
                 qc_tools,
-                ch_biotype
+                biotype
             )
             ch_multiqc_files = ch_multiqc_files.mix(BAM_QC_RNASEQ.out.multiqc_files)
             ch_inferexperiment_txt = BAM_QC_RNASEQ.out.inferexperiment_txt
