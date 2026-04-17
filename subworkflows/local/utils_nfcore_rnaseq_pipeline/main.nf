@@ -864,79 +864,39 @@ def mapBamToPublishedPath(bam_path, sample_id, aligner, outdir) {
 //
 def perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules, trim_pass, map_pass) {
     def single_end = meta.single_end
-    def n = 0
+    def aligner_runs = !params.skip_alignment && params.aligner in ['star_salmon', 'star_rsem', 'bowtie2_salmon', 'hisat2']
+    // Picard markduplicates is skipped when either --skip_markduplicates is set
+    // or Parabricks has already dedupped upstream.
+    def picard_markdups_skipped = params.skip_markduplicates || params.use_parabricks_star
 
     // FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS.out.multiqc_files (transposed internally).
     // Count varies with trim_pass because bbsplit, rRNA removal and post-trim
     // FastQC run on reads that survived the min_trimmed_reads filter.
-    n += fastqQcTrimStrandednessContribCount(params, single_end, trim_pass)
+    def n = fastqQcTrimStrandednessContribCount(params, single_end, trim_pass)
 
     // Samples that fell below --min_trimmed_reads stop contributing here
-    if (trim_pass == false) {
-        return n
-    }
+    if (trim_pass == false) return n
 
-    // Alignment contributors (bundled down-stream when picard mark-duplicates
-    // is skipped or parabricks handles dedup)
-    if (!params.skip_alignment) {
-        if (params.aligner == 'star_salmon' || params.aligner == 'star_rsem') {
-            n += 1  // STAR log_final
-            if (!params.with_umi && (params.skip_markduplicates || params.use_parabricks_star)) {
-                n += 3  // stats + flagstat + idxstats
-            }
-        } else if (params.aligner == 'bowtie2_salmon') {
-            n += 1  // Bowtie2 log
-            if (!params.with_umi && params.skip_markduplicates) {
-                n += 3
-            }
-        } else if (params.aligner == 'hisat2') {
-            n += 1  // HISAT2 summary
-            if (!params.with_umi && params.skip_markduplicates) {
-                n += 3
-            }
-        }
-
-        if (params.with_umi) {
-            n += 4  // BAM_DEDUP_UMI.out.multiqc_files: dedup_log + stats + flagstat + idxstats
-        }
+    // Aligner log + optional stats triplet (stats/flagstat/idxstats emitted
+    // in-line when picard markduplicates is skipped; otherwise markduplicates
+    // supplies them post-map).
+    if (aligner_runs) {
+        n += 1                                                    // log_final / summary
+        if (!params.with_umi && picard_markdups_skipped) n += 3   // stats + flagstat + idxstats
     }
-
-    // RSEM per-sample stat
-    if (!params.skip_alignment && params.aligner == 'star_rsem') {
-        n += 1
-    }
+    if (!params.skip_alignment && params.with_umi)  n += 4  // BAM_DEDUP_UMI bundle
+    if (!params.skip_alignment && params.aligner == 'star_rsem') n += 1  // RSEM stat
 
     // Samples that fell below --min_mapped_reads stop contributing here
-    if (map_pass == false) {
-        return n
-    }
+    if (map_pass == false) return n
 
-    // Picard mark-duplicates (4 files per sample)
-    if (!params.skip_alignment) {
-        def markdups_done_in_align = !params.skip_markduplicates && params.use_parabricks_star
-        if (!params.skip_markduplicates && !params.with_umi && !markdups_done_in_align) {
-            n += 4  // stats + flagstat + idxstats + metrics
-        }
-    }
+    if (aligner_runs && !picard_markdups_skipped && !params.with_umi) n += 4  // MARKDUPS bundle
 
-    // Post-alignment QC (RUSTQC is bundled in the workflow to one tuple per sample)
     if (!params.skip_qc && !params.skip_alignment) {
-        if (params.use_rustqc) {
-            n += 1
-        } else {
-            n += bamQcRnaseqContribCount(qc_tools, rseqc_modules, single_end)
-        }
+        n += params.use_rustqc ? 1 : bamQcRnaseqContribCount(qc_tools, rseqc_modules, single_end)
     }
-
-    // Contaminant screening (one tuple per sample per enabled tool)
-    if (!params.skip_qc && params.contaminant_screening) {
-        n += 1
-    }
-
-    // Pseudo-alignment (one tuple per sample)
-    if (!params.skip_pseudo_alignment && params.pseudo_aligner) {
-        n += 1
-    }
+    if (!params.skip_qc && params.contaminant_screening) n += 1
+    if (!params.skip_pseudo_alignment && params.pseudo_aligner) n += 1
 
     return n
 }
@@ -949,58 +909,27 @@ def perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules, trim_pa
 // emit for samples that cleared --min_trimmed_reads).
 //
 def fastqQcTrimStrandednessContribCount(params, single_end, trim_pass) {
-    def n = 0
-    def trimmer = params.trimmer
+    def trimmer   = params.trimmer
     def fastqc_on = !(params.skip_fastqc || params.skip_qc)
-    def per_read = single_end ? 1 : 2  // 1 zip/log per input FASTQ read
+    def per_read  = single_end ? 1 : 2  // 1 zip/log per input FASTQ read
+    def n = 0
 
-    // --- Pre-filter contributors (emit for every sample) ---
-
-    // Raw FastQC zips
-    if (fastqc_on) n += per_read
-
+    // Pre-filter contributors (emit for every sample)
+    if (fastqc_on) n += per_read                                             // fastqc_raw
     if (!params.skip_trimming) {
-        if (trimmer == 'trimgalore') {
-            n += per_read  // trim_zip
-            n += per_read  // trim_log
-        } else if (trimmer == 'fastp') {
-            n += 1  // trim_json
-        }
+        n += trimmer == 'trimgalore' ? per_read * 2 : 1                      // trim_zip+trim_log | trim_json
     }
+    if (params.with_umi && !params.skip_umi_extract) n += 1                  // umi_log
 
-    // UMI extraction log (1 per sample)
-    if (params.with_umi && !params.skip_umi_extract) {
-        n += 1
-    }
+    // Post-filter contributors — reads that fell below min_trimmed_reads don't reach these
+    if (trim_pass == false) return n
 
-    // --- Post-filter contributors (skipped for samples below min_trimmed_reads) ---
-    if (trim_pass == false) {
-        return n
-    }
-
-    // FastQC on trimmed reads (fastp path only; fastp runs FASTQC_TRIM on filtered reads)
-    if (fastqc_on && !params.skip_trimming && trimmer == 'fastp') {
-        n += per_read
-    }
-
-    // BBSplit stats (1 per sample)
-    if (!params.skip_bbsplit && params.fasta) {
-        n += 1
-    }
-
-    // rRNA removal: log count depends on tool
+    if (fastqc_on && !params.skip_trimming && trimmer == 'fastp') n += per_read  // fastqc_trim (fastp only)
+    if (!params.skip_bbsplit && params.fasta) n += 1                             // bbsplit stats
     if (params.remove_ribo_rna) {
-        if (params.ribo_removal_tool == 'ribodetector') {
-            n += 2  // seqkit_stats + ribodetector_log
-        } else {
-            n += 1  // sortmerna or bowtie2 log
-        }
+        n += params.ribo_removal_tool == 'ribodetector' ? 2 : 1                  // rRNA log(s) + optional seqkit
     }
-
-    // FastQC on filtered reads (only runs when post-trim filtering happened)
-    if (fastqc_on && (!params.skip_bbsplit || params.remove_ribo_rna)) {
-        n += per_read
-    }
+    if (fastqc_on && (!params.skip_bbsplit || params.remove_ribo_rna)) n += per_read  // fastqc_filtered
 
     return n
 }
@@ -1008,18 +937,13 @@ def fastqQcTrimStrandednessContribCount(params, single_end, trim_pass) {
 //
 // Per-sample file count emitted by BAM_QC_RNASEQ.out.multiqc_files,
 // matching the subworkflow's internal tool-gating at
-// subworkflows/nf-core/bam_qc_rnaseq/main.nf.
+// subworkflows/nf-core/bam_qc_rnaseq/main.nf. inner_distance is paired-end
+// only — RSeQC's inner_distance.py silently skips SE inputs.
 //
 def bamQcRnaseqContribCount(qc_tools, rseqc_modules, single_end) {
-    def n = 0
-    if (qc_tools?.contains('preseq'))     n += 1
-    if (qc_tools?.contains('biotype_qc')) n += 1
-    if (qc_tools?.contains('qualimap'))   n += 1
-    if (qc_tools?.contains('dupradar'))   n += 1
-    // inner_distance is paired-end only; RSeQC's inner_distance.py skips SE inputs.
-    def effective_rseqc = rseqc_modules?.findAll { single_end ? it != 'inner_distance' : true } ?: []
-    n += effective_rseqc.size()
-    return n
+    def tool_count  = ['preseq', 'biotype_qc', 'qualimap', 'dupradar'].count { qc_tools?.contains(it) }
+    def rseqc_count = rseqc_modules?.count { !single_end || it != 'inner_distance' } ?: 0
+    return tool_count + rseqc_count
 }
 
 //
