@@ -196,10 +196,36 @@ Ribosomal RNA (rRNA) removal can be enabled with the `--remove_ribo_rna` paramet
 nextflow run nf-core/rnaseq --remove_ribo_rna --ribo_removal_tool sortmerna ...
 ```
 
-By default, [rRNA databases](https://github.com/biocore/sortmerna/tree/master/data/rRNA_databases) defined in the SortMeRNA GitHub repo are used. You can see an example in the pipeline GitHub repository in `assets/rrna-db-defaults.txt` which is used by default via the `--ribo_database_manifest` parameter.
+By default, the eight [rRNA FASTA files](https://github.com/biocore/sortmerna/tree/master/data/rRNA_databases) committed to the SortMeRNA GitHub repo are fetched directly over HTTPS, one URL per line, as listed in `workflows/rnaseq/assets/rrna-db-defaults.txt` (used by default via the `--ribo_database_manifest` parameter). These files are built from SILVA 119 and Rfam.
 
 > [!NOTE]
-> The default databases are based on SILVA 119, which requires [licensing for commercial use](https://www.arb-silva.de/silva-license-information). SILVA 138+ uses CC-BY 4.0 licensing that freely permits commercial use with attribution. If you have licensing concerns, consider using Bowtie2 with custom rRNA reference sequences via `--ribo_removal_tool bowtie2`.
+> The default databases are based on SILVA 119, which requires [licensing for commercial use](https://www.arb-silva.de/silva-license-information). SILVA 138+ uses CC-BY 4.0 licensing that freely permits commercial use with attribution. If you have licensing concerns, consider using Bowtie2 with custom rRNA reference sequences via `--ribo_removal_tool bowtie2`, or switch the SortMeRNA manifest to the newer SILVA 138-based databases as described below.
+
+#### Using the newer SILVA 138-based SortMeRNA databases
+
+From release 4.3.4 onwards, SortMeRNA ships a rebuilt reference set (`smr_v4.3_fast_db.fasta`, `smr_v4.3_default_db.fasta`, `smr_v4.3_sensitive_db.fasta`, `smr_v4.3_sensitive_db_rfam_seeds.fasta`) built from SILVA 138 + Rfam. Their README [recommends `smr_v4.3_default_db.fasta`](https://github.com/sortmerna/sortmerna#references) as the general-purpose default.
+
+The pipeline does not ship these as the default because upstream distributes them only inside a single [`database.tar.gz` archive attached to the v4.3.4 release](https://github.com/sortmerna/sortmerna/releases/tag/v4.3.4) (~237 MB, containing all four variants). We can't point `--ribo_database_manifest` at per-file URLs for them, and we don't want to force every run to pull and discard the three variants you aren't using. See upstream [sortmerna/sortmerna#329](https://github.com/sortmerna/sortmerna/issues/329) and nf-core/rnaseq#1354 for context.
+
+If you want to use them, download and extract the archive once, then point `--ribo_database_manifest` at a local manifest listing the variant(s) you want:
+
+```bash
+# One-time download and extraction (the archive is ~237 MB)
+wget https://github.com/sortmerna/sortmerna/releases/download/v4.3.4/database.tar.gz
+tar -xzf database.tar.gz
+
+# Write a manifest containing just the variant you want, e.g. the recommended default
+echo "$PWD/smr_v4.3_default_db.fasta" > my-rrna-db.txt
+
+# Run the pipeline pointing at it
+nextflow run nf-core/rnaseq \
+    --remove_ribo_rna \
+    --ribo_removal_tool sortmerna \
+    --ribo_database_manifest my-rrna-db.txt \
+    ...
+```
+
+Absolute paths work, as do any URL(s) to FASTA files you host yourself. The manifest is a plain newline-delimited list, so you can also mix multiple variants or add your own custom sequences (e.g. tRNAs, other abundant contaminants).
 
 ### Bowtie2
 
