@@ -42,63 +42,48 @@ workflow MULTIQC_RNASEQ {
         methodsDescriptionText(methods_description_yml)
     ).collectFile(name: 'methods_description_mqc.yaml')
 
-    // Static globals (value channels, ready immediately) are kept separate from
-    // ch_collated_versions so the per-sample branch can bypass the latter.
-    // ch_collated_versions only closes after every task has emitted via the
-    // `versions` topic, which would block per-sample MultiQC until the slowest
-    // sample finishes — undermining groupKey-driven progressive closure below.
-    // Per-sample reports get a minimal manifest-only versions yaml in its place
-    // so MultiQC still emits per-sample multiqc_software_versions.txt (content
-    // .nftignored). Merged mode waits on the full collated versions.
+    // Per-sample MultiQC swaps the full collated versions yaml (which only closes
+    // after every task emits into the `versions` topic — the blocker that
+    // undermines progressive closure) for a manifest-only stub. The stub keeps
+    // per-sample multiqc_software_versions.txt present in each report so the
+    // file structure matches dev; its contents are .nftignored.
     ch_static_versions = channel.value(
         "Workflow:\n    ${workflow.manifest.name}: ${workflow.manifest.version}\n    Nextflow: ${workflow.nextflow.version.toString()}\n"
     ).collectFile(name: 'nf_core_rnaseq_software_mqc_versions.yml')
 
-    ch_static_globals = ch_workflow_summary
-        .mix(ch_methods_description)
-        .map { f -> [[:], f] }
-
-    ch_multiqc_all = ch_multiqc_files.mix(ch_static_globals).mix(
-        ch_collated_versions.map { f -> [[:], f] }
-    )
+    ch_static_globals = ch_workflow_summary.mix(ch_methods_description)
 
     // --replace-names TSV so MultiQC uses sample IDs rather than FASTQ basenames.
     ch_name_replacements = multiqcNameReplacements(ch_fastq)
 
     if (skip_quantification_merge) {
-        // One MultiQC report per sample. Items carry a caller-supplied groupKey
-        // so groupTuple closes each sample as soon as its expected files arrive
-        // — combined with the versions-free globals pipeline above, each sample's
-        // report can fire ASAP rather than waiting for the slowest sample in the
-        // run. MultiQC still emits a multiqc_software_versions.txt from its own
-        // manifest (contents are .nftignored for per-sample reports).
-        ch_per_sample_items = ch_multiqc_files.filter { meta, _file -> meta.id != null }
-        // Static globals plus minimal versions stub. Anything sourced from
-        // ch_multiqc_files would block here on the whole-run close, defeating
-        // the progressive-closure goal, so dynamic globals (DESEQ2, fail_*)
-        // and the full collated versions are only carried by the merged path.
-        ch_per_sample_globals = ch_static_globals
-            .map { _meta, f -> f }
-            .mix(ch_static_versions)
-            .collect()
+        // One MultiQC report per sample. Each per-sample item carries a
+        // caller-supplied groupKey so groupTuple closes that sample's group
+        // as soon as its expected files arrive (see perSampleMultiqcExpectedCount).
+        // Combined with the ch_static_* globals below — which don't source from
+        // ch_multiqc_files and so don't wait for the whole run to close — each
+        // sample's MULTIQC fires ASAP instead of waiting for the slowest sample.
 
-        // Value-channel map of id -> groupKey(id, expected_count). `.first()`
-        // converts the reduced map to a value channel so combine broadcasts
-        // it to every per-sample emission without re-materialising upstream.
+        // Value-channel lookup id -> groupKey so combine broadcasts the keys to
+        // every per-sample emission without re-materialising the upstream queue.
         ch_sample_keys = ch_expected_count
-            .map { id, key -> [(id): key] }
-            .reduce([:]) { acc, entry -> acc + entry }
+            .reduce([:]) { acc, row -> acc + [(row[0]): row[1]] }
             .first()
 
-        ch_multiqc_input = ch_per_sample_items
+        // Globals available in finite time (value channels + manifest-only versions).
+        // Dynamic globals (DESEQ2, fail_mapped_samples_mqc, fail_strand_check_mqc)
+        // and the full collated versions yaml are only used in the merged branch.
+        ch_per_sample_globals = ch_static_globals.mix(ch_static_versions).collect()
+
+        ch_multiqc_input = ch_multiqc_files
+            .filter { meta, _file -> meta.id != null }
             .combine(ch_sample_keys)
             .map { meta, f, keys -> [keys[meta.id] ?: groupKey(meta.id, 0), f] }
             .groupTuple(remainder: true)
             .map { key, files ->
-                // key.size compares against the tuple count (not flat file count)
-                // because perSampleMultiqcExpectedCount predicts contributor tuples:
-                // some contributors emit list-valued tuples (e.g. DUPRADAR's two
-                // _mqc.txt files) which count as one tuple here.
+                // Compare key.size against the tuple count (not flat file count):
+                // perSampleMultiqcExpectedCount predicts contributor tuples, some of
+                // which (e.g. DUPRADAR's pair of _mqc.txt files) are list-valued.
                 def id = key.toString()
                 if (key.size > 0 && files.size() != key.size) {
                     log.warn "[nf-core/rnaseq] MultiQC per-sample contributor count drift for '${id}': expected ${key.size}, got ${files.size()}. Update perSampleMultiqcExpectedCount() to match the current ch_multiqc_files contributors."
@@ -122,8 +107,10 @@ workflow MULTIQC_RNASEQ {
         // used by conf/modules/multiqc.config to pick the merged output
         // path/prefix. Wrap the collected file list in a 1-tuple so
         // .combine() doesn't spread it across the downstream closure args.
-        ch_all_files = ch_multiqc_all
+        ch_all_files = ch_multiqc_files
             .map { _meta, f -> f }
+            .mix(ch_static_globals)
+            .mix(ch_collated_versions)
             .collect()
             .map { files -> [files] }
 
