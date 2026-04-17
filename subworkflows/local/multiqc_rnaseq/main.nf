@@ -42,12 +42,18 @@ workflow MULTIQC_RNASEQ {
         methodsDescriptionText(methods_description_yml)
     ).collectFile(name: 'methods_description_mqc.yaml')
 
-    // Static globals (value channels, ready immediately) kept separate from the
-    // collated-versions channel so the per-sample branch can bypass the latter.
+    // Static globals (value channels, ready immediately) are kept separate from
+    // ch_collated_versions so the per-sample branch can bypass the latter.
     // ch_collated_versions only closes after every task has emitted via the
-    // `versions` topic, which would otherwise block per-sample MultiQC until the
-    // slowest sample finishes — undermining the groupKey-driven progressive
-    // closure below. Merged mode still waits on the full set.
+    // `versions` topic, which would block per-sample MultiQC until the slowest
+    // sample finishes — undermining groupKey-driven progressive closure below.
+    // Per-sample reports get a minimal manifest-only versions yaml in its place
+    // so MultiQC still emits per-sample multiqc_software_versions.txt (content
+    // .nftignored). Merged mode waits on the full collated versions.
+    ch_static_versions = channel.value(
+        "Workflow:\n  ${workflow.manifest.name}: ${workflow.manifest.version}\n"
+    ).collectFile(name: 'rnaseq_per_sample_versions_mqc.yml')
+
     ch_static_globals = ch_workflow_summary
         .mix(ch_methods_description)
         .map { f -> [[:], f] }
@@ -67,12 +73,14 @@ workflow MULTIQC_RNASEQ {
         // run. MultiQC still emits a multiqc_software_versions.txt from its own
         // manifest (contents are .nftignored for per-sample reports).
         ch_per_sample_items = ch_multiqc_files.filter { meta, _file -> meta.id != null }
-        // Static globals only — any channel that ultimately sources from
-        // ch_multiqc_files would block on the whole-run close here, defeating
-        // the progressive-closure goal. Dynamic globals (DESEQ2, fail_mapped,
-        // fail_strand_check) and the software-versions YAML are emitted into the
-        // merged report pipeline (else branch) but skipped per-sample.
-        ch_per_sample_globals = ch_static_globals.map { _meta, f -> f }.collect()
+        // Static globals plus minimal versions stub. Anything sourced from
+        // ch_multiqc_files would block here on the whole-run close, defeating
+        // the progressive-closure goal, so dynamic globals (DESEQ2, fail_*)
+        // and the full collated versions are only carried by the merged path.
+        ch_per_sample_globals = ch_static_globals
+            .map { _meta, f -> f }
+            .mix(ch_static_versions)
+            .collect()
 
         // Value-channel map of id -> groupKey(id, expected_count). `.first()`
         // converts the reduced map to a value channel so combine broadcasts
