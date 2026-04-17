@@ -786,18 +786,19 @@ workflow RNASEQ {
     // Anchored on ch_fastq; bam-branch pre-aligned inputs (skip_alignment=true
     // with genome_bam in the samplesheet) are dropped via the null-meta guard
     // because their meta never flows through FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS.
-    def rseqc_modules_list = qc_tools.findAll { tool -> tool.startsWith('rseqc_') }.collect { tool -> tool.replace('rseqc_', '') }
     ch_expected_multiqc_count = ch_fastq
         .map { meta, _reads -> [meta.id, meta] }
         .join(ch_trim_status, remainder: true)
         .join(ch_map_status,  remainder: true)
         .map { row ->
-            // Cascaded remainder:true joins can emit tuples of 3 or 4 elements
+            // Cascaded remainder:true joins can emit 3- or 4-element tuples
             // depending on which source contributed the key; unpack defensively.
-            def (id, meta, trim_pass, map_pass) = [row[0], row[1], row.size() > 2 ? row[2] : null, row.size() > 3 ? row[3] : null]
+            def meta      = row[1]
+            def trim_pass = row.size() > 2 ? row[2] : null
+            def map_pass  = row.size() > 3 ? row[3] : null
             if (meta == null) return null
-            def n = perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules_list, trim_pass, map_pass)
-            [id, groupKey(id, n)]
+            def n = perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules, trim_pass, map_pass)
+            [meta.id, groupKey(meta.id, n)]
         }
         .filter { row -> row != null }
 
