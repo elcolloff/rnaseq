@@ -22,7 +22,7 @@ workflow MULTIQC_RNASEQ {
     mqc_logo                   // path (or []): optional custom logo
     methods_description_yml    // path: methods-description YAML template
     skip_quantification_merge  // boolean
-    ch_expected_count          // channel: [ id, groupKey(id, n), n ] per sample
+    ch_expected_count          // channel: [ id, groupKey(id, n) ] per sample
 
     main:
 
@@ -76,34 +76,28 @@ workflow MULTIQC_RNASEQ {
             .map { _meta, f -> f }
             .collect()
 
-        // Build a single value-channel lookup: id -> [groupKey, expected_count].
-        // `.first()` converts to a value channel so combine broadcasts the lookup
-        // to every per-sample emission.
-        ch_sample_lookup = ch_expected_count
-            .map { id, key, n -> [(id): [key, n]] }
+        // Value-channel map of id -> groupKey(id, expected_count). `.first()`
+        // converts the reduced map to a value channel so combine broadcasts
+        // it to every per-sample emission without re-materialising upstream.
+        ch_sample_keys = ch_expected_count
+            .map { id, key -> [(id): key] }
             .reduce([:]) { acc, entry -> acc + entry }
             .first()
 
         ch_multiqc_input = ch_branched.per_sample
-            .combine(ch_sample_lookup)
-            .map { meta, f, lookup ->
-                def entry = lookup[meta.id]
-                def key = entry ? entry[0] : groupKey(meta.id, 0)
-                def n   = entry ? entry[1] : 0
-                [key, f, n]
-            }
+            .combine(ch_sample_keys)
+            .map { meta, f, keys -> [keys[meta.id] ?: groupKey(meta.id, 0), f] }
             .groupTuple(remainder: true)
-            .map { key, files, ns ->
+            .map { key, files ->
+                // key.size compares against the tuple count (not flat file count)
+                // because perSampleMultiqcExpectedCount predicts contributor tuples:
+                // some contributors emit list-valued tuples (e.g. DUPRADAR's two
+                // _mqc.txt files) which count as one tuple here.
                 def id = key.toString()
-                // Compare against the pre-flatten tuple count because perSampleMultiqcExpectedCount
-                // predicts contributor tuples, while flat.size() reflects files (some contributors
-                // emit list-valued tuples e.g. DUPRADAR's multiqc output which bundles two _mqc.txt files).
-                def expected = ns ? ns[0] : 0
-                if (expected > 0 && files.size() != expected) {
-                    log.warn "[nf-core/rnaseq] MultiQC per-sample contributor count drift for '${id}': expected ${expected}, got ${files.size()}. Update perSampleMultiqcExpectedCount() to match the current ch_multiqc_files contributors."
+                if (key.size > 0 && files.size() != key.size) {
+                    log.warn "[nf-core/rnaseq] MultiQC per-sample contributor count drift for '${id}': expected ${key.size}, got ${files.size()}. Update perSampleMultiqcExpectedCount() to match the current ch_multiqc_files contributors."
                 }
-                def flat = files.flatten()
-                [id, flat]
+                [id, files.flatten()]
             }
             .combine(ch_global_files.toList())
             .combine(ch_mqc_dynamic_config)
