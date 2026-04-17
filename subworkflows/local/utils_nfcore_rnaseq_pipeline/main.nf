@@ -851,6 +851,176 @@ def mapBamToPublishedPath(bam_path, sample_id, aligner, outdir) {
 }
 
 //
+// Count per-sample items a sample will contribute to ch_multiqc_files.
+//
+// Used with groupKey() so that per-sample MultiQC (--skip_quantification_merge)
+// can close each sample's group as soon as its expected items arrive, instead
+// of waiting for the slowest sample in the run.
+//
+// Every ch_multiqc_files.mix(...) site in the per-sample path must be accounted
+// for here. When adding a new contributor, update both the mix site and the
+// matching branch below; the drift warning in MULTIQC_RNASEQ surfaces
+// mismatches at runtime.
+//
+def perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules, trim_pass, map_pass) {
+    def single_end = meta.single_end
+    def n = 0
+
+    // FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS.out.multiqc_files (transposed internally).
+    // Count varies with trim_pass because bbsplit, rRNA removal and post-trim
+    // FastQC run on reads that survived the min_trimmed_reads filter.
+    n += fastqQcTrimStrandednessContribCount(params, single_end, trim_pass)
+
+    // Samples that fell below --min_trimmed_reads stop contributing here
+    if (trim_pass == false) {
+        return n
+    }
+
+    // Alignment contributors (bundled down-stream when picard mark-duplicates
+    // is skipped or parabricks handles dedup)
+    if (!params.skip_alignment) {
+        if (params.aligner == 'star_salmon' || params.aligner == 'star_rsem') {
+            n += 1  // STAR log_final
+            if (!params.with_umi && (params.skip_markduplicates || params.use_parabricks_star)) {
+                n += 3  // stats + flagstat + idxstats
+            }
+        } else if (params.aligner == 'bowtie2_salmon') {
+            n += 1  // Bowtie2 log
+            if (!params.with_umi && params.skip_markduplicates) {
+                n += 3
+            }
+        } else if (params.aligner == 'hisat2') {
+            n += 1  // HISAT2 summary
+            if (!params.with_umi && params.skip_markduplicates) {
+                n += 3
+            }
+        }
+
+        if (params.with_umi) {
+            n += 4  // BAM_DEDUP_UMI.out.multiqc_files: dedup_log + stats + flagstat + idxstats
+        }
+    }
+
+    // RSEM per-sample stat
+    if (!params.skip_alignment && params.aligner == 'star_rsem') {
+        n += 1
+    }
+
+    // Samples that fell below --min_mapped_reads stop contributing here
+    if (map_pass == false) {
+        return n
+    }
+
+    // Picard mark-duplicates (4 files per sample)
+    if (!params.skip_alignment) {
+        def markdups_done_in_align = !params.skip_markduplicates && params.use_parabricks_star
+        if (!params.skip_markduplicates && !params.with_umi && !markdups_done_in_align) {
+            n += 4  // stats + flagstat + idxstats + metrics
+        }
+    }
+
+    // Post-alignment QC (RUSTQC is bundled in the workflow to one tuple per sample)
+    if (!params.skip_qc && !params.skip_alignment) {
+        if (params.use_rustqc) {
+            n += 1
+        } else {
+            n += bamQcRnaseqContribCount(qc_tools, rseqc_modules)
+        }
+    }
+
+    // Contaminant screening (one tuple per sample per enabled tool)
+    if (!params.skip_qc && params.contaminant_screening) {
+        n += 1
+    }
+
+    // Pseudo-alignment (one tuple per sample)
+    if (!params.skip_pseudo_alignment && params.pseudo_aligner) {
+        n += 1
+    }
+
+    return n
+}
+
+//
+// Per-sample file count emitted by FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS.out.multiqc_files.
+// The subworkflow transposes its internal bundle so each file becomes a separate
+// [meta, file] tuple; this returns how many such tuples a sample produces, split
+// into pre-filter contributors (always emit) and post-filter contributors (only
+// emit for samples that cleared --min_trimmed_reads).
+//
+def fastqQcTrimStrandednessContribCount(params, single_end, trim_pass) {
+    def n = 0
+    def trimmer = params.trimmer
+    def fastqc_on = !(params.skip_fastqc || params.skip_qc)
+    def per_read = single_end ? 1 : 2  // 1 zip/log per input FASTQ read
+
+    // --- Pre-filter contributors (emit for every sample) ---
+
+    // Raw FastQC zips
+    if (fastqc_on) n += per_read
+
+    if (!params.skip_trimming) {
+        if (trimmer == 'trimgalore') {
+            n += per_read  // trim_zip
+            n += per_read  // trim_log
+        } else if (trimmer == 'fastp') {
+            n += 1  // trim_json
+        }
+    }
+
+    // UMI extraction log (1 per sample)
+    if (params.with_umi && !params.skip_umi_extract) {
+        n += 1
+    }
+
+    // --- Post-filter contributors (skipped for samples below min_trimmed_reads) ---
+    if (trim_pass == false) {
+        return n
+    }
+
+    // FastQC on trimmed reads (fastp path only; fastp runs FASTQC_TRIM on filtered reads)
+    if (fastqc_on && !params.skip_trimming && trimmer == 'fastp') {
+        n += per_read
+    }
+
+    // BBSplit stats (1 per sample)
+    if (!params.skip_bbsplit && params.fasta) {
+        n += 1
+    }
+
+    // rRNA removal: log count depends on tool
+    if (params.remove_ribo_rna) {
+        if (params.ribo_removal_tool == 'ribodetector') {
+            n += 2  // seqkit_stats + ribodetector_log
+        } else {
+            n += 1  // sortmerna or bowtie2 log
+        }
+    }
+
+    // FastQC on filtered reads (only runs when post-trim filtering happened)
+    if (fastqc_on && (!params.skip_bbsplit || params.remove_ribo_rna)) {
+        n += per_read
+    }
+
+    return n
+}
+
+//
+// Per-sample file count emitted by BAM_QC_RNASEQ.out.multiqc_files,
+// matching the subworkflow's internal tool-gating at
+// subworkflows/nf-core/bam_qc_rnaseq/main.nf.
+//
+def bamQcRnaseqContribCount(qc_tools, rseqc_modules) {
+    def n = 0
+    if (qc_tools?.contains('preseq'))     n += 1
+    if (qc_tools?.contains('biotype_qc')) n += 1
+    if (qc_tools?.contains('qualimap'))   n += 1
+    if (qc_tools?.contains('dupradar'))   n += 1
+    n += (rseqc_modules?.size() ?: 0)
+    return n
+}
+
+//
 // Print pipeline summary on completion
 //
 def rnaseqSummary(monochrome_logs=true, pass_mapped_reads=[:], pass_trimmed_reads=[:], pass_strand_check=[:]) {

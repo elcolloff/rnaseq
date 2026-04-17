@@ -12,7 +12,7 @@ include { multiqcSampleMergeYaml  } from '../utils_nfcore_rnaseq_pipeline'
 workflow MULTIQC_RNASEQ {
 
     take:
-    ch_multiqc_files           // channel: [ val(meta), path(file) ]
+    ch_multiqc_files           // channel: [ val(meta), path(file_or_file_list) ]
     ch_fastq                   // channel: [ val(meta), [ reads ] ]
     ch_collated_versions       // channel: path(versions yaml)
     samplesheet_path           // path: pipeline input samplesheet
@@ -22,6 +22,7 @@ workflow MULTIQC_RNASEQ {
     mqc_logo                   // path (or []): optional custom logo
     methods_description_yml    // path: methods-description YAML template
     skip_quantification_merge  // boolean
+    ch_expected_count          // channel: [ id, groupKey(id, n), n ] per sample
 
     main:
 
@@ -56,6 +57,11 @@ workflow MULTIQC_RNASEQ {
     if (skip_quantification_merge) {
         // One MultiQC report per sample. Split incoming files into per-sample
         // and global buckets, then attach the global bucket to every sample.
+        //
+        // Each per-sample file is tagged with a per-sample groupKey supplied
+        // by the caller so groupTuple can close each sample's group as soon
+        // as its expected items arrive, instead of waiting for the slowest
+        // sample in the run to release the upstream ch_multiqc_files channel.
         ch_branched = ch_multiqc_all
             .branch { meta, _file ->
                 per_sample: meta.id != null
@@ -66,9 +72,35 @@ workflow MULTIQC_RNASEQ {
             .map { _meta, f -> f }
             .collect()
 
+        // Build a single value-channel lookup map from id -> [groupKey, expected_count].
+        // Using a value channel avoids the Cartesian-broadcast behaviour we saw with
+        // `.combine(by:)` on queue-to-queue, which duplicated left-side items per
+        // subscriber.
+        ch_expected_count_map = ch_expected_count
+            .map { id, key, n -> [(id): [key, n]] }
+            .reduce([:]) { acc, entry -> acc + entry }
+
         ch_multiqc_input = ch_branched.per_sample
-            .map { meta, f -> [meta.id, f] }
+            .combine(ch_expected_count_map)
+            .map { meta, f, count_map ->
+                def entry = count_map[meta.id]
+                def key   = entry ? entry[0] : groupKey(meta.id, 0)
+                def n     = entry ? entry[1] : 0
+                [key, f, n]
+            }
             .groupTuple()
+            .map { key, files, ns ->
+                // Flatten because some upstream contributors emit bundled
+                // [meta, list_of_files] tuples (e.g. RUSTQC) and others emit
+                // [meta, single_file]; both forms land in the grouped list.
+                def id = key.toString()
+                def flat = files.collectMany { it instanceof List ? it : [it] }
+                def expected = ns ? ns[0] : 0
+                if (expected > 0 && flat.size() != expected) {
+                    log.warn "[nf-core/rnaseq] MultiQC per-sample file count drift for '${id}': expected ${expected}, got ${flat.size()}. Update perSampleMultiqcExpectedCount() to match the current ch_multiqc_files contributors."
+                }
+                [id, flat]
+            }
             .combine(ch_global_files.toList())
             .combine(ch_mqc_dynamic_config)
             .map { id, sample_files, global_files, dyn ->

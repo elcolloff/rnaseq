@@ -26,6 +26,7 @@ include { checkSamplesAfterGrouping      } from '../../subworkflows/local/utils_
 include { multiqcTsvFromList             } from '../../subworkflows/nf-core/fastq_qc_trim_filter_setstrandedness'
 include { getInferexperimentStrandedness } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 include { mapBamToPublishedPath          } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
+include { perSampleMultiqcExpectedCount  } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -514,21 +515,29 @@ workflow RNASEQ {
                 ch_gtf.map { gtf -> [ [:], gtf ] },
             )
 
-            // Collect all per-tool outputs, flatten to individual files, then filter for MultiQC
+            // Join the six per-tool outputs by meta, apply the MultiQC filename filter
+            // to the union, and emit a single [meta, files_list] tuple per sample. This
+            // keeps RUSTQC's contribution to ch_multiqc_files atomic per sample so the
+            // per-sample MultiQC groupKey doesn't need to predict the post-filter count.
             ch_multiqc_files = ch_multiqc_files.mix(
                 RUSTQC.out.dupradar
-                    .mix(RUSTQC.out.featurecounts)
-                    .mix(RUSTQC.out.preseq)
-                    .mix(RUSTQC.out.samtools)
-                    .mix(RUSTQC.out.rseqc)
-                    .mix(RUSTQC.out.qualimap)
-                    .flatMap { meta, files -> (files instanceof List ? files : [files]).collect { f -> [meta, f] } }
-                    .filter { _meta, f ->
-                        // Exclude gene-level featureCounts summary so MultiQC only sees the
-                        // biotype-level summary (*.biotype.tsv.summary), matching the default
-                        // pipeline's featureCounts -g gene_biotype output.
-                        if (f.name.endsWith('.featureCounts.tsv.summary')) return false
-                        f.name =~ /(?i)\.(txt|tsv|xls|log|stats|flagstat|idxstats|html)$/ || f.name.contains('_mqc.')
+                    .join(RUSTQC.out.featurecounts)
+                    .join(RUSTQC.out.preseq)
+                    .join(RUSTQC.out.samtools)
+                    .join(RUSTQC.out.rseqc)
+                    .join(RUSTQC.out.qualimap)
+                    .map { meta, dup, fc, pre, sam, rse, qua ->
+                        def files = [dup, fc, pre, sam, rse, qua]
+                            .collect { it instanceof List ? it : [it] }
+                            .flatten()
+                            .findAll { f ->
+                                // Exclude gene-level featureCounts summary so MultiQC only sees the
+                                // biotype-level summary (*.biotype.tsv.summary), matching the default
+                                // pipeline's featureCounts -g gene_biotype output.
+                                if (f.name.endsWith('.featureCounts.tsv.summary')) return false
+                                f.name =~ /(?i)\.(txt|tsv|xls|log|stats|flagstat|idxstats|html)$/ || f.name.contains('_mqc.')
+                            }
+                        [meta, files]
                     }
             )
 
@@ -772,6 +781,20 @@ workflow RNASEQ {
     //
     ch_multiqc_report = channel.empty()
 
+    // Per-sample expected MultiQC item count, used by MULTIQC_RNASEQ as a
+    // groupKey so each sample's per-sample report can close as soon as its
+    // expected files arrive. Anchored on ch_fastq (fastq-branch samples);
+    // bam-branch pre-aligned inputs are not in scope for per-sample grouping.
+    def rseqc_modules_list = qc_tools.findAll { it.startsWith('rseqc_') }.collect { it.replace('rseqc_', '') }
+    ch_expected_multiqc_count = ch_fastq
+        .map { meta, _reads -> [meta.id, meta] }
+        .join(ch_trim_status, remainder: true)
+        .join(ch_map_status,  remainder: true)
+        .map { id, meta, trim_pass, map_pass ->
+            def n = perSampleMultiqcExpectedCount(params, meta, qc_tools, rseqc_modules_list, trim_pass, map_pass)
+            [id, groupKey(id, n), n]
+        }
+
     if (!params.skip_multiqc) {
         MULTIQC_RNASEQ(
             ch_multiqc_files,
@@ -785,7 +808,8 @@ workflow RNASEQ {
             params.multiqc_methods_description
                 ? file(params.multiqc_methods_description)
                 : file("$projectDir/workflows/rnaseq/assets/multiqc/methods_description_template.yml", checkIfExists: true),
-            params.skip_quantification_merge
+            params.skip_quantification_merge,
+            ch_expected_multiqc_count
         )
         ch_multiqc_report = MULTIQC_RNASEQ.out.report
     }
