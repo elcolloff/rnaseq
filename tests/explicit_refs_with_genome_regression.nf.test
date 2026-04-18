@@ -1,0 +1,38 @@
+nextflow_pipeline {
+
+    name "Test explicit reference overrides with --genome"
+    script "../main.nf"
+    tag "pipeline"
+    tag "regression"
+    tag "igenomes"
+
+    test("Params: explicit fasta/gtf with --genome still generates STAR index from explicit refs - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                outdir = "$outputDir"
+                genome = 'GRCh37'
+                transcript_fasta = null
+                salmon_index = null
+                additional_fasta = null
+            }
+        }
+
+        then {
+            def versions = removeFromYamlMap("$outputDir/pipeline_info/nf_core_rnaseq_software_mqc_versions.yml", "Workflow")
+            assertAll(
+                { assert workflow.success },
+                { assert versions.containsKey('STAR_GENOMEGENERATE') }
+            )
+        }
+
+        cleanup {
+            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                "docker system prune -a -f --volumes".execute()
+            }
+            new File("${launchDir}").deleteDir()
+        }
+    }
+}
