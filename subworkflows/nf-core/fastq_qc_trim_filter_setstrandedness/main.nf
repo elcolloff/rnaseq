@@ -203,6 +203,23 @@ workflow FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS {
             min_trimmed_reads,
         )
         ch_filtered_reads = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.reads
+            .map { meta, reads_ ->
+                if (!meta.single_end) {
+                    def val_reads = reads_.findAll { it.name =~ /_val_[12]\./ }
+                    if (val_reads) {
+                        if (val_reads.size() != 2) {
+                            error("FASTQ_FASTQC_UMITOOLS_TRIMGALORE emitted ${reads_*.name} for paired-end sample '${meta.id}', expected exactly two validated reads matching *_val_1/*_val_2")
+                        }
+                        [meta, val_reads.sort { a, b -> a.name <=> b.name }]
+                    } else if (reads_.size() == 2) {
+                        [meta, reads_.sort { a, b -> a.name <=> b.name }]
+                    } else {
+                        error("FASTQ_FASTQC_UMITOOLS_TRIMGALORE emitted ${reads_*.name} for paired-end sample '${meta.id}', expected either a validated pair or an already-correct 2-file pair")
+                    }
+                } else {
+                    [meta, reads_]
+                }
+            }
         ch_trim_read_count = FASTQ_FASTQC_UMITOOLS_TRIMGALORE.out.trim_read_count
 
         // Capture individual outputs for workflow outputs

@@ -39,8 +39,6 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert path(workflow.out.fastqc_html[0][1]).text.contains("<tr><td>File type</td><td>Conventional base calls</td></tr>") },
-                // SE reads: keep a single trimmed output after filtering
-                { assert workflow.out.reads[0][1].toString().contains('_trimmed') },
                 { assert snapshot(
                     workflow.out.reads,
                     workflow.out.trim_read_count,
@@ -108,10 +106,6 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                // PE reads: exactly 2 files, both _val_ outputs
-                { assert workflow.out.reads[0][1] instanceof List },
-                { assert workflow.out.reads[0][1].size() == 2 },
-                { assert workflow.out.reads[0][1].every { it.toString().contains('_val_') } },
                 { assert snapshot(
                     workflow.out.reads,
                     workflow.out.trim_read_count,

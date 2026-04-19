@@ -79,31 +79,7 @@ workflow FASTQ_FASTQC_UMITOOLS_TRIMGALORE {
         //
         // Filter FastQ files based on minimum trimmed read count after adapter trimming
         //
-        // Filter TRIMGALORE reads to correct cardinality:
-        // PE prefers final validated pair outputs when present and otherwise keeps
-        // an already-correct 2-file pair (for example in stub runs). SE keeps the
-        // single trimmed output as-is.
         TRIMGALORE.out.reads
-            .map { meta, reads_ ->
-                if (!meta.single_end) {
-                    def val_reads = reads_.findAll { it.name =~ /_val_[12]\./ }
-                    if (val_reads) {
-                        if (val_reads.size() != 2) {
-                            error("TRIMGALORE emitted ${reads_*.name} for paired-end sample '${meta.id}', expected exactly two validated reads matching *_val_1/*_val_2")
-                        }
-                        [meta, val_reads.sort { a, b -> a.name <=> b.name }]
-                    } else if (reads_.size() == 2) {
-                        [meta, reads_.sort { a, b -> a.name <=> b.name }]
-                    } else {
-                        error("TRIMGALORE emitted ${reads_*.name} for paired-end sample '${meta.id}', expected either a validated pair or an already-correct 2-file pair")
-                    }
-                } else {
-                    [meta, reads_]
-                }
-            }
-            .set { ch_trimgalore_reads }
-
-        ch_trimgalore_reads
             .join(trim_log, remainder: true)
             .map { meta, reads_, trim_log_ ->
                 if (trim_log) {
@@ -111,7 +87,7 @@ workflow FASTQ_FASTQC_UMITOOLS_TRIMGALORE {
                     [meta, reads_, num_reads]
                 }
                 else {
-                    [meta, reads_, min_trimmed_reads.toFloat() + 1]
+                    [meta, reads, min_trimmed_reads.toFloat() + 1]
                 }
             }
             .set { ch_num_trimmed_reads }
