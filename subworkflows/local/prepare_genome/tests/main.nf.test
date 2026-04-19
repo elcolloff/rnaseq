@@ -1824,6 +1824,7 @@ nextflow_workflow {
     }
 
     test("star_index + generated_transcript_fasta_consistency") {
+        tag "fasta_consistency"
 
         when {
             workflow {
