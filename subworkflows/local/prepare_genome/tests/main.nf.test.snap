@@ -16,15 +16,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -58,15 +70,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -106,15 +130,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -142,15 +178,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -184,15 +232,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -226,15 +286,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -268,15 +340,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -316,15 +400,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -358,16 +454,30 @@
             [
                 "genome.fasta.sizes:md5,29218009212157c49dbc6596621ec780"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
-            []
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ]
         ],
         "timestamp": "2026-02-05T15:10:16.088175973",
         "meta": {
@@ -398,15 +508,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -434,15 +556,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[complete_ref_lens.bin, ctable.bin, ctg_offsets.bin, duplicate_clusters.tsv, info.json, mphf.bin, pos.bin, pre_indexing.log, rank.bin, refAccumLengths.bin, ref_indexing.log, reflengths.bin, refseq.bin, seq.bin, versionInfo.json]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -482,13 +616,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -516,22 +664,36 @@
             [
                 "genes_with_empty_tid.filtered.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
             [
                 "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
             ],
-            []
+            [
+                
+            ]
         ],
         "timestamp": "2026-04-10T21:33:59.272306338",
         "meta": {
@@ -562,15 +724,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -604,15 +778,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -640,15 +826,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -682,16 +880,30 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
             ],
@@ -734,14 +946,24 @@
                         "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "11": [],
-                "12": [],
-                "13": [],
+                "11": [
+                    
+                ],
+                "12": [
+                    
+                ],
+                "13": [
+                    
+                ],
                 "14": [
                     "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/salmon.tar.gz"
                 ],
-                "15": [],
-                "16": [],
+                "15": [
+                    
+                ],
+                "16": [
+                    
+                ],
                 "17": [
                     "versions.yml:md5,d475dace58c4e9b4911e8a60bda85041"
                 ],
@@ -757,12 +979,24 @@
                 "5": [
                     "genome_transcriptome.fasta.sizes:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "6": [],
-                "7": [],
-                "8": [],
-                "9": [],
-                "bbsplit_index": [],
-                "bowtie2_index": [],
+                "6": [
+                    
+                ],
+                "7": [
+                    
+                ],
+                "8": [
+                    
+                ],
+                "9": [
+                    
+                ],
+                "bbsplit_index": [
+                    
+                ],
+                "bowtie2_index": [
+                    
+                ],
                 "chrom_sizes": [
                     "genome_transcriptome.fasta.sizes:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -778,16 +1012,30 @@
                 "gtf": [
                     "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "hisat2_index": [],
-                "kallisto_index": [],
-                "kraken_db": [],
-                "rrna_fastas": [],
-                "rsem_index": [],
+                "hisat2_index": [
+                    
+                ],
+                "kallisto_index": [
+                    
+                ],
+                "kraken_db": [
+                    
+                ],
+                "rrna_fastas": [
+                    
+                ],
+                "rsem_index": [
+                    
+                ],
                 "salmon_index": [
                     "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/salmon.tar.gz"
                 ],
-                "sortmerna_index": [],
-                "splicesites": [],
+                "sortmerna_index": [
+                    
+                ],
+                "splicesites": [
+                    
+                ],
                 "star_index": [
                     [
                         "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -822,6 +1070,22 @@
             "nextflow": "25.10.2"
         }
     },
+    "star_index + generated_transcript_fasta_consistency": {
+        "content": [
+            "genome.transcripts.fa",
+            [
+                "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
+            ],
+            [
+                "versions.yml:md5,04400316552e6253e0008f052b20d866"
+            ]
+        ],
+        "timestamp": "2026-04-19T14:09:14.059143",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.3"
+        }
+    },
     "transcriptome = false": {
         "content": [
             [
@@ -845,15 +1109,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -887,15 +1163,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -923,15 +1211,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -971,15 +1271,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1013,14 +1325,24 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
@@ -1060,14 +1382,24 @@
             [
                 "genome_gfp.splice_sites.txt:md5,4e9620ff904f32dfe6e7897a9acdc15b"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[genome_gfp.1.ht2, genome_gfp.2.ht2, genome_gfp.3.ht2, genome_gfp.4.ht2, genome_gfp.5.ht2, genome_gfp.6.ht2, genome_gfp.7.ht2, genome_gfp.8.ht2]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1095,17 +1427,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[genome_transcriptome.fasta]"
             ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1145,15 +1487,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1181,15 +1535,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1204,6 +1570,18 @@
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
+        }
+    },
+    "skip_gtf_transcript_filter = true": {
+        "content": [
+            [
+                "genome_gfp.gtf:md5,dad0fae25fac50a6bffeaedd6b4bb6a6"
+            ]
+        ],
+        "timestamp": "2026-04-11T09:26:02.880998",
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.4"
         }
     },
     "kallisto_index = false - stub": {
@@ -1223,17 +1601,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1273,15 +1661,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1315,15 +1715,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1357,15 +1769,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1393,15 +1817,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1441,15 +1877,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1477,15 +1925,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1525,15 +1985,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1567,17 +2039,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
             [
                 "[genome.chrlist, genome.grp, genome.idx.fa, genome.n2g.idx.fa, genome.seq, genome.ti, genome.transcripts.fa, genome_gfp.fasta]"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1605,16 +2087,30 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
             ],
@@ -1645,15 +2141,27 @@
             [
                 "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[]"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
@@ -1693,13 +2201,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1733,15 +2255,27 @@
             [
                 "genome_gfp.fasta.sizes:md5,9b755f8f349b14accefb4d859f84de26"
             ],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]"
             ],
-            [],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "versions.yml:md5,04400316552e6253e0008f052b20d866"
             ]
@@ -1772,17 +2306,27 @@
             [
                 "[]"
             ],
-            [],
-            [],
-            [],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
             [
                 "[complete_ref_lens.bin, ctable.bin, ctg_offsets.bin, duplicate_clusters.tsv, info.json, mphf.bin, pos.bin, pre_indexing.log, rank.bin, refAccumLengths.bin, ref_indexing.log, reflengths.bin, refseq.bin, seq.bin, versionInfo.json]"
             ],
-            [],
+            [
+                
+            ],
             [
                 "genome_transcriptome.splice_sites.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
-            [],
+            [
+                
+            ],
             [
                 "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
             ],
@@ -1825,14 +2369,24 @@
                         "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "11": [],
-                "12": [],
-                "13": [],
+                "11": [
+                    
+                ],
+                "12": [
+                    
+                ],
+                "13": [
+                    
+                ],
                 "14": [
                     "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/salmon.tar.gz"
                 ],
-                "15": [],
-                "16": [],
+                "15": [
+                    
+                ],
+                "16": [
+                    
+                ],
                 "17": [
                     "versions.yml:md5,d475dace58c4e9b4911e8a60bda85041"
                 ],
@@ -1848,12 +2402,24 @@
                 "5": [
                     "genome_transcriptome.fasta.sizes:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "6": [],
-                "7": [],
-                "8": [],
-                "9": [],
-                "bbsplit_index": [],
-                "bowtie2_index": [],
+                "6": [
+                    
+                ],
+                "7": [
+                    
+                ],
+                "8": [
+                    
+                ],
+                "9": [
+                    
+                ],
+                "bbsplit_index": [
+                    
+                ],
+                "bowtie2_index": [
+                    
+                ],
                 "chrom_sizes": [
                     "genome_transcriptome.fasta.sizes:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -1869,16 +2435,30 @@
                 "gtf": [
                     "genome_transcriptome.gtf:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "hisat2_index": [],
-                "kallisto_index": [],
-                "kraken_db": [],
-                "rrna_fastas": [],
-                "rsem_index": [],
+                "hisat2_index": [
+                    
+                ],
+                "kallisto_index": [
+                    
+                ],
+                "kraken_db": [
+                    
+                ],
+                "rrna_fastas": [
+                    
+                ],
+                "rsem_index": [
+                    
+                ],
                 "salmon_index": [
                     "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/salmon.tar.gz"
                 ],
-                "sortmerna_index": [],
-                "splicesites": [],
+                "sortmerna_index": [
+                    
+                ],
+                "splicesites": [
+                    
+                ],
                 "star_index": [
                     [
                         "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -1912,17 +2492,5 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         }
-    },
-    "skip_gtf_transcript_filter = true": {
-        "content": [
-            [
-                "genome_gfp.gtf:md5,dad0fae25fac50a6bffeaedd6b4bb6a6"
-            ]
-        ],
-        "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-11T09:26:02.880998"
     }
 }

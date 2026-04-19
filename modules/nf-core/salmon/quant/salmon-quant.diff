@@ -1,0 +1,269 @@
+Changes in component 'nf-core/salmon/quant'
+'modules/nf-core/salmon/quant/environment.yml' is unchanged
+'modules/nf-core/salmon/quant/meta.yml' is unchanged
+'modules/nf-core/salmon/quant/main.nf' is unchanged
+Changes in 'salmon/quant/tests/main.nf.test.snap':
+--- modules/nf-core/salmon/quant/tests/main.nf.test.snap
++++ modules/nf-core/salmon/quant/tests/main.nf.test.snap
+@@ -20,11 +20,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:53:59.375252"
++        "timestamp": "2026-01-19T14:53:59.375252",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - single_end stub": {
+         "content": [
+@@ -47,11 +47,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:06.507228"
++        "timestamp": "2026-01-19T14:54:06.507228",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - single_end lib type A": {
+         "content": [
+@@ -74,11 +74,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:15.005117"
++        "timestamp": "2026-01-19T14:54:15.005117",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - pair_end multiple": {
+         "content": [
+@@ -101,11 +101,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:48.338822"
++        "timestamp": "2026-01-19T14:54:48.338822",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - pair_end multiple stub": {
+         "content": [
+@@ -128,11 +128,32 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:56.134603"
++        "timestamp": "2026-01-19T14:54:56.134603",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
++    },
++    "homo_sapiens - transcriptome_bam alignment_mode": {
++        "content": [
++            {
++                "versions_salmon": [
++                    [
++                        "SALMON_QUANT",
++                        "salmon",
++                        "1.10.3"
++                    ]
++                ]
++            },
++            [
++                
++            ]
++        ],
++        "timestamp": "2026-04-19T12:22:35.647357",
++        "meta": {
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.3"
++        }
+     },
+     "sarscov2 - single_end lib type A stub": {
+         "content": [
+@@ -155,11 +176,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:22.024404"
++        "timestamp": "2026-01-19T14:54:22.024404",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - pair_end": {
+         "content": [
+@@ -182,11 +203,11 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:30.967174"
++        "timestamp": "2026-01-19T14:54:30.967174",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
+     },
+     "sarscov2 - pair_end stub": {
+         "content": [
+@@ -209,10 +230,37 @@
+                 ]
+             ]
+         ],
+-        "meta": {
+-            "nf-test": "0.9.3",
+-            "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-01-19T14:54:38.572004"
++        "timestamp": "2026-01-19T14:54:38.572004",
++        "meta": {
++            "nf-test": "0.9.3",
++            "nextflow": "25.10.2"
++        }
++    },
++    "homo_sapiens - transcriptome_bam alignment_mode stub": {
++        "content": [
++            {
++                "versions_salmon": [
++                    [
++                        "SALMON_QUANT",
++                        "salmon",
++                        "1.10.3"
++                    ]
++                ]
++            },
++            [
++                [
++                    {
++                        "id": "test",
++                        "single_end": true
++                    },
++                    "test_lib_format_counts.json:md5,d41d8cd98f00b204e9800998ecf8427e"
++                ]
++            ]
++        ],
++        "timestamp": "2026-04-19T12:22:51.028838",
++        "meta": {
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.3"
++        }
+     }
+ }
+'modules/nf-core/salmon/quant/tests/nextflow.config' is unchanged
+Changes in 'salmon/quant/tests/main.nf.test':
+--- modules/nf-core/salmon/quant/tests/main.nf.test
++++ modules/nf-core/salmon/quant/tests/main.nf.test
+@@ -317,4 +317,72 @@
+         }
+ 
+     }
++
++    test("homo_sapiens - transcriptome_bam alignment_mode") {
++        when {
++            params {
++                outdir = "$outputDir"
++            }
++            process {
++                """
++                input[0] = Channel.of([
++                    [ id:'test', single_end: true ],
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
++                ])
++                input[1] = SALMON_INDEX.out.index
++                input[2] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true)])
++                input[3] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
++                input[4] = true
++                input[5] = 'A'
++                """
++            }
++        }
++
++        then {
++            assertAll(
++                { assert process.success },
++                { assert path(process.out.json_info.get(0).get(1)).exists() },
++                { assert path(process.out.results.get(0).get(1)).exists() },
++                { assert snapshot(
++                    process.out.findAll { key, val -> key.startsWith("versions") },
++                    process.out.lib_format_counts
++                ).match() }
++            )
++        }
++    }
++
++    test("homo_sapiens - transcriptome_bam alignment_mode stub") {
++        options "-stub"
++
++        when {
++            params {
++                outdir = "$outputDir"
++            }
++            process {
++                """
++                input[0] = Channel.of([
++                    [ id:'test', single_end: true ],
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
++                ])
++                input[1] = SALMON_INDEX.out.index
++                input[2] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true)])
++                input[3] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
++                input[4] = true
++                input[5] = 'A'
++                """
++            }
++        }
++
++        then {
++            assertAll(
++                { assert process.success },
++                { assert path(process.out.json_info.get(0).get(1)).exists() },
++                { assert path(process.out.results.get(0).get(1)).exists() },
++                { assert snapshot(
++                    process.out.findAll { key, val -> key.startsWith("versions") },
++                    process.out.lib_format_counts
++                ).match() }
++            )
++        }
++    }
+ }
+
+************************************************************

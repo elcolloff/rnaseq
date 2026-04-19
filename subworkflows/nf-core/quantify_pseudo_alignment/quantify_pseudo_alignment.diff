@@ -1,0 +1,331 @@
+Changes in component 'nf-core/quantify_pseudo_alignment'
+'subworkflows/nf-core/quantify_pseudo_alignment/nextflow.config' is unchanged
+'subworkflows/nf-core/quantify_pseudo_alignment/meta.yml' is unchanged
+'subworkflows/nf-core/quantify_pseudo_alignment/main.nf' is unchanged
+Changes in 'quantify_pseudo_alignment/tests/main.nf.test.snap':
+--- subworkflows/nf-core/quantify_pseudo_alignment/tests/main.nf.test.snap
++++ subworkflows/nf-core/quantify_pseudo_alignment/tests/main.nf.test.snap
+@@ -1,4 +1,41 @@
+ {
++    "salmon alignment_mode bam - matching references": {
++        "content": [
++            "salmon.merged.tx2gene.tsv",
++            [
++                [
++                    {
++                        "id": "test",
++                        "single_end": true
++                    },
++                    "salmon.merged.gene_counts.tsv:md5,b4900e70a4684872fff05d6c5a8d74f1"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test",
++                        "single_end": true
++                    },
++                    "salmon.merged.transcript_counts.tsv:md5,06e7ab5c80b90783d9ef192cf755d5ad"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test",
++                        "single_end": true
++                    },
++                    "salmon.merged.transcript_lengths.tsv:md5,2ab7cb28d7220ccb10e4860694f44b6c"
++                ]
++            ]
++        ],
++        "timestamp": "2026-04-19T13:40:27.649193",
++        "meta": {
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.3"
++        }
++    },
+     "kallisto": {
+         "content": [
+             "all_samples_gene.SummarizedExperiment.rds",
+@@ -52,11 +89,11 @@
+                 ]
+             ]
+         ],
++        "timestamp": "2026-02-11T10:00:30.637566635",
+         "meta": {
+             "nf-test": "0.9.3",
+             "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-02-11T10:00:30.637566635"
++        }
+     },
+     "salmon - stub": {
+         "content": [
+@@ -66,7 +103,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "1": [
+@@ -74,7 +113,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "10": [
+@@ -103,7 +144,9 @@
+                 ],
+                 "2": [
+                     [
+-                        {},
++                        {
++                            
++                        },
+                         "salmon.merged.tx2gene.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+@@ -232,7 +275,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "results": [
+@@ -240,7 +285,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "tpm_gene": [
+@@ -261,17 +308,19 @@
+                 ],
+                 "tx2gene": [
+                     [
+-                        {},
++                        {
++                            
++                        },
+                         "salmon.merged.tx2gene.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ]
+             }
+         ],
++        "timestamp": "2026-02-11T10:01:00.048270164",
+         "meta": {
+             "nf-test": "0.9.3",
+             "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-02-11T10:01:00.048270164"
++        }
+     },
+     "kallisto - stub": {
+         "content": [
+@@ -281,7 +330,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "1": [
+@@ -318,7 +369,9 @@
+                 ],
+                 "2": [
+                     [
+-                        {},
++                        {
++                            
++                        },
+                         "kallisto.merged.tx2gene.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
+@@ -455,7 +508,9 @@
+                         {
+                             "id": "test"
+                         },
+-                        []
++                        [
++                            
++                        ]
+                     ]
+                 ],
+                 "tpm_gene": [
+@@ -476,17 +531,19 @@
+                 ],
+                 "tx2gene": [
+                     [
+-                        {},
++                        {
++                            
++                        },
+                         "kallisto.merged.tx2gene.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ]
+             }
+         ],
++        "timestamp": "2026-02-11T10:01:29.303060205",
+         "meta": {
+             "nf-test": "0.9.3",
+             "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-02-11T10:01:29.303060205"
++        }
+     },
+     "salmon": {
+         "content": [
+@@ -549,10 +606,10 @@
+                 ]
+             ]
+         ],
++        "timestamp": "2026-02-11T09:59:56.582451163",
+         "meta": {
+             "nf-test": "0.9.3",
+             "nextflow": "25.10.2"
+-        },
+-        "timestamp": "2026-02-11T09:59:56.582451163"
++        }
+     }
+-}
++}
+'subworkflows/nf-core/quantify_pseudo_alignment/tests/nextflow.config' is unchanged
+Changes in 'quantify_pseudo_alignment/tests/main.nf.test':
+--- subworkflows/nf-core/quantify_pseudo_alignment/tests/main.nf.test
++++ subworkflows/nf-core/quantify_pseudo_alignment/tests/main.nf.test
+@@ -143,6 +143,113 @@
+         }
+     }
+ 
++    test("salmon alignment_mode bam - matching references") {
++
++        setup {
++            run("SALMON_INDEX") {
++                script "../../../../modules/nf-core/salmon/index/main.nf"
++                process {
++                    """
++                    input[0] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genome.fasta", checkIfExists: true)])
++                    input[1] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
++                    """
++                }
++            }
++        }
++
++        when {
++            workflow {
++                """
++                input[0]  = [
++                    [ id: 'samplesheet' ],
++                    file(params.modules_testdata_base_path + '/genomics/sarscov2/illumina/csv/samplesheet_micro.csv', checkIfExists: true)
++                ]
++                input[1]  = [
++                    [ id: 'test', single_end: true ],
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
++                ]
++                input[2]  = SALMON_INDEX.out.index
++                input[3]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true))
++                input[4]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true))
++                input[5]  = 'gene_id'
++                input[6]  = 'gene_name'
++                input[7]  = 'salmon'
++                input[8]  = true
++                input[9]  = 'A'
++                input[10] = null
++                input[11] = null
++                input[12] = true
++                """
++            }
++        }
++
++        then {
++            assertAll(
++                { assert workflow.success },
++                { assert path(workflow.out.results[0][1]).exists() },
++                { assert snapshot(
++                        file(workflow.out.tx2gene[0][1]).name,
++                        workflow.out.counts_gene,
++                        workflow.out.counts_transcript,
++                        workflow.out.lengths_transcript
++                    ).match()
++                }
++            )
++        }
++    }
++
++    test("salmon alignment_mode bam - mismatch signature") {
++
++        setup {
++            run("SALMON_INDEX") {
++                script "../../../../modules/nf-core/salmon/index/main.nf"
++                process {
++                    """
++                    input[0] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genome.fasta", checkIfExists: true)])
++                    input[1] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
++                    """
++                }
++            }
++        }
++
++        when {
++            workflow {
++                """
++                input[0]  = [
++                    [ id: 'samplesheet' ],
++                    file(params.modules_testdata_base_path + '/genomics/sarscov2/illumina/csv/samplesheet_micro.csv', checkIfExists: true)
++                ]
++                input[1]  = [
++                    [ id: 'test', single_end: true ],
++                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
++                ]
++                input[2]  = SALMON_INDEX.out.index
++                input[3]  = Channel.of(file(params.modules_testdata_base_path + "genomics/sarscov2/genome/transcriptome.fasta", checkIfExists: true))
++                input[4]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true))
++                input[5]  = 'gene_id'
++                input[6]  = 'gene_name'
++                input[7]  = 'salmon'
++                input[8]  = true
++                input[9]  = 'A'
++                input[10] = null
++                input[11] = null
++                input[12] = false
++                """
++            }
++        }
++
++        then {
++            def stderrText = workflow.stderr instanceof Collection ? workflow.stderr.join('\n') : (workflow.stderr ?: '')
++            def stdoutText = workflow.stdout instanceof Collection ? workflow.stdout.join('\n') : (workflow.stdout ?: '')
++            def errorText = "${workflow.errorMessage ?: ''}\n${stderrText}\n${stdoutText}"
++
++            assertAll(
++                { assert workflow.failed },
++                { assert errorText.contains("appeared in the BAM header, but was not in the provided FASTA") }
++            )
++        }
++    }
++
+     test("salmon - stub") {
+ 
+         options "-stub"
+
+************************************************************

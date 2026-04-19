@@ -1823,6 +1823,109 @@ nextflow_workflow {
         }
     }
 
+    test("star_index + generated_transcript_fasta_consistency") {
+
+        when {
+            workflow {
+                """
+                gencode                  = false
+                featurecounts_group_type = 'gene_biotype'
+                aligner                  = 'star_salmon'
+                pseudo_aligner           = 'salmon'
+                skip_gtf_filter          = false
+                skip_bbsplit             = true
+                ribo_removal_tool        = null
+                skip_alignment           = false
+                skip_pseudo_alignment    = true
+                use_sentieon_star        = false
+                use_parabricks_star      = false
+
+                input[0]  = file(params.pipelines_testdata_base_path + 'reference/genome.fasta', checkIfExists: true)
+                input[1]  = file(params.pipelines_testdata_base_path + 'reference/genes_with_empty_tid.gtf', checkIfExists: true)
+                input[2]  = file(params.pipelines_testdata_base_path + 'reference/genes.gff', checkIfExists: true)
+                input[3]  = file(params.pipelines_testdata_base_path + 'reference/gfp.fa', checkIfExists: true)
+                input[4]  = null
+                input[5]  = null
+                input[6]  = null
+                input[7]  = null
+                input[8]  = null
+                input[9]  = null
+                input[10] = null
+                input[11] = null
+                input[12] = null
+                input[13] = null
+                input[14] = null
+                input[15] = null
+                input[16] = null
+                input[17] = null  // kraken_db
+                input[18] = gencode
+                input[19] = false
+                input[20] = featurecounts_group_type
+                input[21] = aligner
+                input[22] = pseudo_aligner
+                input[23] = skip_gtf_filter
+                input[24] = skip_bbsplit
+                input[25] = ribo_removal_tool
+                input[26] = skip_alignment
+                input[27] = skip_pseudo_alignment
+                input[28] = use_sentieon_star
+                input[29] = use_parabricks_star
+                input[30] = null  // contaminant_screening
+                """
+            }
+        }
+
+        then {
+            def starIndexPath = file(workflow.out.star_index.first())
+            def transcriptInfoLines = []
+            def transcriptInfoFound = false
+
+            if (starIndexPath.isDirectory()) {
+                def transcriptInfo = new File(starIndexPath, "transcriptInfo.tab")
+                transcriptInfoFound = transcriptInfo.exists()
+                if (transcriptInfoFound) {
+                    transcriptInfoLines = transcriptInfo.readLines()
+                }
+            } else if (starIndexPath.name.endsWith(".tar.gz")) {
+                def members = ["tar", "-tzf", starIndexPath.toString()].execute().text.readLines()
+                def transcriptInfoMember = members.find { it == "transcriptInfo.tab" || it.endsWith("/transcriptInfo.tab") }
+                transcriptInfoFound = transcriptInfoMember != null
+                if (transcriptInfoFound) {
+                    transcriptInfoLines = ["tar", "-xOf", starIndexPath.toString(), transcriptInfoMember].execute().text.readLines()
+                }
+            }
+
+            def starIds = transcriptInfoLines
+                .drop(1)
+                .collect { it.split('\t')[0] }
+                .findAll { it }
+                .toSet()
+
+            def transcriptFasta = file(workflow.out.transcript_fasta.first())
+            def fastaIds = transcriptFasta
+                .readLines()
+                .findAll { it.startsWith(">") }
+                .collect { it.substring(1).tokenize(" \t")[0] }
+                .findAll { it }
+                .toSet()
+
+            def missingIds = (starIds - fastaIds) as Set
+
+            assertAll(
+                { assert workflow.success },
+                { assert transcriptInfoFound },
+                { assert !starIds.isEmpty() },
+                { assert !fastaIds.isEmpty() },
+                { assert missingIds.isEmpty() : "Missing ${missingIds.size()} STAR transcript IDs in generated FASTA. Example(s): ${missingIds.take(10)}" },
+                { assert snapshot(
+                    transcriptFasta.name,
+                    workflow.out.star_index.collect { path -> file(path).listFiles().collect { f -> f.getName() }.sort().toString() },
+                    workflow.out.versions
+                ).match() }
+            )
+        }
+    }
+
     test("default options - stub") {
 
         options "-stub"

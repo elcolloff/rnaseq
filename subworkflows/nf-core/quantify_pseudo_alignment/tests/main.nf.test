@@ -143,6 +143,113 @@ nextflow_workflow {
         }
     }
 
+    test("salmon alignment_mode bam - matching references") {
+
+        setup {
+            run("SALMON_INDEX") {
+                script "../../../../modules/nf-core/salmon/index/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genome.fasta", checkIfExists: true)])
+                    input[1] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
+                    """
+                }
+            }
+        }
+
+        when {
+            workflow {
+                """
+                input[0]  = [
+                    [ id: 'samplesheet' ],
+                    file(params.modules_testdata_base_path + '/genomics/sarscov2/illumina/csv/samplesheet_micro.csv', checkIfExists: true)
+                ]
+                input[1]  = [
+                    [ id: 'test', single_end: true ],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
+                ]
+                input[2]  = SALMON_INDEX.out.index
+                input[3]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true))
+                input[4]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true))
+                input[5]  = 'gene_id'
+                input[6]  = 'gene_name'
+                input[7]  = 'salmon'
+                input[8]  = true
+                input[9]  = 'A'
+                input[10] = null
+                input[11] = null
+                input[12] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path(workflow.out.results[0][1]).exists() },
+                { assert snapshot(
+                        file(workflow.out.tx2gene[0][1]).name,
+                        workflow.out.counts_gene,
+                        workflow.out.counts_transcript,
+                        workflow.out.lengths_transcript
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("salmon alignment_mode bam - mismatch signature") {
+
+        setup {
+            run("SALMON_INDEX") {
+                script "../../../../modules/nf-core/salmon/index/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genome.fasta", checkIfExists: true)])
+                    input[1] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
+                    """
+                }
+            }
+        }
+
+        when {
+            workflow {
+                """
+                input[0]  = [
+                    [ id: 'samplesheet' ],
+                    file(params.modules_testdata_base_path + '/genomics/sarscov2/illumina/csv/samplesheet_micro.csv', checkIfExists: true)
+                ]
+                input[1]  = [
+                    [ id: 'test', single_end: true ],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
+                ]
+                input[2]  = SALMON_INDEX.out.index
+                input[3]  = Channel.of(file(params.modules_testdata_base_path + "genomics/sarscov2/genome/transcriptome.fasta", checkIfExists: true))
+                input[4]  = Channel.of(file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true))
+                input[5]  = 'gene_id'
+                input[6]  = 'gene_name'
+                input[7]  = 'salmon'
+                input[8]  = true
+                input[9]  = 'A'
+                input[10] = null
+                input[11] = null
+                input[12] = false
+                """
+            }
+        }
+
+        then {
+            def stderrText = workflow.stderr instanceof Collection ? workflow.stderr.join('\n') : (workflow.stderr ?: '')
+            def stdoutText = workflow.stdout instanceof Collection ? workflow.stdout.join('\n') : (workflow.stdout ?: '')
+            def errorText = "${workflow.errorMessage ?: ''}\n${stderrText}\n${stdoutText}"
+
+            assertAll(
+                { assert workflow.failed },
+                { assert errorText.contains("appeared in the BAM header, but was not in the provided FASTA") }
+            )
+        }
+    }
+
     test("salmon - stub") {
 
         options "-stub"

@@ -20,11 +20,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:53:59.375252",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:53:59.375252"
+        }
     },
     "sarscov2 - single_end stub": {
         "content": [
@@ -47,11 +47,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:06.507228",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:06.507228"
+        }
     },
     "sarscov2 - single_end lib type A": {
         "content": [
@@ -74,11 +74,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:15.005117",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:15.005117"
+        }
     },
     "sarscov2 - pair_end multiple": {
         "content": [
@@ -101,11 +101,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:48.338822",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:48.338822"
+        }
     },
     "sarscov2 - pair_end multiple stub": {
         "content": [
@@ -128,11 +128,32 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:56.134603",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:56.134603"
+        }
+    },
+    "homo_sapiens - transcriptome_bam alignment_mode": {
+        "content": [
+            {
+                "versions_salmon": [
+                    [
+                        "SALMON_QUANT",
+                        "salmon",
+                        "1.10.3"
+                    ]
+                ]
+            },
+            [
+                
+            ]
+        ],
+        "timestamp": "2026-04-19T12:22:35.647357",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.3"
+        }
     },
     "sarscov2 - single_end lib type A stub": {
         "content": [
@@ -155,11 +176,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:22.024404",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:22.024404"
+        }
     },
     "sarscov2 - pair_end": {
         "content": [
@@ -182,11 +203,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:30.967174",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:30.967174"
+        }
     },
     "sarscov2 - pair_end stub": {
         "content": [
@@ -209,10 +230,37 @@
                 ]
             ]
         ],
+        "timestamp": "2026-01-19T14:54:38.572004",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T14:54:38.572004"
+        }
+    },
+    "homo_sapiens - transcriptome_bam alignment_mode stub": {
+        "content": [
+            {
+                "versions_salmon": [
+                    [
+                        "SALMON_QUANT",
+                        "salmon",
+                        "1.10.3"
+                    ]
+                ]
+            },
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test_lib_format_counts.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-04-19T12:22:51.028838",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.3"
+        }
     }
 }

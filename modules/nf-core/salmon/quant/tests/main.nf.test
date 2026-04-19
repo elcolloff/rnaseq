@@ -317,4 +317,72 @@ nextflow_process {
         }
 
     }
+
+    test("homo_sapiens - transcriptome_bam alignment_mode") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end: true ],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
+                ])
+                input[1] = SALMON_INDEX.out.index
+                input[2] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true)])
+                input[3] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
+                input[4] = true
+                input[5] = 'A'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.json_info.get(0).get(1)).exists() },
+                { assert path(process.out.results.get(0).get(1)).exists() },
+                { assert snapshot(
+                    process.out.findAll { key, val -> key.startsWith("versions") },
+                    process.out.lib_format_counts
+                ).match() }
+            )
+        }
+    }
+
+    test("homo_sapiens - transcriptome_bam alignment_mode stub") {
+        options "-stub"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end: true ],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/testdata/GSE110004/WT_REP1.Aligned.toTranscriptome.out.bam", checkIfExists: true)
+                ])
+                input[1] = SALMON_INDEX.out.index
+                input[2] = Channel.of([file(params.pipelines_testdata_base_path + "reference/genes.gtf", checkIfExists: true)])
+                input[3] = Channel.of([file(params.pipelines_testdata_base_path + "reference/transcriptome.fasta", checkIfExists: true)])
+                input[4] = true
+                input[5] = 'A'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.json_info.get(0).get(1)).exists() },
+                { assert path(process.out.results.get(0).get(1)).exists() },
+                { assert snapshot(
+                    process.out.findAll { key, val -> key.startsWith("versions") },
+                    process.out.lib_format_counts
+                ).match() }
+            )
+        }
+    }
 }
