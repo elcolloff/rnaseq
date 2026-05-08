@@ -70,9 +70,8 @@ workflow RNASEQ {
 
     take:
     ch_samplesheet          // channel: path(sample_sheet.csv)
-    ch_fasta                // channel: path(genome.fasta)
+    ch_fasta_fai            // channel: [ meta, path(genome.fasta), path(genome.fai) ]
     ch_gtf                  // channel: path(genome.gtf)
-    ch_fai                  // channel: path(genome.fai)
     ch_chrom_sizes          // channel: path(genome.sizes)
     ch_gene_bed             // channel: path(gene.bed)
     ch_transcript_fasta     // channel: path(transcript.fasta)
@@ -108,9 +107,7 @@ workflow RNASEQ {
         'bowtie2_salmon' : 'Bowtie2 overall alignment rate',
     ].get(params.aligner, 'Aligned reads')
 
-    // Pre-build fasta_fai value channels for subworkflows that need [meta, fasta, fai]
-    // .first() converts the queue channel to a value channel so it can be consumed multiple times
-    ch_fasta_fai            = ch_fasta.combine(ch_fai).map { fasta, fai -> [ [:], fasta, fai ] }.first()
+    ch_fasta                = ch_fasta_fai.map { _meta, fasta, _fai -> fasta }.first()
     ch_transcript_fasta_fai = ch_transcript_fasta.map { fasta -> [[:], fasta, []] }
 
     ch_multiqc_files = channel.empty()
