@@ -72,9 +72,7 @@ process DESEQ2_QC {
 
     mkdir size_factors
     touch size_factors/${prefix}.size_factors.RData
-    for i in `head $counts -n 1 | cut -f3-`;
-    do
-        touch size_factors/\${i}.size_factors.RData
-    done
+    touch size_factors/sample1.size_factors.RData
+    touch size_factors/sample2.size_factors.RData
     """
 }
