@@ -83,11 +83,11 @@ report_section_order:
   star_rsem_deseq2_clustering:
     order: 1000
   # Summaries
-  "nf-core-rnaseq-methods-description-module":
+  "nf-core-rnaseq-methods-description":
     order: -1000
-  "software_versions-module":
+  "software_versions":
     order: -1001
-  "nf-core-rnaseq-summary-module":
+  "nf-core-rnaseq-summary":
     order: -1002
 
 export_plots: true
