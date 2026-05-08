@@ -376,7 +376,7 @@ def strandSummaryCells(meta, provided, status, salmon, rseqc) {
 //
 // Build the MultiQC custom-content JSON for the strandedness summary
 // table by merging a static config template (parsed from
-// assets/multiqc/strand_check_summary.yaml) with per-sample rows
+// assets/strand_check_summary.yaml) with per-sample rows
 // emitted by classifyStrand. Column order is taken from the YAML
 // header keyset so reordering columns in the asset reorders them in
 // the rendered table. Throws if a row emits a cell that is not
