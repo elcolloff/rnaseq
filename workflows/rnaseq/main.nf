@@ -93,10 +93,10 @@ workflow RNASEQ {
     main:
 
     // Header files for MultiQC
-    def ch_pca_header_multiqc        = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-    def sample_status_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/sample_status_header.txt", checkIfExists: true)
-    def ch_clustering_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
-    def ch_biotypes_header_multiqc   = file("$projectDir/workflows/rnaseq/assets/multiqc/biotypes_header.txt", checkIfExists: true)
+    def ch_pca_header_multiqc        = file("$projectDir/assets/deseq2_pca_header.txt", checkIfExists: true)
+    def sample_status_header_multiqc = file("$projectDir/assets/sample_status_header.txt", checkIfExists: true)
+    def ch_clustering_header_multiqc = file("$projectDir/assets/deseq2_clustering_header.txt", checkIfExists: true)
+    def ch_biotypes_header_multiqc   = file("$projectDir/assets/biotypes_header.txt", checkIfExists: true)
     def ch_transcript_fasta_placeholder = ch_pca_header_multiqc
 
     // Match the General Statistics column the active aligner emits so the
@@ -823,14 +823,14 @@ workflow RNASEQ {
             ch_collated_versions,
             params.input,
             "${projectDir}/assets/schema_input.json",
-            file("$projectDir/workflows/rnaseq/assets/multiqc/multiqc_config.yml", checkIfExists: true),
+            file("$projectDir/assets/multiqc_config.yml", checkIfExists: true),
             params.multiqc_config ? file(params.multiqc_config, checkIfExists: true) : [],
             params.multiqc_logo   ? file(params.multiqc_logo,   checkIfExists: true) : [],
             params.multiqc_methods_description
                 ? file(params.multiqc_methods_description)
-                : file("$projectDir/workflows/rnaseq/assets/multiqc/methods_description_template.yml", checkIfExists: true),
-            file("$projectDir/workflows/rnaseq/assets/multiqc/strand_check_summary.yaml",     checkIfExists: true),
-            file("$projectDir/workflows/rnaseq/assets/multiqc/strand_check_composition.yaml", checkIfExists: true),
+                : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true),
+            file("$projectDir/assets/strand_check_summary.yaml",     checkIfExists: true),
+            file("$projectDir/assets/strand_check_composition.yaml", checkIfExists: true),
             sample_status_header_multiqc,
             params.min_trimmed_reads,
             params.skip_quantification_merge
