@@ -550,13 +550,13 @@
                 },
                 "kallisto_quant_fraglen": {
                     "type": "integer",
-                    "description": "In single-end mode Kallisto requires an estimated fragment length. Specify a default value for that here. TODO: use existing RSeQC results to do this dynamically.",
+                    "description": "In single-end mode Kallisto requires an estimated fragment length (in base pairs). Specify a default value for that here.",
                     "default": 200,
                     "fa_icon": "fas fa-ruler-horizontal"
                 },
                 "kallisto_quant_fraglen_sd": {
                     "type": "integer",
-                    "description": "In single-end mode, Kallisto requires an estimated standard error for fragment length. Specify a default value for that here. TODO: use existing RSeQC results to do this dynamically.",
+                    "description": "In single-end mode, Kallisto requires an estimated standard error for fragment length (in base pairs). Specify a default value for that here.",
                     "default": 200,
                     "fa_icon": "fas fa-sort-amount-up-alt"
                 },
@@ -802,26 +802,31 @@
                 },
                 "skip_dupradar": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip dupRadar."
+                    "description": "Skip dupRadar. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_qualimap": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip Qualimap."
+                    "description": "Skip Qualimap. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_rseqc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip RSeQC."
+                    "description": "Skip RSeQC. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_biotype_qc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip additional featureCounts process for biotype QC."
+                    "description": "Skip additional featureCounts process for biotype QC. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_deseq2_qc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip DESeq2 PCA and heatmap plotting."
                 },
