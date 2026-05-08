@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements and fixes
 
 - [PR #1844](https://github.com/nf-core/rnaseq/pull/1844) - Bump version to 3.27.0dev after release 3.26.0; flip the MultiQC report links and RO-Crate URL/version back to dev
-- [PR #1849](https://github.com/nf-core/rnaseq/pull/1849) - Tidy-up batch addressing [#1845](https://github.com/nf-core/rnaseq/issues/1845): README/schema clarifications, `&` → `&&` in three guards, deterministic `deseq2_qc` stub, deduplicated `withName` blocks, and removal of the unmaintained `bin/fastq_dir_to_samplesheet.py` (use [nf-core/fetchngs](https://nf-co.re/fetchngs) for samplesheet generation)
+- [PR #1849](https://github.com/nf-core/rnaseq/pull/1849) - Tidy-up batch addressing [#1845](https://github.com/nf-core/rnaseq/issues/1845): README/schema clarifications, `&` → `&&` in three guards, deduplicated `withName` blocks, and removal of the unmaintained `bin/fastq_dir_to_samplesheet.py` (use [nf-core/fetchngs](https://nf-co.re/fetchngs) for samplesheet generation)
 
 ## [[3.26.0](https://github.com/nf-core/rnaseq/releases/tag/3.26.0)] - 2026-05-07
 
