@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements and fixes
 
 - [PR #1844](https://github.com/nf-core/rnaseq/pull/1844) - Bump version to 3.27.0dev after release 3.26.0; flip the MultiQC report links and RO-Crate URL/version back to dev
-- [PR #XXXX](https://github.com/nf-core/rnaseq/pull/XXXX) - Use the active aligner's display name in the MultiQC `fail_mapped` per-sample status row, and drop the hardcoded "STAR" reference from the pipeline-completion `min_mapped_reads` warning, so Bowtie2 reports no longer mislabel the metric as STAR ([#1846](https://github.com/nf-core/rnaseq/issues/1846))
+- [PR #1850](https://github.com/nf-core/rnaseq/pull/1850) - Use the active aligner's display name in the MultiQC `fail_mapped` per-sample status row, and drop the hardcoded "STAR" reference from the pipeline-completion `min_mapped_reads` warning, so Bowtie2 reports no longer mislabel the metric as STAR ([#1846](https://github.com/nf-core/rnaseq/issues/1846))
 
 ## [[3.26.0](https://github.com/nf-core/rnaseq/releases/tag/3.26.0)] - 2026-05-07
 
