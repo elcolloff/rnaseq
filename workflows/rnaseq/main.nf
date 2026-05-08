@@ -99,6 +99,15 @@ workflow RNASEQ {
     def ch_biotypes_header_multiqc   = file("$projectDir/workflows/rnaseq/assets/multiqc/biotypes_header.txt", checkIfExists: true)
     def ch_transcript_fasta_placeholder = ch_pca_header_multiqc
 
+    // Match the General Statistics column the active aligner emits so the
+    // MultiQC fail_mapped row reads consistently with the rest of the report.
+    def aligner_display_name = [
+        'star_salmon'    : 'STAR uniquely mapped reads',
+        'star_rsem'      : 'STAR uniquely mapped reads',
+        'hisat2'         : 'HISAT2 overall alignment rate',
+        'bowtie2_salmon' : 'Bowtie2 overall alignment rate',
+    ].get(params.aligner, 'Aligned reads')
+
     // Pre-build fasta_fai value channels for subworkflows that need [meta, fasta, fai]
     // .first() converts the queue channel to a value channel so it can be consumed multiple times
     ch_fasta_fai            = ch_fasta.combine(ch_fai).map { fasta, fai -> [ [:], fasta, fai ] }.first()
@@ -809,6 +818,7 @@ workflow RNASEQ {
             ch_strand_data,
             ch_trim_read_count,
             ch_genome_bam_bai_mapping.percent_mapped_pass,
+            aligner_display_name,
             ch_fastq,
             ch_collated_versions,
             params.input,

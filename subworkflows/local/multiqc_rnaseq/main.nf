@@ -18,6 +18,7 @@ workflow MULTIQC_RNASEQ {
     ch_strand_data             // channel: [ val(meta), provided, status, salmon, rseqc ] - per-sample strand classification, used for the Strandedness checks section
     ch_trim_read_count         // channel: [ val(meta), val(num_reads) ]   - for fail_trimmed section
     ch_percent_mapped_pass     // channel: [ id, percent_mapped, pass ]    - for fail_mapped section
+    aligner_display_name       // string: display name of the aligner used for the percent_mapped metric, e.g. 'STAR uniquely mapped reads' or 'Bowtie2 overall alignment rate'
     ch_fastq                   // channel: [ val(meta), [ reads ] ]
     ch_collated_versions       // channel: path(versions yaml)
     samplesheet_path           // path: pipeline input samplesheet
@@ -73,7 +74,7 @@ workflow MULTIQC_RNASEQ {
         .collectFile { id, percent_mapped, _pass ->
             [
                 "${id}_fail_mapped_samples_mqc.tsv",
-                sample_status_header.text + "Sample\tSTAR uniquely mapped reads (%)\n${id}\t${percent_mapped}\n",
+                sample_status_header.text + "Sample\t${aligner_display_name} (%)\n${id}\t${percent_mapped}\n",
             ]
         }
         .map { f -> [f.baseName.replace('_fail_mapped_samples_mqc', ''), f] }
