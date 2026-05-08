@@ -1,0 +1,1703 @@
+{
+    "skip_gtf_filter = true - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:58:48.595073735",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_pseudo_alignment - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:56:23.472951216",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_gtf_filter": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "5e63cda3dcafc0d6ad0a738133af9d54"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:51:20.311687981",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gencode = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:55:35.572432371",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gff = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:56:49.053268827",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_pseudoalignment = true - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:59:24.894685272",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "featurecounts_group_type = 'gene_type' - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:58:37.161616279",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gtf = false": {
+        "content": [
+            [
+                [
+                    "transcriptome.fixed.fa",
+                    "faf3a64453ae73983bbf2743387fbdf2"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "68b68c059ba170af3f9d0a5dc1e0c8b8"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:52:10.315783133",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gfp = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/genome.fasta"
+            ],
+            [
+                [
+                    "genes_with_empty_tid.filtered.gtf",
+                    "ef6fccd153a21c329670462d602ed2d0"
+                ]
+            ],
+            [
+                [
+                    "genome.fasta.fai",
+                    "2cd76d936cbfa386b14154506c2041b2"
+                ]
+            ],
+            [
+                [
+                    "genes_with_empty_tid.filtered.bed",
+                    "e507dc33673e76c32abe344f4dc07952"
+                ]
+            ],
+            [
+                [
+                    "genome.fasta.sizes",
+                    "29218009212157c49dbc6596621ec780"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:52:33.948721075",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_bbsplit = true": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:54:34.751713694",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "salmon_index = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:57:48.595724608",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_alignment": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:51:44.755838734",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gfp = false - stub": {
+        "content": [
+            [
+                [
+                    "genome.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/genome.fasta"
+            ],
+            [
+                [
+                    "genes_with_empty_tid.filtered.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genes_with_empty_tid.filtered.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:57:00.574765027",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gencode = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:51:08.803371591",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "default options": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:50:56.658186367",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gencode = true - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "transcriptome.fixed.fa",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:58:25.035919917",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_alignment - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:56:11.305176653",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "transcriptome = false": {
+        "content": [
+            [
+                [
+                    "genome.transcripts.fa",
+                    "b89a3e02ad30ba3fd600f98c8e2f58d4"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:52:46.119520906",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_pseudoalignment = true": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:54:59.434527387",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_gtf_filter - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:55:47.169670958",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gencode = true": {
+        "content": [
+            [
+                [
+                    "transcriptome.fixed.fa",
+                    "faf3a64453ae73983bbf2743387fbdf2"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "2593a0843dd97f0b7dfb62cdd2c21ab8"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:53:58.745951232",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "kallisto_index = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:53:46.453222228",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "hisat2_index = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:53:34.165646635",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "rsem_index = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:57:36.451662249",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "featurecounts_group_type = 'gene_type'": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "2593a0843dd97f0b7dfb62cdd2c21ab8"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:54:10.953368772",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_gtf_transcript_filter = true": {
+        "content": [
+            [
+                [
+                    "genome_gfp.gtf",
+                    "dad0fae25fac50a6bffeaedd6b4bb6a6"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:55:11.646973803",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "with bed - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/ngscheckmate.bed"
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:57:24.232590215",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "kallisto_index = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:58:13.00317584",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_pseudo_alignment": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:51:57.01822761",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_bbsplit": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:51:32.562428802",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "with bed": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/ngscheckmate.bed"
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:52:57.432518411",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gtf = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "transcriptome.fixed.fa",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:56:36.8887437",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "gff = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:52:22.375295499",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "default options - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:55:23.555278065",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "salmon_index = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:53:21.99756247",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "rsem_index = false": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:53:09.849945263",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_alignment = true - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:59:12.703715613",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "transcriptome = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome.transcripts.fa",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:57:12.998806589",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_alignment = true": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "c98b12c302f15731bfc36bcf297cfe28"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:54:46.962109425",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "skip_gtf_filter = true": {
+        "content": [
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "e23e302af63736a199985a169fdac055"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "5e63cda3dcafc0d6ad0a738133af9d54"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "8fa54c6bd2ea6a369efbb8ab4f30156a"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "991993ebef1def1d5823632c21177ec3"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "9b755f8f349b14accefb4d859f84de26"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-08T13:54:22.517228285",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    },
+    "hisat2_index = false - stub": {
+        "content": [
+            [
+                [
+                    "genome_gfp.fasta.sizes",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta.fai",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.fasta",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.bed",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    "genome_gfp.gtf",
+                    "d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "/ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/reference/transcriptome.fasta"
+            ]
+        ],
+        "timestamp": "2026-05-08T13:58:00.767787338",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.3"
+        }
+    }
+}
