@@ -155,10 +155,11 @@ workflow RNASEQ {
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
             meta, fastq_1, fastq_2, genome_bam, transcriptome_bam ->
+                def m = meta + [ id: meta.id as String ]
                 if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ], genome_bam, transcriptome_bam ]
+                    return [ m.id, m + [ single_end:true ], [ fastq_1 ], genome_bam, transcriptome_bam ]
                 } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ], genome_bam, transcriptome_bam ]
+                    return [ m.id, m + [ single_end:false ], [ fastq_1, fastq_2 ], genome_bam, transcriptome_bam ]
                 }
         }
         .groupTuple()
