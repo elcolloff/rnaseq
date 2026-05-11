@@ -4,12 +4,13 @@ nextflow_pipeline {
     script "../main.nf"
     tag "pipeline"
 
-    test("Params: --skip_qc") {
+    test("Params: --skip_qc --min_mapped_reads 90") {
 
         when {
             params {
                 outdir = "$outputDir"
                 skip_qc = true
+                min_mapped_reads = 90
             }
         }
 
@@ -34,14 +35,18 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 
-    test("Params: --skip_qc - stub") {
+    test("Params: --skip_qc --min_mapped_reads 90 - stub") {
 
         options "-stub"
 
@@ -49,6 +54,7 @@ nextflow_pipeline {
             params {
                 outdir = "$outputDir"
                 skip_qc = true
+                min_mapped_reads = 90
             }
         }
 
@@ -73,10 +79,14 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 }

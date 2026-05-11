@@ -11,7 +11,7 @@
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.04.3-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.2)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.2)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -47,9 +47,10 @@
     1. [`RSeQC`](http://rseqc.sourceforge.net/)
     2. [`Qualimap`](http://qualimap.bioinfo.cipf.es/)
     3. [`dupRadar`](https://bioconductor.org/packages/release/bioc/html/dupRadar.html)
-    4. [`Preseq`](http://smithlabresearch.org/software/preseq/)
+    4. [`Preseq`](http://smithlabresearch.org/software/preseq/) (_disabled by default; enable with `--skip_preseq false`_)
     5. [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-    6. Contamination detection on selected screening reads (unaligned by default); _optional_
+    6. Or, _experimental_: [`RustQC`](https://github.com/seqeralabs/rustqc) as a single-pass alternative to RSeQC, Qualimap, dupRadar, Preseq, and SAMtools stats (enable with `--use_rustqc`; recommend trialling on pilot data first).
+    7. Contamination detection on selected screening reads (unaligned by default); _optional_
        1. [`Kraken2`](https://ccb.jhu.edu/software/kraken2/) -> [`Bracken`](https://ccb.jhu.edu/software/bracken/)
        2. [`Sylph`](https://sylph-docs.github.io/)
 15. Pseudoalignment and quantification ([`Salmon`](https://combine-lab.github.io/salmon/) or ['Kallisto'](https://pachterlab.github.io/kallisto/); _optional_)
@@ -64,7 +65,7 @@
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -82,7 +83,7 @@ Each row represents a fastq file (single-end) or a pair of fastq files (paired e
 The pipeline supports a two-step reprocessing workflow using BAM files from previous runs. Run initially with `--save_align_intermeds` to generate a samplesheet with BAM paths, then reprocess using `--skip_alignment` for efficient downstream analysis without repeating expensive alignment steps. This feature is designed specifically for pipeline-generated BAMs.
 
 > [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
 
 Now, you can run the pipeline using:
 
@@ -137,7 +138,7 @@ Many thanks to other who have helped out along the way too, including (but not l
 
 ## Contributions and Support
 
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+If you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).
 
 For further information or help, don't hesitate to get in touch on the [Slack `#rnaseq` channel](https://nfcore.slack.com/channels/rnaseq) (you can join with [this invite](https://nf-co.re/join/slack)).
 

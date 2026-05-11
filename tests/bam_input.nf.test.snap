@@ -1,10 +1,13 @@
 {
     "BAM input for Salmon": {
         "content": [
-            144,
+            159,
             {
                 "BBMAP_BBSPLIT": {
                     "bbmap": 39.18
+                },
+                "BEDTOOLS_GENOMECOV_COMBINED": {
+                    "bedtools": "2.31.1"
                 },
                 "BEDTOOLS_GENOMECOV_FW": {
                     "bedtools": "2.31.1"
@@ -14,6 +17,12 @@
                 },
                 "CUSTOM_CATADDITIONALFASTA": {
                     "python": "3.12.2"
+                },
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
+                },
+                "CUSTOM_MULTIQCCUSTOMBIOTYPE": {
+                    "python": "3.12.12"
                 },
                 "CUSTOM_TX2GENE": {
                     "python": "3.10.4"
@@ -25,20 +34,14 @@
                 "DUPRADAR": {
                     "bioconductor-dupradar": "1.38.0"
                 },
-                "GTF2BED": {
+                "EAUTILS_GTF2BED": {
                     "perl": "5.26.2"
-                },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
                 },
                 "GUNZIP_ADDITIONAL_FASTA": {
                     "gunzip": 1.13
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
-                },
-                "MULTIQC_CUSTOM_BIOTYPE": {
-                    "python": "3.9.5"
                 },
                 "PICARD_MARKDUPLICATES": {
                     "picard": "3.4.0"
@@ -114,10 +117,6 @@
                 }
             },
             [
-                "custom",
-                "custom/out",
-                "custom/out/genome_gfp.fasta",
-                "custom/out/genome_gfp.gtf",
                 "multiqc",
                 "multiqc/multiqc_report.html",
                 "multiqc/multiqc_report_data",
@@ -129,7 +128,6 @@
                 "multiqc/multiqc_report_data/multiqc_citations.txt",
                 "multiqc/multiqc_report_data/multiqc_data.json",
                 "multiqc/multiqc_report_data/multiqc_dupradar.txt",
-                "multiqc/multiqc_report_data/multiqc_fail_strand_check_table.txt",
                 "multiqc/multiqc_report_data/multiqc_featurecounts_biotype_plot.txt",
                 "multiqc/multiqc_report_data/multiqc_general_stats.txt",
                 "multiqc/multiqc_report_data/multiqc_picard_dups.txt",
@@ -144,6 +142,8 @@
                 "multiqc/multiqc_report_data/multiqc_sources.txt",
                 "multiqc/multiqc_report_data/multiqc_star_salmon_deseq2_clustering.txt",
                 "multiqc/multiqc_report_data/multiqc_star_salmon_deseq2_pca.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_composition_bargraph.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_summary_table.txt",
                 "multiqc/multiqc_report_data/picard_MarkIlluminaAdapters_histogram.txt",
                 "multiqc/multiqc_report_data/picard_MeanQualityByCycle_histogram.txt",
                 "multiqc/multiqc_report_data/picard_MeanQualityByCycle_histogram_1.txt",
@@ -178,7 +178,6 @@
                 "multiqc/multiqc_report_plots",
                 "multiqc/multiqc_report_plots/pdf",
                 "multiqc/multiqc_report_plots/pdf/dupradar.pdf",
-                "multiqc/multiqc_report_plots/pdf/fail_strand_check_table.pdf",
                 "multiqc/multiqc_report_plots/pdf/featurecounts_biotype_plot-cnt.pdf",
                 "multiqc/multiqc_report_plots/pdf/featurecounts_biotype_plot-pct.pdf",
                 "multiqc/multiqc_report_plots/pdf/picard_deduplication-cnt.pdf",
@@ -214,9 +213,10 @@
                 "multiqc/multiqc_report_plots/pdf/samtools_alignment_plot-pct.pdf",
                 "multiqc/multiqc_report_plots/pdf/star_salmon_deseq2_clustering.pdf",
                 "multiqc/multiqc_report_plots/pdf/star_salmon_deseq2_pca.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_composition_bargraph.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_summary_table.pdf",
                 "multiqc/multiqc_report_plots/png",
                 "multiqc/multiqc_report_plots/png/dupradar.png",
-                "multiqc/multiqc_report_plots/png/fail_strand_check_table.png",
                 "multiqc/multiqc_report_plots/png/featurecounts_biotype_plot-cnt.png",
                 "multiqc/multiqc_report_plots/png/featurecounts_biotype_plot-pct.png",
                 "multiqc/multiqc_report_plots/png/picard_deduplication-cnt.png",
@@ -252,9 +252,10 @@
                 "multiqc/multiqc_report_plots/png/samtools_alignment_plot-pct.png",
                 "multiqc/multiqc_report_plots/png/star_salmon_deseq2_clustering.png",
                 "multiqc/multiqc_report_plots/png/star_salmon_deseq2_pca.png",
+                "multiqc/multiqc_report_plots/png/strand_check_composition_bargraph.png",
+                "multiqc/multiqc_report_plots/png/strand_check_summary_table.png",
                 "multiqc/multiqc_report_plots/svg",
                 "multiqc/multiqc_report_plots/svg/dupradar.svg",
-                "multiqc/multiqc_report_plots/svg/fail_strand_check_table.svg",
                 "multiqc/multiqc_report_plots/svg/featurecounts_biotype_plot-cnt.svg",
                 "multiqc/multiqc_report_plots/svg/featurecounts_biotype_plot-pct.svg",
                 "multiqc/multiqc_report_plots/svg/picard_deduplication-cnt.svg",
@@ -290,6 +291,8 @@
                 "multiqc/multiqc_report_plots/svg/samtools_alignment_plot-pct.svg",
                 "multiqc/multiqc_report_plots/svg/star_salmon_deseq2_clustering.svg",
                 "multiqc/multiqc_report_plots/svg/star_salmon_deseq2_pca.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_composition_bargraph.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_summary_table.svg",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnaseq_software_mqc_versions.yml",
                 "samtools",
@@ -385,14 +388,19 @@
                 "star_salmon/WT_REP2/quant.genes.sf",
                 "star_salmon/WT_REP2/quant.sf",
                 "star_salmon/bigwig",
+                "star_salmon/bigwig/RAP1_IAA_30M_REP1.bigWig",
                 "star_salmon/bigwig/RAP1_IAA_30M_REP1.forward.bigWig",
                 "star_salmon/bigwig/RAP1_IAA_30M_REP1.reverse.bigWig",
+                "star_salmon/bigwig/RAP1_UNINDUCED_REP1.bigWig",
                 "star_salmon/bigwig/RAP1_UNINDUCED_REP1.forward.bigWig",
                 "star_salmon/bigwig/RAP1_UNINDUCED_REP1.reverse.bigWig",
+                "star_salmon/bigwig/RAP1_UNINDUCED_REP2.bigWig",
                 "star_salmon/bigwig/RAP1_UNINDUCED_REP2.forward.bigWig",
                 "star_salmon/bigwig/RAP1_UNINDUCED_REP2.reverse.bigWig",
+                "star_salmon/bigwig/WT_REP1.bigWig",
                 "star_salmon/bigwig/WT_REP1.forward.bigWig",
                 "star_salmon/bigwig/WT_REP1.reverse.bigWig",
+                "star_salmon/bigwig/WT_REP2.bigWig",
                 "star_salmon/bigwig/WT_REP2.forward.bigWig",
                 "star_salmon/bigwig/WT_REP2.reverse.bigWig",
                 "star_salmon/deseq2_qc",
@@ -786,6 +794,7 @@
                 "star_salmon/salmon.merged.transcript_lengths.tsv",
                 "star_salmon/salmon.merged.transcript_tpm.tsv",
                 "star_salmon/salmon.merged.tx2gene.tsv",
+                "star_salmon/salmon.merged.tx2gene_augmented.tsv",
                 "star_salmon/samtools_stats",
                 "star_salmon/samtools_stats/RAP1_IAA_30M_REP1.markdup.sorted.bam.flagstat",
                 "star_salmon/samtools_stats/RAP1_IAA_30M_REP1.markdup.sorted.bam.idxstats",
@@ -850,11 +859,11 @@
                 "star_salmon/stringtie/WT_REP2.transcripts.gtf"
             ],
             [
-                "genome_gfp.fasta:md5,e23e302af63736a199985a169fdac055",
-                "genome_gfp.gtf:md5,c98b12c302f15731bfc36bcf297cfe28",
                 "multiqc_citations.txt:md5,564145971ac42922310b2f992a6dcb70",
                 "multiqc_featurecounts_biotype_plot.txt:md5,b633d12b9d6c5993350f45177b103243",
                 "multiqc_samtools_idxstats.txt:md5,14838fa75205d1b87bb387784e7a56ab",
+                "multiqc_strand_check_composition_bargraph.txt:md5,f09ff76719d0087ef9dd9771308f197e",
+                "multiqc_strand_check_summary_table.txt:md5,2fd5027704bd2c3514030638cd75650b",
                 "picard_MarkIlluminaAdapters_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_QualityScoreDistribution_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -913,6 +922,7 @@
                 "WT_REP1.infer_experiment.txt:md5,bf0c137f5fca06e7c40e1984a1acb06d",
                 "WT_REP2.infer_experiment.txt:md5,82e23b329ee60709f343bc2d17d43b14",
                 "salmon.merged.tx2gene.tsv:md5,0e2418a69d2eba45097ebffc2f700bfe",
+                "salmon.merged.tx2gene_augmented.tsv:md5,0e2418a69d2eba45097ebffc2f700bfe",
                 "e2t.ctab:md5,54dd6de2daa90e973f47524a738a3d69",
                 "e_data.ctab:md5,98a2b6a7555e58c7f21b45a1f48e5cbf",
                 "i2t.ctab:md5,dda3d3ccd7d4184d947c654ae73efb7b",
@@ -935,18 +945,21 @@
                 "i_data.ctab:md5,041edee3193df311f621c09f4991892b"
             ]
         ],
+        "timestamp": "2026-05-01T16:21:06.387606618",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-02-26T13:51:27.63099365"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "BAM input for RSEM": {
         "content": [
-            147,
+            162,
             {
                 "BBMAP_BBSPLIT": {
                     "bbmap": 39.18
+                },
+                "BEDTOOLS_GENOMECOV_COMBINED": {
+                    "bedtools": "2.31.1"
                 },
                 "BEDTOOLS_GENOMECOV_FW": {
                     "bedtools": "2.31.1"
@@ -956,6 +969,12 @@
                 },
                 "CUSTOM_CATADDITIONALFASTA": {
                     "python": "3.12.2"
+                },
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
+                },
+                "CUSTOM_MULTIQCCUSTOMBIOTYPE": {
+                    "python": "3.12.12"
                 },
                 "CUSTOM_RSEMMERGECOUNTS": {
                     "sed": 4.7
@@ -970,20 +989,14 @@
                 "DUPRADAR": {
                     "bioconductor-dupradar": "1.38.0"
                 },
-                "GTF2BED": {
+                "EAUTILS_GTF2BED": {
                     "perl": "5.26.2"
-                },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
                 },
                 "GUNZIP_ADDITIONAL_FASTA": {
                     "gunzip": 1.13
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
-                },
-                "MULTIQC_CUSTOM_BIOTYPE": {
-                    "python": "3.9.5"
                 },
                 "PICARD_MARKDUPLICATES": {
                     "picard": "3.4.0"
@@ -1067,10 +1080,6 @@
                 }
             },
             [
-                "custom",
-                "custom/out",
-                "custom/out/genome_gfp.fasta",
-                "custom/out/genome_gfp.gtf",
                 "multiqc",
                 "multiqc/multiqc_report.html",
                 "multiqc/multiqc_report_data",
@@ -1082,7 +1091,6 @@
                 "multiqc/multiqc_report_data/multiqc_citations.txt",
                 "multiqc/multiqc_report_data/multiqc_data.json",
                 "multiqc/multiqc_report_data/multiqc_dupradar.txt",
-                "multiqc/multiqc_report_data/multiqc_fail_strand_check_table.txt",
                 "multiqc/multiqc_report_data/multiqc_featurecounts_biotype_plot.txt",
                 "multiqc/multiqc_report_data/multiqc_general_stats.txt",
                 "multiqc/multiqc_report_data/multiqc_picard_dups.txt",
@@ -1098,6 +1106,8 @@
                 "multiqc/multiqc_report_data/multiqc_sources.txt",
                 "multiqc/multiqc_report_data/multiqc_star_rsem_deseq2_clustering.txt",
                 "multiqc/multiqc_report_data/multiqc_star_rsem_deseq2_pca.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_composition_bargraph.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_summary_table.txt",
                 "multiqc/multiqc_report_data/picard_MarkIlluminaAdapters_histogram.txt",
                 "multiqc/multiqc_report_data/picard_MeanQualityByCycle_histogram.txt",
                 "multiqc/multiqc_report_data/picard_MeanQualityByCycle_histogram_1.txt",
@@ -1134,7 +1144,6 @@
                 "multiqc/multiqc_report_plots",
                 "multiqc/multiqc_report_plots/pdf",
                 "multiqc/multiqc_report_plots/pdf/dupradar.pdf",
-                "multiqc/multiqc_report_plots/pdf/fail_strand_check_table.pdf",
                 "multiqc/multiqc_report_plots/pdf/featurecounts_biotype_plot-cnt.pdf",
                 "multiqc/multiqc_report_plots/pdf/featurecounts_biotype_plot-pct.pdf",
                 "multiqc/multiqc_report_plots/pdf/picard_deduplication-cnt.pdf",
@@ -1173,9 +1182,10 @@
                 "multiqc/multiqc_report_plots/pdf/samtools_alignment_plot-pct.pdf",
                 "multiqc/multiqc_report_plots/pdf/star_rsem_deseq2_clustering.pdf",
                 "multiqc/multiqc_report_plots/pdf/star_rsem_deseq2_pca.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_composition_bargraph.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_summary_table.pdf",
                 "multiqc/multiqc_report_plots/png",
                 "multiqc/multiqc_report_plots/png/dupradar.png",
-                "multiqc/multiqc_report_plots/png/fail_strand_check_table.png",
                 "multiqc/multiqc_report_plots/png/featurecounts_biotype_plot-cnt.png",
                 "multiqc/multiqc_report_plots/png/featurecounts_biotype_plot-pct.png",
                 "multiqc/multiqc_report_plots/png/picard_deduplication-cnt.png",
@@ -1214,9 +1224,10 @@
                 "multiqc/multiqc_report_plots/png/samtools_alignment_plot-pct.png",
                 "multiqc/multiqc_report_plots/png/star_rsem_deseq2_clustering.png",
                 "multiqc/multiqc_report_plots/png/star_rsem_deseq2_pca.png",
+                "multiqc/multiqc_report_plots/png/strand_check_composition_bargraph.png",
+                "multiqc/multiqc_report_plots/png/strand_check_summary_table.png",
                 "multiqc/multiqc_report_plots/svg",
                 "multiqc/multiqc_report_plots/svg/dupradar.svg",
-                "multiqc/multiqc_report_plots/svg/fail_strand_check_table.svg",
                 "multiqc/multiqc_report_plots/svg/featurecounts_biotype_plot-cnt.svg",
                 "multiqc/multiqc_report_plots/svg/featurecounts_biotype_plot-pct.svg",
                 "multiqc/multiqc_report_plots/svg/picard_deduplication-cnt.svg",
@@ -1255,6 +1266,8 @@
                 "multiqc/multiqc_report_plots/svg/samtools_alignment_plot-pct.svg",
                 "multiqc/multiqc_report_plots/svg/star_rsem_deseq2_clustering.svg",
                 "multiqc/multiqc_report_plots/svg/star_rsem_deseq2_pca.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_composition_bargraph.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_summary_table.svg",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnaseq_software_mqc_versions.yml",
                 "samtools",
@@ -1305,14 +1318,19 @@
                 "star_rsem/WT_REP2.stat/WT_REP2.model",
                 "star_rsem/WT_REP2.stat/WT_REP2.theta",
                 "star_rsem/bigwig",
+                "star_rsem/bigwig/RAP1_IAA_30M_REP1.bigWig",
                 "star_rsem/bigwig/RAP1_IAA_30M_REP1.forward.bigWig",
                 "star_rsem/bigwig/RAP1_IAA_30M_REP1.reverse.bigWig",
+                "star_rsem/bigwig/RAP1_UNINDUCED_REP1.bigWig",
                 "star_rsem/bigwig/RAP1_UNINDUCED_REP1.forward.bigWig",
                 "star_rsem/bigwig/RAP1_UNINDUCED_REP1.reverse.bigWig",
+                "star_rsem/bigwig/RAP1_UNINDUCED_REP2.bigWig",
                 "star_rsem/bigwig/RAP1_UNINDUCED_REP2.forward.bigWig",
                 "star_rsem/bigwig/RAP1_UNINDUCED_REP2.reverse.bigWig",
+                "star_rsem/bigwig/WT_REP1.bigWig",
                 "star_rsem/bigwig/WT_REP1.forward.bigWig",
                 "star_rsem/bigwig/WT_REP1.reverse.bigWig",
+                "star_rsem/bigwig/WT_REP2.bigWig",
                 "star_rsem/bigwig/WT_REP2.forward.bigWig",
                 "star_rsem/bigwig/WT_REP2.reverse.bigWig",
                 "star_rsem/deseq2_qc",
@@ -1589,6 +1607,7 @@
                 "star_rsem/rsem.merged.transcript_lengths.tsv",
                 "star_rsem/rsem.merged.transcript_tpm.tsv",
                 "star_rsem/rsem.merged.tx2gene.tsv",
+                "star_rsem/rsem.merged.tx2gene_augmented.tsv",
                 "star_rsem/rsem_merge_counts",
                 "star_rsem/rsem_merge_counts/rsem.merged.gene_counts.tsv",
                 "star_rsem/rsem_merge_counts/rsem.merged.gene_tpm.tsv",
@@ -1778,11 +1797,11 @@
                 "star_rsem/stringtie/WT_REP2.transcripts.gtf"
             ],
             [
-                "genome_gfp.fasta:md5,e23e302af63736a199985a169fdac055",
-                "genome_gfp.gtf:md5,c98b12c302f15731bfc36bcf297cfe28",
                 "multiqc_citations.txt:md5,210a3666a96ac8e0460b87f91deb9476",
                 "multiqc_featurecounts_biotype_plot.txt:md5,62b0407251d2f4778005401bc7256098",
                 "multiqc_samtools_idxstats.txt:md5,347afbde271047e89ccfafe8c81f299d",
+                "multiqc_strand_check_composition_bargraph.txt:md5,395c4011defc4caab07cfc65e9b2fbcf",
+                "multiqc_strand_check_summary_table.txt:md5,a8ef3af1b9435e99fdb0f4feebd17509",
                 "picard_MarkIlluminaAdapters_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_MeanQualityByCycle_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "picard_QualityScoreDistribution_histogram.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -1819,6 +1838,7 @@
                 "rsem.merged.transcript_lengths.tsv:md5,abcbf186029d6accc817a5b84a71e650",
                 "rsem.merged.transcript_tpm.tsv:md5,2368b7b8e5561ff2d5a0672bb2f0301b",
                 "rsem.merged.tx2gene.tsv:md5,0e2418a69d2eba45097ebffc2f700bfe",
+                "rsem.merged.tx2gene_augmented.tsv:md5,62f1be3e94901085640179b604d879a2",
                 "rsem.merged.gene_counts.tsv:md5,e1094c70c24d144681828840da3d968d",
                 "rsem.merged.gene_tpm.tsv:md5,7f78363b53c3d46bbab8976fb65c24ba",
                 "rsem.merged.genes_long.tsv:md5,e276f036e78bb06241f8f252b0aa57cb",
@@ -1852,10 +1872,10 @@
                 "i_data.ctab:md5,7e81ace0a68bfe42482420b7275de195"
             ]
         ],
+        "timestamp": "2026-05-01T16:23:34.874577699",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-02-13T14:58:30.502549129"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

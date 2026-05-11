@@ -14,6 +14,8 @@ nextflow_pipeline {
                 use_parabricks_star = true
                 skip_markduplicates = true
                 extra_star_align_args = '--low-memory --x3'
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -38,10 +40,14 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 
@@ -53,6 +59,8 @@ nextflow_pipeline {
                 use_parabricks_star = true
                 skip_markduplicates = false
                 extra_star_align_args = '--low-memory --x3'
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -77,10 +85,14 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 
@@ -94,6 +106,8 @@ nextflow_pipeline {
                 use_parabricks_star = true
                 skip_markduplicates = true
                 extra_star_align_args = '--low-memory --x3'
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -118,10 +132,14 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 
@@ -135,6 +153,8 @@ nextflow_pipeline {
                 use_parabricks_star = true
                 skip_markduplicates = false
                 extra_star_align_args = '--low-memory --x3'
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -159,10 +179,14 @@ nextflow_pipeline {
         }
 
         cleanup {
-            if (System.getenv("NFT_PROFILE")?.contains("docker")) {
-                "docker system prune -f".execute()
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
             }
-            new File("${launchDir}").deleteDir()
         }
     }
 }

@@ -31,7 +31,7 @@ pipeline_info/*.{html,json,txt,yml}
 bowtie2_rrna/*.bowtie2.log
 bowtie2_salmon/*.bowtie2.log
 bowtie2_salmon/log/*.bowtie2.log
-ribodetector/*.ribodetector.log
+ribodetector/*.log
 sortmerna/*.sortmerna.log
 star_rsem/*.stat/*.{cnt,model,theta}
 star_rsem/*.{genes,isoforms}.results
@@ -40,7 +40,7 @@ star_{salmon,rsem}/log/*.Log.{final.out,out,progress.out}
 trimgalore/*fastq.gz_trimming_report.txt
 umitools/*.umi_extract.log
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/*.{bam,bam.bai}
-{hisat2,star_rsem,star_salmon,bowtie2_salmon}/bigwig/*.{forward,reverse}.bigWig
+{hisat2,star_rsem,star_salmon,bowtie2_salmon}/bigwig/*.bigWig
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/dupradar/box_plot/*_duprateExpBoxplot.pdf
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/dupradar/gene_data/*_dupMatrix.txt
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/dupradar/histogram/*_expressionHist.pdf
@@ -75,6 +75,7 @@ umitools/*.umi_extract.log
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/stringtie/*.ballgown/t_data.ctab
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/stringtie/*.gene.abundance.txt
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/stringtie/*.{coverage,transcripts}.gtf
+{hisat2,star_rsem,star_salmon,bowtie2_salmon}/stringtie/stringtie_merge.gtf
 {hisat2,star_rsem,star_salmon,bowtie2_salmon}/{umitools,umicollapse}/{genomic,transcriptomic}_dedup_log/*.log
 {multiqc,multiqc/**}/.stub
 {multiqc,multiqc/**}/multiqc_report.html
@@ -183,7 +184,6 @@ umitools/*.umi_extract.log
 **/*_multiqc_report_plots/{pdf,png,svg}/*.{pdf,png,svg}
 # Per-sample salmon/tximport outputs (skip_quantification_merge mode)
 */salmon/*.gene_counts.tsv
-*/salmon/*.gene_counts_length_scaled.tsv
 */salmon/*.gene_counts_scaled.tsv
 */salmon/*.gene_lengths.tsv
 */salmon/*.gene_tpm.tsv

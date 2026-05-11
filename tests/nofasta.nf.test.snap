@@ -6,12 +6,18 @@
                 "CAT_FASTQ": {
                     "cat": 9.5
                 },
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
+                },
                 "CUSTOM_TX2GENE": {
                     "python": "3.10.4"
                 },
                 "DESEQ2_QC_PSEUDO": {
                     "bioconductor-deseq2": "1.46.0",
                     "r-base": "4.4.2"
+                },
+                "EAUTILS_GTF2BED": {
+                    "perl": "5.26.2"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -24,12 +30,6 @@
                 },
                 "FQ_SUBSAMPLE": {
                     "fq": "0.12.0"
-                },
-                "GTF2BED": {
-                    "perl": "5.26.2"
-                },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
@@ -47,7 +47,7 @@
                     "bioconductor-summarizedexperiment": "1.32.0"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "0.6.10"
+                    "trimgalore": "2.1.0"
                 },
                 "TXIMETA_TXIMPORT": {
                     "bioconductor-tximeta": "1.20.1"
@@ -349,6 +349,7 @@
                 "salmon/salmon.merged.transcript_lengths.tsv",
                 "salmon/salmon.merged.transcript_tpm.tsv",
                 "salmon/salmon.merged.tx2gene.tsv",
+                "salmon/salmon.merged.tx2gene_augmented.tsv",
                 "trimgalore",
                 "trimgalore/RAP1_IAA_30M_REP1_trimmed_1.fastq.gz_trimming_report.txt",
                 "trimgalore/RAP1_IAA_30M_REP1_trimmed_2.fastq.gz_trimming_report.txt",
@@ -415,13 +416,14 @@
                 "observed_bias_3p.gz:md5,92bcd0592d22a6a58d0360fc76103e56",
                 "cmd_info.json:md5,3e6d06d032abd3f5cd7e79df1b5bcde0",
                 "lib_format_counts.json:md5,fce2c4840048c294c016f45f0df15384",
-                "salmon.merged.tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e"
+                "salmon.merged.tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e",
+                "salmon.merged.tx2gene_augmented.tsv:md5,1be389a28cc26d94b19ea918959ac72e"
             ]
         ],
+        "timestamp": "2026-05-01T16:26:57.542948212",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-02-26T14:11:36.231165357"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

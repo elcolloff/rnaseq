@@ -54,12 +54,12 @@
             "properties": {
                 "genome": {
                     "type": "string",
-                    "description": "Name of iGenomes reference.",
+                    "description": "Name of a `params.genomes` catalogue entry (iGenomes or a user-defined catalogue).",
                     "fa_icon": "fas fa-book",
                     "minLength": 1,
                     "pattern": "^[a-zA-Z0-9_\\-\\.]+$",
                     "errorMessage": "The genome name must not contain spaces and must be a valid identifier.",
-                    "help_text": "If using a reference genome configured with iGenomes (not recommended), provide the ID for the reference (e.g., `--genome GRCh38`). This builds paths for all required reference files. See the [nf-core documentation](https://nf-co.re/usage/reference_genomes) for details."
+                    "help_text": "Selects a reference bundle from the `params.genomes` map and populates `fasta`, `gtf`, index paths, etc. from it. The pipeline ships the AWS iGenomes catalogue by default (entries like `--genome GRCh38`), but iGenomes annotations are vastly out of date and not recommended for new analyses. For modern reference data, supply `--fasta`/`--gtf` directly or define your own catalogue with the same `params.genomes` shape and load it via `-c`. See the [usage documentation](https://nf-co.re/rnaseq/usage#reference-catalogues-via---genome) for details."
                 },
                 "fasta": {
                     "type": "string",
@@ -330,12 +330,18 @@
                     "help_text": "Choose between 'sortmerna' (default), 'bowtie2', or 'ribodetector' for rRNA removal.\n\n- **sortmerna**: Reference-based filtering (default). Requires `--ribo_database_manifest`. Note: Default databases include SILVA sequences requiring licensing for commercial use.\n- **bowtie2**: Alignment-based filtering. Requires `--ribo_database_manifest`. Recommended for users with SILVA licensing concerns as it supports custom databases.\n- **ribodetector**: \u26a0\ufe0f EXPERIMENTAL - ML-based detection without reference requirement. Known ONNX multiprocessing issues can cause hangs in containerized environments. See https://github.com/hzi-bifo/RiboDetector/pull/61",
                     "enum": ["sortmerna", "ribodetector", "bowtie2"]
                 },
+                "use_gpu_ribodetector": {
+                    "type": "boolean",
+                    "description": "Enable GPU acceleration for ribodetector.",
+                    "help_text": "When enabled, ribodetector runs on GPU instead of CPU. Requires `--ribo_removal_tool ribodetector`. The ribodetector container includes both CPU and GPU binaries; the pipeline selects the GPU binary and requests one GPU accelerator when this option is set. Users needing multiple GPUs can override `accelerator` in their Nextflow config. Requires an NVIDIA GPU and appropriate container runtime flags, which are auto-detected (Docker: `--gpus all`, Singularity/Apptainer: `--nv`) or can be overridden via `--gpu_container_options`.",
+                    "fa_icon": "fas fa-microchip"
+                },
                 "ribo_database_manifest": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "default": "${projectDir}/workflows/rnaseq/assets/rrna-db-defaults.txt",
+                    "default": "${projectDir}/assets/rrna-db-defaults.txt",
                     "fa_icon": "fas fa-database",
                     "description": "Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.",
                     "help_text": "By default, [rRNA databases](https://github.com/biocore/sortmerna/tree/master/data/rRNA_databases) from the SortMeRNA GitHub repository are used. See the example in `assets/rrna-default-dbs.txt`. Note: commercial/non-academic entities require [SILVA licensing](https://www.arb-silva.de/silva-license-information) for these databases."
@@ -544,13 +550,13 @@
                 },
                 "kallisto_quant_fraglen": {
                     "type": "integer",
-                    "description": "In single-end mode Kallisto requires an estimated fragment length. Specify a default value for that here. TODO: use existing RSeQC results to do this dynamically.",
+                    "description": "In single-end mode Kallisto requires an estimated fragment length (in base pairs). Specify a default value for that here.",
                     "default": 200,
                     "fa_icon": "fas fa-ruler-horizontal"
                 },
                 "kallisto_quant_fraglen_sd": {
                     "type": "integer",
-                    "description": "In single-end mode, Kallisto requires an estimated standard error for fragment length. Specify a default value for that here. TODO: use existing RSeQC results to do this dynamically.",
+                    "description": "In single-end mode, Kallisto requires an estimated standard error for fragment length (in base pairs). Specify a default value for that here.",
                     "default": 200,
                     "fa_icon": "fas fa-sort-amount-up-alt"
                 },
@@ -796,26 +802,31 @@
                 },
                 "skip_dupradar": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip dupRadar."
+                    "description": "Skip dupRadar. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_qualimap": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip Qualimap."
+                    "description": "Skip Qualimap. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_rseqc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip RSeQC."
+                    "description": "Skip RSeQC. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_biotype_qc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip additional featureCounts process for biotype QC."
+                    "description": "Skip additional featureCounts process for biotype QC. Has no effect under `--use_rustqc` (experimental)."
                 },
                 "skip_deseq2_qc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip DESeq2 PCA and heatmap plotting."
                 },
@@ -926,15 +937,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
-                "hook_url": {
-                    "type": "string",
-                    "format": "uri",
-                    "minLength": 1,
-                    "description": "Incoming Webhook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "URL for messaging service integration. Currently supports Microsoft Teams and Slack.",
                     "hidden": true
                 },
                 "multiqc_config": {

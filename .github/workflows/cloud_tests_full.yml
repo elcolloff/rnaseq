@@ -32,7 +32,6 @@ jobs:
           profiles: test_full_aws
           parameters: |
             {
-                "hook_url": "${{ secrets.MEGATESTS_ALERTS_SLACK_HOOK_URL }}",
                 "aligner": "${{ matrix.aligner }}",
                 "outdir": "${{ secrets.TOWER_BUCKET_AWS }}/rnaseq/results-${{ github.sha }}/aligner_${{ matrix.aligner }}/"
             }
@@ -59,7 +58,6 @@ jobs:
           profiles: test_full_azure
           parameters: |
             {
-                "hook_url": "${{ secrets.MEGATESTS_ALERTS_SLACK_HOOK_URL }}",
                 "aligner": "${{ matrix.aligner }}",
                 "outdir": "${{ secrets.TOWER_BUCKET_AZURE }}/rnaseq/results-${{ github.sha }}/aligner_${{ matrix.aligner }}/",
                 "igenomes_base": "${{ secrets.TOWER_IGENOMES_BASE_AZURE }}"
@@ -87,7 +85,6 @@ jobs:
           profiles: test_full_gcp
           parameters: |
             {
-                "hook_url": "${{ secrets.MEGATESTS_ALERTS_SLACK_HOOK_URL }}",
                 "aligner": "${{ matrix.aligner }}",
                 "outdir": "${{ secrets.TOWER_BUCKET_GCP }}/rnaseq/results-${{ github.sha }}/aligner_${{ matrix.aligner }}/"
             }

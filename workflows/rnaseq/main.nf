@@ -17,14 +17,13 @@ include { RUSTQC                              } from '../../modules/nf-core/rust
 //
 include { ALIGN_STAR                            } from '../../subworkflows/local/align_star'
 include { ALIGN_BOWTIE2                         } from '../../subworkflows/local/align_bowtie2'
-include { BAM_POST_ALIGNMENT_QC                 } from '../../subworkflows/local/bam_post_alignment_qc'
+include { MULTIQC_RNASEQ                        } from '../../subworkflows/local/multiqc_rnaseq'
+include { BAM_QC_RNASEQ                         } from '../../subworkflows/nf-core/bam_qc_rnaseq'
 include { QUANTIFY_RSEM                         } from '../../subworkflows/nf-core/quantify_rsem'
 include { BAM_DEDUP_UMI                         } from '../../subworkflows/nf-core/bam_dedup_umi'
 
 include { checkSamplesAfterGrouping      } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
-include { multiqcTsvFromList             } from '../../subworkflows/nf-core/fastq_qc_trim_filter_setstrandedness'
-include { getInferexperimentStrandedness } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
-include { methodsDescriptionText         } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
+include { classifyStrand                 } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 include { mapBamToPublishedPath          } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
 
 /*
@@ -41,22 +40,22 @@ include { KRAKEN2_KRAKEN2 as KRAKEN2 } from '../../modules/nf-core/kraken2/krake
 include { BRACKEN_BRACKEN as BRACKEN } from '../../modules/nf-core/bracken/bracken/main'
 include { SYLPH_PROFILE              } from '../../modules/nf-core/sylph/profile/main'
 include { SYLPHTAX_TAXPROF           } from '../../modules/nf-core/sylphtax/taxprof/main'
-include { MULTIQC                    } from '../../modules/nf-core/multiqc'
 include { BEDTOOLS_GENOMECOV as BEDTOOLS_GENOMECOV_FW          } from '../../modules/nf-core/bedtools/genomecov'
 include { BEDTOOLS_GENOMECOV as BEDTOOLS_GENOMECOV_REV         } from '../../modules/nf-core/bedtools/genomecov'
+include { BEDTOOLS_GENOMECOV as BEDTOOLS_GENOMECOV_COMBINED    } from '../../modules/nf-core/bedtools/genomecov'
 include { SAMTOOLS_INDEX                                       } from '../../modules/nf-core/samtools/index'
 
 //
 // SUBWORKFLOW: Consisting entirely of nf-core/modules
 //
-include { paramsSummaryMap                 } from 'plugin/nf-schema'
 include { samplesheetToList                } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc             } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML           } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
 include { FASTQ_ALIGN_HISAT2               } from '../../subworkflows/nf-core/fastq_align_hisat2'
 include { BAM_MARKDUPLICATES_PICARD        } from '../../subworkflows/nf-core/bam_markduplicates_picard'
+include { BAM_STRINGTIE_MERGE              } from '../../subworkflows/nf-core/bam_stringtie_merge/main'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_FORWARD } from '../../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig'
 include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_REVERSE } from '../../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig'
+include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_COMBINED } from '../../subworkflows/nf-core/bedgraph_bedclip_bedgraphtobigwig'
 include { QUANTIFY_PSEUDO_ALIGNMENT as QUANTIFY_BAM_SALMON } from '../../subworkflows/nf-core/quantify_pseudo_alignment'
 include { QUANTIFY_PSEUDO_ALIGNMENT                         } from '../../subworkflows/nf-core/quantify_pseudo_alignment'
 include { FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS              } from '../../subworkflows/nf-core/fastq_qc_trim_filter_setstrandedness'
@@ -71,10 +70,8 @@ workflow RNASEQ {
 
     take:
     ch_samplesheet          // channel: path(sample_sheet.csv)
-    ch_versions             // channel: [ path(versions.yml) ]
-    ch_fasta                // channel: path(genome.fasta)
+    ch_fasta_fai            // channel: [ meta, path(genome.fasta), path(genome.fai) ]
     ch_gtf                  // channel: path(genome.gtf)
-    ch_fai                  // channel: path(genome.fai)
     ch_chrom_sizes          // channel: path(genome.sizes)
     ch_gene_bed             // channel: path(gene.bed)
     ch_transcript_fasta     // channel: path(transcript.fasta)
@@ -90,19 +87,27 @@ workflow RNASEQ {
     ch_bowtie2_rrna_index   // channel: path(bowtie2/index/) for rRNA removal
     ch_splicesites          // channel: path(genome.splicesites.txt)
     ch_kraken_db            // channel: path(kraken2/db/)
+    qc_tools                // val(list) - QC tools to run, e.g. ['preseq', 'qualimap', 'rseqc_bam_stat', ...]
 
     main:
 
     // Header files for MultiQC
-    def ch_pca_header_multiqc        = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-    def sample_status_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/sample_status_header.txt", checkIfExists: true)
-    def ch_clustering_header_multiqc = file("$projectDir/workflows/rnaseq/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
-    def ch_biotypes_header_multiqc   = file("$projectDir/workflows/rnaseq/assets/multiqc/biotypes_header.txt", checkIfExists: true)
+    def ch_pca_header_multiqc        = file("$projectDir/assets/deseq2_pca_header.txt", checkIfExists: true)
+    def sample_status_header_multiqc = file("$projectDir/assets/sample_status_header.txt", checkIfExists: true)
+    def ch_clustering_header_multiqc = file("$projectDir/assets/deseq2_clustering_header.txt", checkIfExists: true)
+    def ch_biotypes_header_multiqc   = file("$projectDir/assets/biotypes_header.txt", checkIfExists: true)
     def ch_transcript_fasta_placeholder = ch_pca_header_multiqc
 
-    // Pre-build fasta_fai value channels for subworkflows that need [meta, fasta, fai]
-    // .first() converts the queue channel to a value channel so it can be consumed multiple times
-    ch_fasta_fai            = ch_fasta.combine(ch_fai).map { fasta, fai -> [ [:], fasta, fai ] }.first()
+    // Match the General Statistics column the active aligner emits so the
+    // MultiQC fail_mapped row reads consistently with the rest of the report.
+    def aligner_display_name = [
+        'star_salmon'    : 'STAR uniquely mapped reads',
+        'star_rsem'      : 'STAR uniquely mapped reads',
+        'hisat2'         : 'HISAT2 overall alignment rate',
+        'bowtie2_salmon' : 'Bowtie2 overall alignment rate',
+    ].get(params.aligner, 'Aligned reads')
+
+    ch_fasta                = ch_fasta_fai.map { _meta, fasta, _fai -> fasta }.first()
     ch_transcript_fasta_fai = ch_transcript_fasta.map { fasta -> [[:], fasta, []] }
 
     ch_multiqc_files = channel.empty()
@@ -112,8 +117,19 @@ workflow RNASEQ {
     ch_percent_mapped = channel.empty()
     ch_unaligned_sequences = channel.empty()
 
+    // Per-sample MultiQC bundle — `.join(..., remainder: true)` chains
+    // fed to MULTIQC_RNASEQ. `collapseAgg` re-keys by meta.id at the end
+    // of each multi-output subworkflow aggregation; sibling outputs are
+    // joined by meta internally on the assumption they carry the same
+    // meta per sample — if a future module mutates meta on one of them,
+    // this aggregation silently emits duplicate rows.
+    ch_mqc_per_sample_bundle = channel.empty()
+    def collapseAgg = { row -> [row[0].id, row.drop(1).findAll { e -> e != null }.collectMany { e -> (e instanceof List) ? e : [e] }] }
+
     //
-    // Collect versions from topic channel (for modules that emit versions via topics)
+    // Collect versions from the topic channel. Entries are either
+    // `path(versions.yml)` (legacy file-emit style) or
+    // `(task.process, tool, version)` tuples (inline `eval` style).
     //
     def topic_versions = channel.topic('versions')
         .distinct()
@@ -229,21 +245,34 @@ workflow RNASEQ {
                 return [ meta.id, num_reads > params.min_trimmed_reads.toFloat() ]
         }
 
+    // Seed the bundle with every input sample — fastq branch and pre-aligned
+    // BAM branch — so both paths can accumulate per-sample MultiQC
+    // contributions.
+    ch_mqc_per_sample_bundle = ch_fastq.map { meta, _r -> [meta.id, meta] }
+        .mix(ch_input_branched.bam.map { meta, _g, _t -> [meta.id, meta] })
+
+    // Every bundle join uses `remainder: true` so samples with no match on
+    // a contributor (feature off, optional upstream output absent, filter-
+    // excluded, or pre-aligned BAM without FASTQ) still come through.
+    // Unmatched samples wait on that contributor's channel to close —
+    // per-contributor, not workflow-global. fail_* rows are appended
+    // inside MULTIQC_RNASEQ.
+    ch_fastq_qc_bundle = FASTQ_QC_TRIM_FILTER_SETSTRANDEDNESS.out.per_sample_mqc_bundle
+        .map { meta, files -> [meta.id, files] }
+    ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+        .join(ch_fastq_qc_bundle, remainder: true)
+
     //
     // SUBWORKFLOW: Alignment with STAR and gene/transcript quantification with Salmon
     //
     ch_star_log            = channel.empty()
 
     if (!params.skip_alignment && (params.aligner == 'star_salmon' || params.aligner == 'star_rsem')) {
-        // Use iGenomes-pinned STAR (2.6.1d) only when aligning with a pre-built iGenomes index
-        def use_igenomes_star = params.genome && params.star_index ? true : false
-
         ALIGN_STAR (
             ch_strand_inferred_filtered_fastq,
             ch_star_index.map { item -> [ [:], item ] },
             ch_gtf.map { item -> [ [:], item ] },
             params.star_ignore_sjdbgtf,
-            use_igenomes_star,
             ch_fasta_fai,
             params.use_sentieon_star,
             params.use_parabricks_star,
@@ -258,6 +287,8 @@ workflow RNASEQ {
         ch_star_log                      = ALIGN_STAR.out.log_final
         ch_unaligned_sequences           = ALIGN_STAR.out.fastq
         ch_multiqc_files                 = ch_multiqc_files.mix(ch_star_log)
+        ch_mqc_per_sample_bundle         = ch_mqc_per_sample_bundle
+            .join(ch_star_log.map { meta, f -> [meta.id, f] }, remainder: true)
 
         if (!params.with_umi && (params.skip_markduplicates || params.use_parabricks_star)) {
             // The deduplicated stats should take priority for MultiQC, but use
@@ -271,6 +302,12 @@ workflow RNASEQ {
                 .mix(ALIGN_STAR.out.stats)
                 .mix(ALIGN_STAR.out.flagstat)
                 .mix(ALIGN_STAR.out.idxstats)
+            ch_star_stats_bundle = ALIGN_STAR.out.stats
+                .join(ALIGN_STAR.out.flagstat)
+                .join(ALIGN_STAR.out.idxstats)
+                .map(collapseAgg)
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(ch_star_stats_bundle, remainder: true)
         }
     }
 
@@ -295,12 +332,20 @@ workflow RNASEQ {
         ch_unprocessed_bams              = ch_genome_bam.map { meta, bam -> [ meta, bam, '' ] }
         ch_bowtie2_log                   = ALIGN_BOWTIE2.out.log_final
         ch_multiqc_files                 = ch_multiqc_files.mix(ch_bowtie2_log)
+        ch_mqc_per_sample_bundle         = ch_mqc_per_sample_bundle
+            .join(ch_bowtie2_log.map { meta, f -> [meta.id, f] }, remainder: true)
 
         if (!params.with_umi && params.skip_markduplicates) {
             ch_multiqc_files = ch_multiqc_files
                 .mix(ALIGN_BOWTIE2.out.stats)
                 .mix(ALIGN_BOWTIE2.out.flagstat)
                 .mix(ALIGN_BOWTIE2.out.idxstats)
+            ch_bowtie2_stats_bundle = ALIGN_BOWTIE2.out.stats
+                .join(ALIGN_BOWTIE2.out.flagstat)
+                .join(ALIGN_BOWTIE2.out.idxstats)
+                .map(collapseAgg)
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(ch_bowtie2_stats_bundle, remainder: true)
         }
     }
 
@@ -320,6 +365,8 @@ workflow RNASEQ {
         ch_unprocessed_bams    = ch_genome_bam.map { meta, bam -> [ meta, bam, '' ] }
         ch_unaligned_sequences = FASTQ_ALIGN_HISAT2.out.fastq
         ch_multiqc_files = ch_multiqc_files.mix(FASTQ_ALIGN_HISAT2.out.summary)
+        ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+            .join(FASTQ_ALIGN_HISAT2.out.summary.map { meta, f -> [meta.id, f] }, remainder: true)
 
         if (!params.with_umi && params.skip_markduplicates) {
             // The deduplicated stats should take priority for MultiQC, but use
@@ -330,6 +377,12 @@ workflow RNASEQ {
                 .mix(FASTQ_ALIGN_HISAT2.out.stats)
                 .mix(FASTQ_ALIGN_HISAT2.out.flagstat)
                 .mix(FASTQ_ALIGN_HISAT2.out.idxstats)
+            ch_hisat2_stats_bundle = FASTQ_ALIGN_HISAT2.out.stats
+                .join(FASTQ_ALIGN_HISAT2.out.flagstat)
+                .join(FASTQ_ALIGN_HISAT2.out.idxstats)
+                .map(collapseAgg)
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(ch_hisat2_stats_bundle, remainder: true)
         }
     }
 
@@ -354,6 +407,10 @@ workflow RNASEQ {
 
         ch_multiqc_files = ch_multiqc_files
             .mix(BAM_DEDUP_UMI.out.multiqc_files)
+        ch_bam_dedup_umi_bundle = BAM_DEDUP_UMI.out.per_sample_mqc_bundle
+            .map { meta, files -> [meta.id, files] }
+        ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+            .join(ch_bam_dedup_umi_bundle, remainder: true)
     }
 
     //
@@ -372,8 +429,10 @@ workflow RNASEQ {
             params.skip_quantification_merge
         )
         ch_multiqc_files = ch_multiqc_files.mix(QUANTIFY_RSEM.out.stat)
+        ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+            .join(QUANTIFY_RSEM.out.stat.map { meta, f -> [meta.id, f] }, remainder: true)
 
-        if (!params.skip_qc & !params.skip_deseq2_qc & !params.skip_quantification_merge) {
+        if (!params.skip_qc && !params.skip_deseq2_qc && !params.skip_quantification_merge) {
             DESEQ2_QC_RSEM (
                 QUANTIFY_RSEM.out.counts_gene_length_scaled.map { _meta, counts -> counts },
                 ch_pca_header_multiqc,
@@ -381,7 +440,6 @@ workflow RNASEQ {
             )
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_RSEM.out.pca_multiqc.collect().map { file -> [[:], file] })
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_RSEM.out.dists_multiqc.collect().map { file -> [[:], file] })
-            ch_versions = ch_versions.mix(DESEQ2_QC_RSEM.out.versions)
         }
 
     } else if (params.aligner in ['star_salmon', 'bowtie2_salmon']) {
@@ -404,7 +462,7 @@ workflow RNASEQ {
             params.kallisto_quant_fraglen_sd,
             params.skip_quantification_merge
         )
-        if (!params.skip_qc & !params.skip_deseq2_qc & !params.skip_quantification_merge) {
+        if (!params.skip_qc && !params.skip_deseq2_qc && !params.skip_quantification_merge) {
             DESEQ2_QC_BAM_SALMON (
                 QUANTIFY_BAM_SALMON.out.counts_gene_length_scaled.map { _meta, counts -> counts },
                 ch_pca_header_multiqc,
@@ -412,7 +470,6 @@ workflow RNASEQ {
             )
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_BAM_SALMON.out.pca_multiqc.collect().map { file -> [[:], file] })
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_BAM_SALMON.out.dists_multiqc.collect().map { file -> [[:], file] })
-            ch_versions = ch_versions.mix(DESEQ2_QC_BAM_SALMON.out.versions)
         }
     }
 
@@ -440,20 +497,6 @@ workflow RNASEQ {
 
     ch_map_status = ch_genome_bam_bai_mapping.status
         .filter { _id, pass -> pass != null }
-
-    // Save status for MultiQC report
-    ch_fail_mapping_multiqc = ch_genome_bam_bai_mapping.percent_mapped_pass
-        .filter { _id, _percent_mapped, pass -> pass != null && !pass }
-        .map { id, percent_mapped, _pass -> [ "${id}\t${percent_mapped}" ] }
-        .collect()
-        .map {
-            tsv_data ->
-                def header = ["Sample", "STAR uniquely mapped reads (%)"]
-                sample_status_header_multiqc.text + multiqcTsvFromList(tsv_data, header)
-        }
-        .collectFile(name: 'fail_mapped_samples_mqc.tsv')
-
-    ch_multiqc_files = ch_multiqc_files.mix(ch_fail_mapping_multiqc.map { file -> [[:], file] })
 
     // Where a percent mapping is present, use it to filter bam and index
 
@@ -484,26 +527,33 @@ workflow RNASEQ {
         ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat)
         ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats)
         ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics)
+        ch_markdup_bundle = BAM_MARKDUPLICATES_PICARD.out.per_sample_mqc_bundle
+            .map { meta, files -> [meta.id, files] }
+        ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+            .join(ch_markdup_bundle, remainder: true)
     }
 
     //
-    // MODULE: STRINGTIE
+    // MODULE: StringTie assembly and quantification
     //
     if (!params.skip_stringtie) {
-        STRINGTIE_STRINGTIE (
-            ch_genome_bam,
-            ch_gtf
-        )
+        if (params.stringtie_ignore_gtf) {
+            BAM_STRINGTIE_MERGE(
+                ch_genome_bam,
+                ch_gtf.map { gtf -> [ [:], gtf ] }
+            )
+            ch_stringtie_gtf = BAM_STRINGTIE_MERGE.out.stringtie_gtf.map { _meta, gtf -> gtf }
+        } else {
+            ch_stringtie_gtf = ch_gtf
+        }
+        STRINGTIE_STRINGTIE(ch_genome_bam, ch_stringtie_gtf)
     }
 
     //
     // Pre-compute param-derived values for QC subworkflow
     //
     def biotype = params.gencode ? "gene_type" : params.featurecounts_group_type
-    def rseqc_modules = params.rseqc_modules ? params.rseqc_modules.split(',').collect{ module -> module.trim().toLowerCase() } : []
-    if (params.bam_csi_index) {
-        rseqc_modules.removeAll(['read_distribution', 'inner_distance', 'tin'])
-    }
+    def rseqc_modules = qc_tools.findAll { tool -> tool.startsWith('rseqc_') }.collect { tool -> tool.replace('rseqc_', '') }
 
     ch_inferexperiment_txt = channel.empty()
 
@@ -517,139 +567,117 @@ workflow RNASEQ {
                 ch_gtf.map { gtf -> [ [:], gtf ] },
             )
 
-            // Collect all per-tool outputs, flatten to individual files, then filter for MultiQC
+            // Drop non-MultiQC files. Excluding `*.featureCounts.tsv.summary`
+            // keeps only the biotype summary, matching the default pipeline's
+            // `featureCounts -g gene_biotype` output.
+            def mqcKeep = { f ->
+                f.name.endsWith('.featureCounts.tsv.summary') ? false :
+                    (f.name =~ /(?i)\.(txt|tsv|xls|log|stats|flagstat|idxstats|html)$/ || f.name.contains('_mqc.'))
+            }
+            def mqcFilter = { meta, files -> [meta, (files instanceof List ? files : [files]).findAll(mqcKeep)] }
+
+            ch_rustqc_dupradar = RUSTQC.out.dupradar.map(mqcFilter)
+            ch_rustqc_feature  = RUSTQC.out.featurecounts.map(mqcFilter)
+            ch_rustqc_preseq   = RUSTQC.out.preseq.map(mqcFilter)
+            ch_rustqc_samtools = RUSTQC.out.samtools.map(mqcFilter)
+            ch_rustqc_rseqc    = RUSTQC.out.rseqc.map(mqcFilter)
+            ch_rustqc_qualimap = RUSTQC.out.qualimap.map(mqcFilter)
+
             ch_multiqc_files = ch_multiqc_files.mix(
-                RUSTQC.out.dupradar
-                    .mix(RUSTQC.out.featurecounts)
-                    .mix(RUSTQC.out.preseq)
-                    .mix(RUSTQC.out.samtools)
-                    .mix(RUSTQC.out.rseqc)
-                    .mix(RUSTQC.out.qualimap)
-                    .flatMap { meta, files -> (files instanceof List ? files : [files]).collect { f -> [meta, f] } }
-                    .filter { _meta, f ->
-                        // Exclude gene-level featureCounts summary so MultiQC only sees the
-                        // biotype-level summary (*.biotype.tsv.summary), matching the default
-                        // pipeline's featureCounts -g gene_biotype output.
-                        if (f.name.endsWith('.featureCounts.tsv.summary')) return false
-                        f.name =~ /(?i)\.(txt|tsv|xls|stats|flagstat|idxstats|html)$/ || f.name.contains('_mqc.')
-                    }
+                ch_rustqc_dupradar
+                    .mix(ch_rustqc_feature)
+                    .mix(ch_rustqc_preseq)
+                    .mix(ch_rustqc_samtools)
+                    .mix(ch_rustqc_rseqc)
+                    .mix(ch_rustqc_qualimap)
+                    .flatMap { meta, files -> files.collect { f -> [meta, f] } }
             )
+
+            ch_rustqc_bundle = ch_rustqc_dupradar
+                .join(ch_rustqc_feature,  remainder: true)
+                .join(ch_rustqc_preseq,   remainder: true)
+                .join(ch_rustqc_samtools, remainder: true)
+                .join(ch_rustqc_rseqc,    remainder: true)
+                .join(ch_rustqc_qualimap, remainder: true)
+                .map(collapseAgg)
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(ch_rustqc_bundle, remainder: true)
 
             // Extract infer_experiment from rseqc channel
             ch_inferexperiment_txt = RUSTQC.out.rseqc
                 .map { meta, files ->
-                    def ie = (files instanceof List ? files : [files]).find { it.name.endsWith('.infer_experiment.txt') }
+                    def ie = (files instanceof List ? files : [files]).find { f -> f.name.endsWith('.infer_experiment.txt') }
                     ie ? [meta, ie] : null
                 }
-                .filter { it != null }
+                .filter { entry -> entry != null }
         } else {
             //
-            // SUBWORKFLOW: Post-alignment QC (upstream tools)
+            // SUBWORKFLOW: Post-alignment QC
             //
-            BAM_POST_ALIGNMENT_QC (
-                ch_genome_bam,
-                ch_genome_bam_index,
-                ch_gtf,
+            BAM_QC_RNASEQ (
+                ch_genome_bam.join(ch_genome_bam_index, by: [0]),
+                ch_gtf.map { gtf -> [ [:], gtf ] },
                 ch_gene_bed,
                 ch_fasta_fai,
-                ch_biotypes_header_multiqc,
-                params.skip_preseq,
-                params.skip_biotype_qc,
-                params.skip_qualimap,
-                params.skip_dupradar,
-                params.skip_rseqc,
-                biotype,
-                rseqc_modules
+                channel.value([ [:], ch_biotypes_header_multiqc ]),
+                qc_tools,
+                biotype
             )
-            ch_multiqc_files = ch_multiqc_files.mix(BAM_POST_ALIGNMENT_QC.out.multiqc_files)
-            ch_inferexperiment_txt = BAM_POST_ALIGNMENT_QC.out.inferexperiment_txt
-            ch_versions = ch_versions.mix(BAM_POST_ALIGNMENT_QC.out.versions)
+            ch_multiqc_files = ch_multiqc_files.mix(BAM_QC_RNASEQ.out.multiqc_files)
+            ch_inferexperiment_txt = BAM_QC_RNASEQ.out.inferexperiment_txt
+
+            ch_bam_qc_rnaseq_bundle = BAM_QC_RNASEQ.out.per_sample_mqc_bundle
+                .map { meta, files -> [meta.id, files] }
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(ch_bam_qc_rnaseq_bundle, remainder: true)
         }
+    }
 
-        //
-        // Strandedness comparison using infer_experiment output
-        //
-        // RustQC always produces infer_experiment output regardless of rseqc_modules
-        def run_infer_experiment = params.use_rustqc || rseqc_modules.contains('infer_experiment')
-        if (run_infer_experiment) {
-
-            // Compare predicted supplied or Salmon-predicted strand with what we get from RSeQC
-            ch_strand_comparison = ch_inferexperiment_txt
-                .map {
-                    meta, strand_log ->
-                        def rseqc_inferred_strand = getInferexperimentStrandedness(strand_log, params.stranded_threshold, params.unstranded_threshold)
-                        def rseqc_strandedness = rseqc_inferred_strand.inferred_strandedness
-
-                        def status = 'fail'
-                        def multiqc_lines = []
-                        if (meta.salmon_strand_analysis) {
-                            def salmon_strandedness = meta.salmon_strand_analysis.inferred_strandedness
-
-                            if (salmon_strandedness == rseqc_strandedness && rseqc_strandedness != 'undetermined') {
-                                status = 'pass'
-                            }
-                            multiqc_lines = [
-                                "$meta.id \tSalmon\t$status\tauto\t${meta.salmon_strand_analysis.values().join('\t')}",
-                                "$meta.id\tRSeQC\t$status\tauto\t${rseqc_inferred_strand.values().join('\t')}"
-                            ]
-                        }
-                        else {
-                            if (meta.strandedness == rseqc_strandedness) {
-                                status = 'pass'
-                            }
-                            multiqc_lines = [ "$meta.id\tRSeQC\t$status\t$meta.strandedness\t${rseqc_inferred_strand.values().join('\t')}" ]
-                        }
-                        return [ meta, status, multiqc_lines ]
-                }
-                .multiMap {
-                    meta, status, multiqc_lines ->
-                        status: [ meta.id, status == 'pass' ]
-                        multiqc_lines: multiqc_lines
-                }
-
-            // Store the statuses for output
-            ch_strand_status = ch_strand_comparison.status
-
-            // Take the lines formatted for MultiQC and output
-            ch_strand_comparison.multiqc_lines
-                .flatten()
-                .collect()
-                .map {
-                    tsv_data ->
-                        def header = [
-                            "Sample",
-                            "Strand inference method",
-                            "Status",
-                            "Provided strandedness",
-                            "Inferred strandedness",
-                            "Sense (%)",
-                            "Antisense (%)",
-                            "Unstranded (%)"
-                        ]
-                        sample_status_header_multiqc.text + multiqcTsvFromList(tsv_data, header)
-                }
-                .set { ch_fail_strand_multiqc }
-
-            ch_multiqc_files = ch_multiqc_files.mix(ch_fail_strand_multiqc.collectFile(name: 'fail_strand_check_mqc.tsv').map { file -> [[:], file] })
+    //
+    // Build the per-sample strand-classification tuple consumed by the
+    // MultiQC Strandedness checks section. When RSeQC / RustQC ran we
+    // classify via `classifyStrand`; otherwise we surface Salmon's
+    // auto-inference so --skip_rseqc / --skip_qc users still see the
+    // available signal. RustQC always emits infer_experiment regardless
+    // of rseqc_modules.
+    //
+    def run_infer_experiment = !params.skip_qc && (params.use_rustqc || rseqc_modules.contains('infer_experiment'))
+    ch_strand_data = channel.empty()
+    if (run_infer_experiment) {
+        ch_strand_data = ch_inferexperiment_txt.map { meta, strand_log ->
+            classifyStrand(meta, strand_log, params.stranded_threshold, params.unstranded_threshold)
         }
-
+        ch_strand_status = ch_strand_data.map { meta, _p, status, _s, _r -> [meta.id, status == 'pass'] }
+    }
+    else {
+        ch_strand_data = ch_strand_inferred_filtered_fastq
+            .filter { meta, _reads -> meta.salmon_strand_analysis }
+            .map { meta, _reads -> [meta, 'auto', '-', meta.salmon_strand_analysis, null] }
     }
 
     //
     // MODULE: Genome-wide coverage with BEDTools
-    // Note: Strand parameters are conditional on library strandedness (see nextflow.config)
+    // Stranded libraries get per-strand + combined bigWigs; unstranded libraries get only the combined one.
     //
     if (!params.skip_bigwig) {
 
         ch_genomecov_input = ch_genome_bam.map { meta, bam -> [ meta, bam, 1 ] }
 
+        ch_genomecov_input_stranded = ch_genomecov_input.filter { meta, _bam, _scale -> meta.strandedness in ['forward', 'reverse'] }
+
         BEDTOOLS_GENOMECOV_FW (
-            ch_genomecov_input,
+            ch_genomecov_input_stranded,
             [],
             'bedGraph',
             true
         )
         BEDTOOLS_GENOMECOV_REV (
+            ch_genomecov_input_stranded,
+            [],
+            'bedGraph',
+            true
+        )
+        BEDTOOLS_GENOMECOV_COMBINED (
             ch_genomecov_input,
             [],
             'bedGraph',
@@ -666,6 +694,11 @@ workflow RNASEQ {
 
         BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_REVERSE (
             BEDTOOLS_GENOMECOV_REV.out.genomecov,
+            ch_chrom_sizes
+        )
+
+        BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_COMBINED (
+            BEDTOOLS_GENOMECOV_COMBINED.out.genomecov,
             ch_chrom_sizes
         )
     }
@@ -689,12 +722,16 @@ workflow RNASEQ {
 
             if (params.contaminant_screening == 'kraken2') {
                 ch_multiqc_files = ch_multiqc_files.mix(KRAKEN2.out.report)
+                ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                    .join(KRAKEN2.out.report.map { meta, f -> [meta.id, f] }, remainder: true)
             } else if (params.contaminant_screening == 'kraken2_bracken') {
                 BRACKEN (
                     ch_kraken_reports,
                     ch_kraken_db
                 )
                 ch_multiqc_files = ch_multiqc_files.mix(BRACKEN.out.txt)
+                ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                    .join(BRACKEN.out.txt.map { meta, f -> [meta.id, f] }, remainder: true)
             }
         } else if (params.contaminant_screening == 'sylph') {
             def sylph_databases = params.sylph_db ? params.sylph_db.split(',').collect{ path -> file(path.trim()) } : []
@@ -712,6 +749,8 @@ workflow RNASEQ {
                 ch_sylph_taxonomies
             )
             ch_multiqc_files = ch_multiqc_files.mix(SYLPHTAX_TAXPROF.out.taxprof_output)
+            ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+                .join(SYLPHTAX_TAXPROF.out.taxprof_output.map { meta, f -> [meta.id, f] }, remainder: true)
         }
     }
 
@@ -743,8 +782,10 @@ workflow RNASEQ {
         )
         ch_counts_gene_length_scaled = QUANTIFY_PSEUDO_ALIGNMENT.out.counts_gene_length_scaled
         ch_multiqc_files = ch_multiqc_files.mix(QUANTIFY_PSEUDO_ALIGNMENT.out.multiqc)
+        ch_mqc_per_sample_bundle = ch_mqc_per_sample_bundle
+            .join(QUANTIFY_PSEUDO_ALIGNMENT.out.multiqc.map { meta, f -> [meta.id, f] }, remainder: true)
 
-        if (!params.skip_qc & !params.skip_deseq2_qc & !params.skip_quantification_merge) {
+        if (!params.skip_qc && !params.skip_deseq2_qc && !params.skip_quantification_merge) {
             DESEQ2_QC_PSEUDO (
                 ch_counts_gene_length_scaled.map { _meta, counts -> counts },
                 ch_pca_header_multiqc,
@@ -752,140 +793,46 @@ workflow RNASEQ {
             )
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_PSEUDO.out.pca_multiqc.collect().map { file -> [[:], file] })
             ch_multiqc_files = ch_multiqc_files.mix(DESEQ2_QC_PSEUDO.out.dists_multiqc.collect().map { file -> [[:], file] })
-            ch_versions = ch_versions.mix(DESEQ2_QC_PSEUDO.out.versions)
         }
     }
 
     //
-    // Collate and save software versions
-    // Combines traditional versions.yml files with versions emitted via topic channels
+    // Collate and save software versions from the `versions` topic
     //
-    ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    ch_collated_versions = softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_rnaseq_software_mqc_versions.yml', sort: true, newLine: true)
 
     //
-    // MODULE: MultiQC
+    // SUBWORKFLOW: MultiQC
     //
     ch_multiqc_report = channel.empty()
 
     if (!params.skip_multiqc) {
-
-        // Prepare MultiQC config paths
-        def mqc_default_config = file("$projectDir/workflows/rnaseq/assets/multiqc/multiqc_config.yml", checkIfExists: true)
-        def mqc_custom_config  = params.multiqc_config ? file(params.multiqc_config, checkIfExists: true) : []
-        def mqc_logo           = params.multiqc_logo   ? file(params.multiqc_logo, checkIfExists: true)   : []
-
-        // Prepare the workflow summary
-        ch_workflow_summary = channel.value(
-            paramsSummaryMultiqc(
-                paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-            )
-        ).collectFile(name: 'workflow_summary_mqc.yaml')
-
-        // Prepare the methods section
-        ch_methods_description = channel.value(
-            methodsDescriptionText(
-                params.multiqc_methods_description
-                    ? file(params.multiqc_methods_description)
-                    : file("$projectDir/workflows/rnaseq/assets/multiqc/methods_description_template.yml", checkIfExists: true)
-            )
-        ).collectFile(name: 'methods_description_mqc.yaml')
-
-        // Add global context files (summary, versions, methods) with empty meta
-        ch_multiqc_files = ch_multiqc_files
-            .mix(ch_workflow_summary.map   { file -> [[:], file] })
-            .mix(ch_collated_versions.map  { file -> [[:], file] })
-            .mix(ch_methods_description.map{ file -> [[:], file] })
-
-        // Provide MultiQC with rename patterns to ensure it uses sample names
-        // for single-techrep samples not processed by CAT_FASTQ.
-        //
-        // We only add mappings when the FASTQ simpleName differs from the sample ID.
-        // This prevents duplicate/conflicting mappings when multiple samples share
-        // the same FASTQ filename in different directories (see #1657).
-        //
-        // Note: _raw/_trimmed suffixes are handled via extra_fn_clean_exts in multiqc_config.yml
-        ch_name_replacements = ch_fastq
-            .map{ meta, reads ->
-                def paired = reads[0][1] as boolean
-                def suffixes = paired ? ['_1', '_2'] : ['']
-                def mappings = []
-
-                def fastq1_simplename = file(reads[0][0]).simpleName
-                if (fastq1_simplename != meta.id) {
-                    mappings << [fastq1_simplename, "${meta.id}${suffixes[0]}"]
-                    if (paired) {
-                        mappings << [file(reads[0][1]).simpleName, "${meta.id}${suffixes[1]}"]
-                    }
-                }
-
-                return mappings.collect { mapping -> mapping.join('\t') }
-            }
-            .flatten()
-            .collectFile(name: 'name_replacement.txt', newLine: true)
-            .ifEmpty([])
-
-        // Build the MultiQC config list (default + optional custom)
-        def mqc_config_files = mqc_custom_config ? [mqc_default_config, mqc_custom_config] : [mqc_default_config]
-
-        if (params.skip_quantification_merge) {
-            //
-            // Per-sample MultiQC: group files by sample, attach global files to each
-            //
-            ch_multiqc_branched = ch_multiqc_files
-                .branch { meta, _file ->
-                    per_sample: meta.id != null
-                    global: true
-                }
-
-            ch_global_files = ch_multiqc_branched.global
-                .map { _meta, file -> file }
-                .collect()
-
-            ch_multiqc_input = ch_multiqc_branched.per_sample
-                .map { meta, file -> [meta.id, file] }
-                .groupTuple()
-                .combine(ch_global_files.toList())
-                .map { id, sample_files, global_files ->
-                    [
-                        [id: id],
-                        sample_files + (global_files ?: []),
-                        mqc_config_files,
-                        mqc_logo,
-                        [],  // replace_names not needed: each per-sample report contains only one sample's files, so there is no filename ambiguity to resolve
-                        [],  // no sample_names
-                    ]
-                }
-        } else {
-            //
-            // Normal merged MultiQC: collect all files into one report
-            // Note: meta.id = 'multiqc_report' is a sentinel used by
-            // modules/nf-core/multiqc/nextflow.config to select the merged
-            // output path and prefix
-            //
-            ch_all_mqc_files = ch_multiqc_files
-                .map { _meta, file -> file }
-                .collect()
-
-            ch_multiqc_input = ch_all_mqc_files
-                .combine(ch_name_replacements.ifEmpty([]).toList())
-                .map { items ->
-                    def files = items[0..-2]
-                    def replace_names = items[-1] instanceof List ? [] : items[-1]
-                    [
-                        [id: 'multiqc_report'],
-                        files,
-                        mqc_config_files,
-                        mqc_logo,
-                        replace_names,
-                        [],
-                    ]
-                }
-        }
-
-        MULTIQC(ch_multiqc_input)
-        ch_multiqc_report = MULTIQC.out.report.map { _meta, report -> report }
+        MULTIQC_RNASEQ(
+            ch_multiqc_files,
+            ch_mqc_per_sample_bundle,
+            ch_strand_data,
+            ch_trim_read_count,
+            ch_genome_bam_bai_mapping.percent_mapped_pass,
+            aligner_display_name,
+            ch_fastq,
+            ch_collated_versions,
+            params.input,
+            "${projectDir}/assets/schema_input.json",
+            file("$projectDir/assets/multiqc_config.yml", checkIfExists: true),
+            params.multiqc_config ? file(params.multiqc_config, checkIfExists: true) : [],
+            params.multiqc_logo   ? file(params.multiqc_logo,   checkIfExists: true) : [],
+            params.multiqc_methods_description
+                ? file(params.multiqc_methods_description)
+                : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true),
+            file("$projectDir/assets/strand_check_summary.yaml",     checkIfExists: true),
+            file("$projectDir/assets/strand_check_composition.yaml", checkIfExists: true),
+            sample_status_header_multiqc,
+            params.min_trimmed_reads,
+            params.skip_quantification_merge
+        )
+        ch_multiqc_report = MULTIQC_RNASEQ.out.report
     }
 
     //
@@ -931,7 +878,6 @@ workflow RNASEQ {
     map_status     = ch_map_status     // channel: [id, boolean]
     strand_status  = ch_strand_status  // channel: [id, boolean]
     multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
-    versions       = ch_versions       // channel: [ path(versions.yml) ]
 }
 
 /*
