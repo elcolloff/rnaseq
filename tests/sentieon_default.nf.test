@@ -12,6 +12,8 @@ nextflow_pipeline {
             params {
                 outdir = "$outputDir"
                 use_sentieon_star = true
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -33,6 +35,17 @@ nextflow_pipeline {
                     stable_path
                 ).match() }
             )
+        }
+
+        cleanup {
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
+            }
         }
     }
 
@@ -44,6 +57,8 @@ nextflow_pipeline {
             params {
                 outdir = "$outputDir"
                 use_sentieon_star = true
+                // Pseudo-alignment is aligner-invariant and fully covered by tests/default.nf.test
+                skip_pseudo_alignment = true
             }
         }
 
@@ -65,6 +80,17 @@ nextflow_pipeline {
                     stable_path
                 ).match() }
             )
+        }
+
+        cleanup {
+            // Only prune/delete on CI - keeping local VM state intact prevents
+            // cross-test launchDir wipes that break nf-test snapshot walks.
+            if (System.getenv("CI") == "true") {
+                if (System.getenv("NFT_PROFILE")?.contains("docker")) {
+                    "docker system prune -a -f --volumes".execute()
+                }
+                new File("${launchDir}").deleteDir()
+            }
         }
     }
 }

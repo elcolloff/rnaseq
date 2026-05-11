@@ -6,6 +6,9 @@
                 "CAT_FASTQ": {
                     "cat": 9.5
                 },
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
+                },
                 "CUSTOM_TX2GENE": {
                     "python": "3.10.4"
                 },
@@ -13,20 +16,20 @@
                     "bioconductor-deseq2": "1.46.0",
                     "r-base": "4.4.2"
                 },
+                "EAUTILS_GTF2BED": {
+                    "perl": "5.26.2"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
                 "FQ_LINT": {
-                    "fq": "0.12.0 (2024-07-08)"
+                    "fq": "0.12.0"
+                },
+                "FQ_LINT_AFTER_TRIMMING": {
+                    "fq": "0.12.0"
                 },
                 "FQ_SUBSAMPLE": {
-                    "fq": "0.12.0 (2024-07-08)"
-                },
-                "GTF2BED": {
-                    "perl": "5.26.2"
-                },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
+                    "fq": "0.12.0"
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
@@ -44,7 +47,7 @@
                     "bioconductor-summarizedexperiment": "1.32.0"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "0.6.10"
+                    "trimgalore": "2.1.0"
                 },
                 "TXIMETA_TXIMPORT": {
                     "bioconductor-tximeta": "1.20.1"
@@ -345,7 +348,8 @@
                 "salmon/salmon.merged.transcript_counts.tsv",
                 "salmon/salmon.merged.transcript_lengths.tsv",
                 "salmon/salmon.merged.transcript_tpm.tsv",
-                "salmon/tx2gene.tsv",
+                "salmon/salmon.merged.tx2gene.tsv",
+                "salmon/salmon.merged.tx2gene_augmented.tsv",
                 "trimgalore",
                 "trimgalore/RAP1_IAA_30M_REP1_trimmed_1.fastq.gz_trimming_report.txt",
                 "trimgalore/RAP1_IAA_30M_REP1_trimmed_2.fastq.gz_trimming_report.txt",
@@ -370,7 +374,6 @@
                 "fastqc_raw_per_sequence_quality_scores_plot.txt:md5,b5f9a02933e3065952237afd2ec9ce82",
                 "fastqc_raw_sequence_counts_plot.txt:md5,cbae4979d5db66d3b894abcf8d1c453c",
                 "fastqc_raw_sequence_duplication_levels_plot.txt:md5,8812cee16f6ca65e2c33635754de1772",
-                "fastqc_sequence_length_distribution_plot.txt:md5,6fe2c985606abad947bcca99b015ae33",
                 "fastqc_trimmed-status-check-heatmap.txt:md5,22a03548736b88b23be6bc0c9ef1b4a6",
                 "fastqc_trimmed_overrepresented_sequences_plot.txt:md5,c755e9d044ea1a82b2c8edde867b4878",
                 "fastqc_trimmed_per_base_n_content_plot.txt:md5,418610c1ce119cb786ad434db75d366e",
@@ -413,13 +416,14 @@
                 "observed_bias_3p.gz:md5,92bcd0592d22a6a58d0360fc76103e56",
                 "cmd_info.json:md5,3e6d06d032abd3f5cd7e79df1b5bcde0",
                 "lib_format_counts.json:md5,fce2c4840048c294c016f45f0df15384",
-                "tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e"
+                "salmon.merged.tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e",
+                "salmon.merged.tx2gene_augmented.tsv:md5,1be389a28cc26d94b19ea918959ac72e"
             ]
         ],
+        "timestamp": "2026-05-01T16:26:57.542948212",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T13:52:52.823967801"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

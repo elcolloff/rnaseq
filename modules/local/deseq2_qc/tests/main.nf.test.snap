@@ -34,7 +34,18 @@
                     ]
                 ],
                 "8": [
-                    "versions.yml:md5,334928b64c46461488576cd735ec439c"
+                    [
+                        "DESEQ2_QC",
+                        "r-base",
+                        "4.4.2"
+                    ]
+                ],
+                "9": [
+                    [
+                        "DESEQ2_QC",
+                        "bioconductor-deseq2",
+                        "1.46.0"
+                    ]
                 ],
                 "dists_multiqc": [
                     
@@ -67,33 +78,57 @@
                         "deseq2.size_factors.RData:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "versions": [
-                    "versions.yml:md5,334928b64c46461488576cd735ec439c"
+                "versions_deseq2": [
+                    [
+                        "DESEQ2_QC",
+                        "bioconductor-deseq2",
+                        "1.46.0"
+                    ]
+                ],
+                "versions_r_base": [
+                    [
+                        "DESEQ2_QC",
+                        "r-base",
+                        "4.4.2"
+                    ]
                 ]
             }
         ],
+        "timestamp": "2026-04-23T08:21:07.295093921",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.10.0"
-        },
-        "timestamp": "2025-11-27T13:29:23.049264"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     },
     "parse count data correctly": {
         "content": [
             [
-
+                
             ],
             [
-
+                
             ],
-            [
-                "versions.yml:md5,334928b64c46461488576cd735ec439c"
-            ]
+            {
+                "versions_deseq2": [
+                    [
+                        "DESEQ2_QC",
+                        "bioconductor-deseq2",
+                        "1.46.0"
+                    ]
+                ],
+                "versions_r_base": [
+                    [
+                        "DESEQ2_QC",
+                        "r-base",
+                        "4.4.2"
+                    ]
+                ]
+            }
         ],
+        "timestamp": "2026-04-23T09:13:11.078697274",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.10.0"
-        },
-        "timestamp": "2025-11-27T13:28:49.884314"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     }
 }

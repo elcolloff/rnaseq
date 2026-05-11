@@ -9,20 +9,26 @@
                 "CAT_FASTQ": {
                     "cat": 9.5
                 },
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
+                },
                 "CUSTOM_TX2GENE": {
                     "python": "3.10.4"
                 },
-                "FQ_LINT": {
-                    "fq": "0.12.0 (2024-07-08)"
-                },
-                "FQ_SUBSAMPLE": {
-                    "fq": "0.12.0 (2024-07-08)"
-                },
-                "GTF2BED": {
+                "EAUTILS_GTF2BED": {
                     "perl": "5.26.2"
                 },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
+                "FQ_LINT": {
+                    "fq": "0.12.0"
+                },
+                "FQ_LINT_AFTER_BBSPLIT": {
+                    "fq": "0.12.0"
+                },
+                "FQ_LINT_AFTER_TRIMMING": {
+                    "fq": "0.12.0"
+                },
+                "FQ_SUBSAMPLE": {
+                    "fq": "0.12.0"
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
@@ -34,14 +40,13 @@
                     "kallisto": "0.51.1"
                 },
                 "MAKE_TRANSCRIPTS_FASTA": {
-                    "rsem": "1.3.1",
-                    "star": "2.7.10a"
+                    "rsem": "1.3.1"
                 },
                 "SALMON_QUANT": {
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "SE_GENE_UNIFIED": {
                     "bioconductor-summarizedexperiment": "1.32.0"
@@ -50,7 +55,7 @@
                     "bioconductor-summarizedexperiment": "1.32.0"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "0.6.10"
+                    "trimgalore": "2.1.0"
                 },
                 "TXIMETA_TXIMPORT": {
                     "bioconductor-tximeta": "1.20.1"
@@ -139,7 +144,8 @@
                 "kallisto/kallisto.merged.transcript_counts.tsv",
                 "kallisto/kallisto.merged.transcript_lengths.tsv",
                 "kallisto/kallisto.merged.transcript_tpm.tsv",
-                "kallisto/tx2gene.tsv",
+                "kallisto/kallisto.merged.tx2gene.tsv",
+                "kallisto/kallisto.merged.tx2gene_augmented.tsv",
                 "multiqc",
                 "multiqc/multiqc_report.html",
                 "multiqc/multiqc_report_data",
@@ -172,6 +178,8 @@
                 "multiqc/multiqc_report_data/multiqc_kallisto.txt",
                 "multiqc/multiqc_report_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_report_data/multiqc_sources.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_composition_bargraph.txt",
+                "multiqc/multiqc_report_data/multiqc_strand_check_summary_table.txt",
                 "multiqc/multiqc_report_plots",
                 "multiqc/multiqc_report_plots/pdf",
                 "multiqc/multiqc_report_plots/pdf/bbmap-bbsplit_plot-cnt.pdf",
@@ -195,6 +203,8 @@
                 "multiqc/multiqc_report_plots/pdf/fastqc_trimmed_top_overrepresented_sequences_table.pdf",
                 "multiqc/multiqc_report_plots/pdf/kallisto_alignment-cnt.pdf",
                 "multiqc/multiqc_report_plots/pdf/kallisto_alignment-pct.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_composition_bargraph.pdf",
+                "multiqc/multiqc_report_plots/pdf/strand_check_summary_table.pdf",
                 "multiqc/multiqc_report_plots/png",
                 "multiqc/multiqc_report_plots/png/bbmap-bbsplit_plot-cnt.png",
                 "multiqc/multiqc_report_plots/png/bbmap-bbsplit_plot-pct.png",
@@ -217,6 +227,8 @@
                 "multiqc/multiqc_report_plots/png/fastqc_trimmed_top_overrepresented_sequences_table.png",
                 "multiqc/multiqc_report_plots/png/kallisto_alignment-cnt.png",
                 "multiqc/multiqc_report_plots/png/kallisto_alignment-pct.png",
+                "multiqc/multiqc_report_plots/png/strand_check_composition_bargraph.png",
+                "multiqc/multiqc_report_plots/png/strand_check_summary_table.png",
                 "multiqc/multiqc_report_plots/svg",
                 "multiqc/multiqc_report_plots/svg/bbmap-bbsplit_plot-cnt.svg",
                 "multiqc/multiqc_report_plots/svg/bbmap-bbsplit_plot-pct.svg",
@@ -239,6 +251,8 @@
                 "multiqc/multiqc_report_plots/svg/fastqc_trimmed_top_overrepresented_sequences_table.svg",
                 "multiqc/multiqc_report_plots/svg/kallisto_alignment-cnt.svg",
                 "multiqc/multiqc_report_plots/svg/kallisto_alignment-pct.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_composition_bargraph.svg",
+                "multiqc/multiqc_report_plots/svg/strand_check_summary_table.svg",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnaseq_software_mqc_versions.yml",
                 "trimgalore",
@@ -252,11 +266,11 @@
                 "trimgalore/WT_REP2_trimmed_2.fastq.gz_trimming_report.txt"
             ],
             [
-                "tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e",
+                "kallisto.merged.tx2gene.tsv:md5,1be389a28cc26d94b19ea918959ac72e",
+                "kallisto.merged.tx2gene_augmented.tsv:md5,58aa7e040b0ff1a512ced6b85b9939ac",
                 "cutadapt_filtered_reads_plot.txt:md5,6fa381627f7c1f664f3d4b2cb79cce90",
                 "cutadapt_trimmed_sequences_plot_3_Counts.txt:md5,13dfa866fd91dbb072689efe9aa83b1f",
                 "cutadapt_trimmed_sequences_plot_3_Obs_Exp.txt:md5,07145dd8dd3db654859b18eb0389046c",
-                "fastqc_sequence_length_distribution_plot.txt:md5,6fe2c985606abad947bcca99b015ae33",
                 "fastqc_trimmed-status-check-heatmap.txt:md5,22a03548736b88b23be6bc0c9ef1b4a6",
                 "fastqc_trimmed_overrepresented_sequences_plot.txt:md5,c755e9d044ea1a82b2c8edde867b4878",
                 "fastqc_trimmed_per_base_n_content_plot.txt:md5,418610c1ce119cb786ad434db75d366e",
@@ -267,14 +281,16 @@
                 "fastqc_trimmed_sequence_counts_plot.txt:md5,9fd642bdd1da354f296bb8092205608f",
                 "fastqc_trimmed_sequence_duplication_levels_plot.txt:md5,0758257b497283b1ef28171e694db6db",
                 "multiqc_citations.txt:md5,4cece87a056a29c1338277736855e6ee",
-                "multiqc_fastqc_fastqc_trimmed.txt:md5,54743154d0e8858980acffeb5b6f6a97"
+                "multiqc_fastqc_fastqc_trimmed.txt:md5,54743154d0e8858980acffeb5b6f6a97",
+                "multiqc_strand_check_composition_bargraph.txt:md5,6aa97fcc3863afb9b8e9fbe8a02b5cd1",
+                "multiqc_strand_check_summary_table.txt:md5,7825c502243e9901873965fd870cd789"
             ]
         ],
+        "timestamp": "2026-05-01T16:26:36.372689451",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T13:46:44.631867532"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "Params: --pseudo_aligner kallisto --skip_qc --skip_alignment - stub": {
         "content": [
@@ -286,14 +302,14 @@
                 "CAT_FASTQ": {
                     "cat": 9.5
                 },
-                "FQ_LINT": {
-                    "fq": "0.12.0 (2024-07-08)"
+                "CUSTOM_GTFFILTER": {
+                    "python": "3.9.5"
                 },
-                "GTF2BED": {
+                "EAUTILS_GTF2BED": {
                     "perl": "5.26.2"
                 },
-                "GTF_FILTER": {
-                    "python": "3.9.5"
+                "FQ_LINT": {
+                    "fq": "0.12.0"
                 },
                 "GUNZIP_GTF": {
                     "gunzip": 1.13
@@ -302,14 +318,13 @@
                     "kallisto": "0.51.1"
                 },
                 "MAKE_TRANSCRIPTS_FASTA": {
-                    "rsem": "1.3.1",
-                    "star": "2.7.10a"
+                    "rsem": "1.3.1"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
+                    "samtools": "1.23.1"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "0.6.10"
+                    "trimgalore": "2.1.0"
                 },
                 "UNTAR_SALMON_INDEX": {
                     "untar": 1.34
@@ -329,6 +344,7 @@
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnaseq_software_mqc_versions.yml",
@@ -346,10 +362,10 @@
                 
             ]
         ],
+        "timestamp": "2026-02-04T17:10:11.124774782",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T13:47:16.374472849"
+        }
     }
 }

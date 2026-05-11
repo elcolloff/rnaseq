@@ -10,11 +10,9 @@
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
-include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
-include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
 include { logColours                } from '../../nf-core/utils_nfcore_pipeline'
@@ -41,8 +39,6 @@ workflow PIPELINE_INITIALISATION {
 
     main:
 
-    ch_versions = channel.empty()
-
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
@@ -57,7 +53,7 @@ workflow PIPELINE_INITIALISATION {
     // Validate parameters and generate parameter summary to stdout
     //
     def colors = logColours(monochrome_logs)
-    before_text = """
+    def before_text = """
 -${colors.dim}----------------------------------------------------${colors.reset}-
                                         ${colors.green},--.${colors.black}/${colors.green},-.${colors.reset}
 ${colors.blue}        ___     __   __   __   ___     ${colors.green}/,-._.--~\'${colors.reset}
@@ -67,13 +63,17 @@ ${colors.blue}  | \\| |       \\__, \\__/ |  \\ |___     ${colors.green}\\`-._,-
 ${colors.purple}  nf-core/rnaseq ${workflow.manifest.version}${colors.reset}
 -${colors.dim}----------------------------------------------------${colors.reset}-
 """
-    after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/','')}"}.join("\n")}${workflow.manifest.doi ? "\n" : ""}
+    def after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/','')}"}.join("\n")}${workflow.manifest.doi ? "\n" : ""}
 * The nf-core framework
     https://doi.org/10.1038/s41587-020-0439-x
 
 * Software dependencies
     https://github.com/nf-core/rnaseq/blob/master/CITATIONS.md
 """
+    if (monochrome_logs) {
+        before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
+    }
+
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
     UTILS_NFSCHEMA_PLUGIN (
@@ -99,9 +99,6 @@ ${colors.purple}  nf-core/rnaseq ${workflow.manifest.version}${colors.reset}
     // Custom validation for pipeline parameters
     //
     validateInputParameters()
-
-    emit:
-    versions    = ch_versions
 }
 
 /*
@@ -118,7 +115,6 @@ workflow PIPELINE_COMPLETION {
     plaintext_email // boolean: Send plain-text email instead of HTML
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    hook_url        //  string: hook URL for notifications
     multiqc_report  //  string: Path to MultiQC report
     trim_status        // map: pass/fail status per sample for trimming
     map_status         // map: pass/fail status per sample for mapping
@@ -164,14 +160,10 @@ workflow PIPELINE_COMPLETION {
         }
 
         rnaseqSummary(monochrome_logs, pass_mapped_reads, pass_trimmed_reads, pass_strand_check)
-
-        if (hook_url) {
-            imNotification(summary_params, hook_url)
-        }
     }
 
     workflow.onError {
-        log.error "Pipeline failed. Please refer to troubleshooting docs: https://nf-co.re/docs/usage/troubleshooting"
+        log.error "Pipeline failed. Please refer to troubleshooting docs for common issues: https://nf-co.re/docs/running/troubleshooting"
     }
 }
 
@@ -198,10 +190,28 @@ def checkSamplesAfterGrouping(input) {
         error("Please check input samplesheet -> Multiple runs of a sample must have the same strandedness!: ${metas[0].id}")
     }
 
+    // Check that multiple runs of the same sample have the same sequencing platform
+    def seq_platform_ok = metas.collect { meta -> meta.seq_platform ?: '' }.unique().size == 1
+    if (!seq_platform_ok) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_platform!: ${metas[0].id}")
+    }
+
+    // Check that multiple runs of the same sample have the same sequencing center
+    def seq_center_ok = metas.collect { meta -> meta.seq_center ?: '' }.unique().size == 1
+    if (!seq_center_ok) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_center!: ${metas[0].id}")
+    }
+
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
     def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
     if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
+    }
+
+    // Check that multiple runs of the same sample are not mixed compressed/uncompressed
+    def compression_ok = fastqs.flatten().collect{ fq -> fq.name.endsWith('.gz') }.unique().size == 1
+    if (!compression_ok) {
+        error("Please check input samplesheet -> Multiple runs of a sample must not mix compressed and uncompressed FASTQ files: ${metas[0].id}")
     }
 
     // Return format depends on whether BAM data was provided
@@ -237,14 +247,19 @@ def validateInputParameters() {
 
     genomeExistsError()
 
+    def pseudo_index_provided = (
+        (params.pseudo_aligner == 'salmon' && params.salmon_index) ||
+        (params.pseudo_aligner == 'kallisto' && params.kallisto_index)
+    )
+
     if (
         !params.fasta &&
         (
             ! params.skip_alignment ||  // Alignment needs fasta
-            ! params.transcript_fasta // Dynamically making a transcript fasta needs the fasta
+            (! params.transcript_fasta && !pseudo_index_provided) // Dynamically making a transcript fasta needs the fasta (unless a pre-built index is provided)
         )
     ) {
-        error("Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file. You must supply a genome FASTA file or use --skip_alignment and provide your own transcript fasta using --transcript_fasta for use in quantification.")
+        error("Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file. You must supply a genome FASTA file, use --skip_alignment with --transcript_fasta, or use --skip_alignment with a pre-built pseudo-aligner index (--salmon_index / --kallisto_index).")
     }
 
     if (!params.gtf && !params.gff) {
@@ -292,6 +307,30 @@ def validateInputParameters() {
         error("Please provide --ribo_database_manifest to remove ribosomal RNA with SortMeRNA or Bowtie2.")
     }
 
+    if (params.use_gpu_ribodetector && params.ribo_removal_tool != 'ribodetector') {
+        error("--use_gpu_ribodetector requires --ribo_removal_tool 'ribodetector'.")
+    }
+
+    if (params.use_gpu_ribodetector && (params.arm ?: false)) {
+        error("--use_gpu_ribodetector is not supported on ARM architecture. GPU acceleration requires an x86_64 host with NVIDIA GPUs.")
+    }
+
+    if (params.use_parabricks_star && (params.arm ?: false)) {
+        error("Parabricks (--use_parabricks_star) is not supported on ARM architecture. Parabricks requires an x86_64 host with NVIDIA GPUs.")
+    }
+
+    if (params.use_parabricks_star && params.use_sentieon_star) {
+        error("Cannot use both --use_parabricks_star and --use_sentieon_star. Please choose one accelerator.")
+    }
+
+    if (params.use_parabricks_star && (params.prokaryotic ?: false)) {
+        error("Parabricks rna_fq2bam does not support --sjdbGTFfeatureExon CDS, which is required for prokaryotic alignment. Please use standard STAR instead.")
+    }
+
+    if (params.use_parabricks_star && params.genome) {
+        error("Parabricks (--use_parabricks_star) is not compatible with --genome. iGenomes STAR indices are built with a different STAR version than Parabricks bundles. Please supply --fasta and --gtf explicitly instead.")
+    }
+
     if (params.with_umi && !params.skip_umi_extract) {
         if (!params.umitools_bc_pattern && !params.umitools_bc_pattern2) {
             error("UMI-tools requires a barcode pattern to extract barcodes from the reads.")
@@ -314,15 +353,20 @@ def validateInputParameters() {
 
     // Checks when running --aligner star_rsem
     if (!params.skip_alignment && params.aligner == 'star_rsem') {
-        if (params.with_umi) {
-            rsemUmiError()
-        }
         if (params.rsem_index && params.star_index) {
             rsemStarIndexWarn()
         }
         if (params.aligner  == 'star_rsem' && params.extra_star_align_args) {
             rsemStarExtraArgumentsWarn()
         }
+        if (params.prokaryotic || params.gffread_transcript_fasta) {
+            rsemProkaryoticError()
+        }
+    }
+
+    // Checks for prokaryotic mode with untested aligners
+    if ((params.prokaryotic || params.gffread_transcript_fasta) && params.aligner == 'hisat2') {
+        untestedProkaryoticAlignerWarn()
     }
 
     // Warn if --additional_fasta provided with aligner index
@@ -345,6 +389,15 @@ def validateInputParameters() {
     // Check that Kraken/Bracken database provided if using kraken2/bracken
     if (params.contaminant_screening in ['kraken2', 'kraken2_bracken'] && !params.kraken_db) {
         error("Contaminant screening set to kraken2 but no database was provided. Please provide a database with the --kraken_db option.")
+    }
+
+    if (params.contaminant_screening && params.contaminant_screening_input == 'unmapped') {
+        if (params.skip_alignment) {
+            error("Contaminant screening with '--contaminant_screening_input unmapped' requires alignment to be enabled. Use '--contaminant_screening_input trimmed' to screen reads before alignment.")
+        }
+        if (!(params.aligner in ['star_salmon', 'star_rsem', 'hisat2'])) {
+            error("Contaminant screening with '--contaminant_screening_input unmapped' is only supported with '--aligner star_salmon', '--aligner star_rsem', or '--aligner hisat2'. Use '--contaminant_screening_input trimmed' for other aligners.")
+        }
     }
 
     // Check that Sylph database and taxonomy is provided if using Sylph
@@ -539,19 +592,6 @@ def skipAlignmentWarn() {
 }
 
 //
-// Print a warning if using '--aligner star_rsem' and '--with_umi'
-//
-def rsemUmiError() {
-    def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-        "  When using '--aligner star_rsem', STAR is run by RSEM itself and so it is\n" +
-        "  not possible to remove UMIs before the quantification.\n\n" +
-        "  If you would like to remove UMI barcodes using the '--with_umi' option\n" +
-        "  please use either '--aligner star_salmon' or '--aligner hisat2'.\n" +
-        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    error(error_string)
-}
-
-//
 // Print a warning if using '--aligner star_rsem' and providing both '--rsem_index' and '--star_index'
 //
 def rsemStarIndexWarn() {
@@ -579,6 +619,36 @@ def rsemStarExtraArgumentsWarn() {
 }
 
 //
+// Print an error if using '--aligner star_rsem' with prokaryotic settings
+//
+def rsemProkaryoticError() {
+    def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+        "  '--aligner star_rsem' is incompatible with prokaryotic RNA-seq settings.\n\n" +
+        "  RSEM's rsem-prepare-reference cannot handle GTF/GFF files that use CDS\n" +
+        "  features instead of exon features, which is typical for prokaryotic\n" +
+        "  annotations.\n\n" +
+        "  Please use one of the following aligners instead:\n" +
+        "    - '--aligner star_salmon' (alternative with '-profile prokaryotic')\n" +
+        "    - '--aligner bowtie2_salmon' (default for '-profile prokaryotic')\n" +
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    error(error_string)
+}
+
+//
+// Print a warning if using prokaryotic settings with an untested aligner
+//
+def untestedProkaryoticAlignerWarn() {
+    log.warn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+        "  Using prokaryotic settings with '--aligner hisat2'.\n\n" +
+        "  This aligner combination has not been extensively tested with\n" +
+        "  prokaryotic data. The recommended aligners for prokaryotic RNA-seq are:\n" +
+        "    - '--aligner bowtie2_salmon' (default for '-profile prokaryotic')\n" +
+        "    - '--aligner star_salmon'\n\n" +
+        "  Proceed with caution and verify your results.\n" +
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}
+
+//
 // Print a warning if using '--additional_fasta' and '--<ALIGNER>_index'
 //
 def additionaFastaIndexWarn(index) {
@@ -593,6 +663,23 @@ def additionaFastaIndexWarn(index) {
         "  Please see:\n" +
         "  https://github.com/nf-core/rnaseq/issues/556\n" +
         "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}
+
+//
+// Decide whether the supplied STAR index needs to be routed through the
+// STAR_GENOMEPARAMS_UPGRADE adapter. Fires when the active genomes-map entry
+// has `star_legacy = true` (set on every iGenomes entry that ships a
+// `star` directory), the user has not overridden the resolved index with
+// their own --star_index, and alignment is going through stock STAR (the
+// Sentieon and Parabricks branches bundle older STAR builds that already
+// accept versionGenome 20201).
+//
+def isStarIndexLegacy() {
+    def genome_entry = params.genomes && params.genome ? params.genomes[params.genome] : null
+    return  genome_entry?.star_legacy &&
+            params.star_index == genome_entry.star &&
+            !params.use_sentieon_star &&
+            !params.use_parabricks_star
 }
 
 //
@@ -615,6 +702,41 @@ def checkMaxContigSize(fai_file) {
             error(error_string)
         }
     }
+}
+
+//
+// Build list of QC tools for BAM_QC_RNASEQ subworkflow from pipeline params
+//
+def defineQcTools(params) {
+    def tools = []
+
+    if (!params.skip_qc) {
+        if (!params.skip_preseq)    { tools << 'preseq' }
+        if (!params.skip_biotype_qc){ tools << 'biotype_qc' }
+        if (!params.skip_qualimap)  { tools << 'qualimap' }
+        if (!params.skip_dupradar)  { tools << 'dupradar' }
+
+        if (!params.skip_rseqc) {
+            def rseqc_modules = params.rseqc_modules
+                ? params.rseqc_modules.split(',').collect { mod -> mod.trim().toLowerCase() }
+                : []
+            if (params.bam_csi_index) {
+                rseqc_modules.removeAll(['read_distribution', 'inner_distance', 'tin'])
+            }
+            // bowtie2_salmon aligns directly to the transcriptome, so the BAM
+            // carries transcript IDs rather than chromosomes. infer_experiment
+            // samples reads against a genomic BED, finds 0 overlap, and
+            // reports "Unknown Data type" — Salmon's lib_format_counts
+            // inference (already surfaced in the MultiQC strand check
+            // section) is the correct signal for transcriptome alignments.
+            if (params.aligner == 'bowtie2_salmon') {
+                rseqc_modules.remove('infer_experiment')
+            }
+            rseqc_modules.each { mod -> tools << "rseqc_${mod}" }
+        }
+    }
+
+    return tools
 }
 
 //
@@ -666,6 +788,40 @@ def getInferexperimentStrandedness(inferexperiment_file, stranded_threshold = 0.
     // Use shared calculation function to determine strandedness
     return calculateStrandedness(forwardFragments, reverseFragments, unstrandedFragments, stranded_threshold, unstranded_threshold)
 }
+
+//
+// Compare a sample's declared / Salmon-inferred strandedness against its
+// RSeQC infer_experiment result. Returns a per-sample tuple:
+//   [ meta, provided, status, salmon, rseqc ]
+// where
+//   - provided = 'auto' when Salmon inferred the strand, else meta.strandedness
+//   - status   = 'pass' / 'fail' from comparing the two methods
+//   - salmon   = Salmon's calculateStrandedness map (or null if no auto-inference)
+//   - rseqc    = RSeQC's getInferexperimentStrandedness map
+// Both the summary table and the composition bargraph sections of the
+// MultiQC report are derived from this tuple.
+//
+def classifyStrand(meta, strand_log, stranded_threshold, unstranded_threshold) {
+    def rseqc = getInferexperimentStrandedness(strand_log, stranded_threshold, unstranded_threshold)
+    def rseqc_strandedness = rseqc.inferred_strandedness
+    def salmon = meta.salmon_strand_analysis
+    def provided
+    def status = 'fail'
+    if (salmon) {
+        provided = 'auto'
+        if (salmon.inferred_strandedness == rseqc_strandedness && rseqc_strandedness != 'undetermined') {
+            status = 'pass'
+        }
+    }
+    else {
+        provided = meta.strandedness
+        if (meta.strandedness == rseqc_strandedness) {
+            status = 'pass'
+        }
+    }
+    return [ meta, provided, status, salmon, rseqc ]
+}
+
 
 //
 // Function to map work directory BAM paths to published paths
@@ -722,7 +878,7 @@ def rnaseqSummary(monochrome_logs=true, pass_mapped_reads=[:], pass_trimmed_read
             log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Please check MultiQC report: ${fail_trimmed_count}/${pass_trimmed_reads.size()} samples skipped since they failed ${params.min_trimmed_reads} trimmed read threshold.${colors.reset}-"
         }
         if (fail_mapped_count > 0) {
-            log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Please check MultiQC report: ${fail_mapped_count}/${pass_mapped_reads.size()} samples skipped since they failed STAR ${params.min_mapped_reads}% mapped threshold.${colors.reset}-"
+            log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Please check MultiQC report: ${fail_mapped_count}/${pass_mapped_reads.size()} samples skipped since they failed the ${params.min_mapped_reads}% mapped threshold.${colors.reset}-"
         }
         if (fail_strand_count > 0) {
             log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Please check MultiQC report: ${fail_strand_count}/${pass_strand_check.size()} samples failed strandedness check.${colors.reset}-"

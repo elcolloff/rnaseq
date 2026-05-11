@@ -10,7 +10,7 @@ Please provide pipeline parameters via the CLI or Nextflow `-params-file` option
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with the 4 required columns: `sample`, `fastq_1`, `fastq_2`, and `strandedness`. If samples were sequenced on different platforms or at different centers, you can specify per-sample values via optional `seq_platform` and `seq_center` columns (used in BAM read group tags). For uniform values across all samples, the `--seq_platform` and `--seq_center` parameters are simpler. Please refer to the example below.
 
 ```bash
 --input '[path to samplesheet file]'
@@ -21,10 +21,10 @@ You will need to create a samplesheet with information about the samples you wou
 The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes.
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2,strandedness
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,auto
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,auto
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz,auto
+sample,fastq_1,fastq_2,strandedness,seq_platform
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,auto,ILLUMINA
+CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,auto,ILLUMINA
+CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz,auto,ILLUMINA
 ```
 
 ### Linting
@@ -69,11 +69,20 @@ You can control the stringency of this behavior with `--stranded_threshold` and 
 
 #### Errors and Reporting
 
-The results of strandedness inference are displayed in the MultiQC report under 'Strandedness Checks'. This shows any provided strandedness and the results inferred by both Salmon (when strandedness is set to 'auto') and RSeQC. Mismatches between input strandedness (explicitly provided by the user or inferred by Salmon) and output strandedness from RSeQC are marked as fails. For example, if a user specifies 'forward' as strandedness for a library that is actually reverse stranded, this is marked as a fail.
+The results of strandedness inference are displayed in the MultiQC report under the top-level 'Strandedness checks' section, which contains two sub-reports:
+
+- **Strandedness: inference summary** - one row per sample with the strandedness declared in the samplesheet, the values inferred by Salmon and RSeQC (where active), and a per-method certainty percentage (the fragment proportion attributable to the inferred strand). A pass/fail status is shown whenever RSeQC `infer_experiment` runs: RSeQC's call is compared against Salmon's auto-inference for `auto` samples and against the samplesheet value otherwise. The status column shows '-' when RSeQC didn't run and only the Salmon call is available. Per-component sense / antisense / unstranded percentages for each method are available as additional columns hidden by default - enable them via the **Configure columns** button above the table if you want to see the underlying composition.
+- **Strandedness: read composition** - stacked percentage bars of sense / antisense / unstranded fragments per sample. When both Salmon and RSeQC produced an inference, a dataset switcher above the plot lets you flip between the two methods' views.
+
+If RSeQC disagrees with the expected strandedness, or returns 'undetermined' (which can indicate gDNA contamination), the summary row is marked as a fail. When RSeQC isn't active (e.g. `--skip_rseqc`, `--skip_qc`), Salmon's auto-inference is still surfaced so the user always sees what the pipeline determined - just without a cross-check status.
 
 ![MultiQC - Strand check table](images/mqc_strand_check.png)
 
-Be sure to check the strandedness report when reviewing the QC for your samples.
+The **Configure columns** dialog above the summary table lets you toggle the hidden per-component percentages on:
+
+![MultiQC - Strandedness Configure columns modal](images/mqc_strand_check_columns.png)
+
+Be sure to check the strandedness section when reviewing the QC for your samples.
 
 ### Full samplesheet
 
@@ -82,25 +91,27 @@ The pipeline will auto-detect whether a sample is single- or paired-end using th
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2,strandedness
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,reverse
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,reverse
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,reverse
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,reverse
+sample,fastq_1,fastq_2,strandedness,seq_platform
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward,ILLUMINA
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward,ILLUMINA
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward,ILLUMINA
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,reverse,ILLUMINA
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,reverse,ILLUMINA
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,reverse,ILLUMINA
+TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,reverse,ILLUMINA
 ```
 
-| Column              | Description                                                                                                                                                                                                                                          |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`            | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).                                                               |
-| `fastq_1`           | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                                                                                           |
-| `fastq_2`           | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                                                                                           |
-| `strandedness`      | Sample strand-specificity. Must be one of `unstranded`, `forward`, `reverse` or `auto`.                                                                                                                                                              |
-| `genome_bam`        | **Optional**. Full path to genome-aligned BAM file. Typically from previous pipeline runs (see [output documentation](https://nf-co.re/rnaseq/output#star-salmon-and-kallisto) or [STAR/RSEM](https://nf-co.re/rnaseq/output#star-via-rsem)).        |
-| `transcriptome_bam` | **Optional**. Full path to transcriptome-aligned BAM file. Typically from previous pipeline runs (see [output documentation](https://nf-co.re/rnaseq/output#star-salmon-and-kallisto) or [STAR/RSEM](https://nf-co.re/rnaseq/output#star-via-rsem)). |
-| `percent_mapped`    | **Optional**. Percentage of reads that mapped during alignment (0-100). Useful for quality assessment and filtering.                                                                                                                                 |
+| Column              | Description                                                                                                                                                                                                                                                                       |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`            | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).                                                                                            |
+| `fastq_1`           | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                                                                                                                        |
+| `fastq_2`           | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                                                                                                                        |
+| `strandedness`      | Sample strand-specificity. Must be one of `unstranded`, `forward`, `reverse` or `auto`.                                                                                                                                                                                           |
+| `seq_platform`      | **Optional**. Sequencing platform for BAM read group `PL` tag (e.g., `ILLUMINA`). Use this column when samples were sequenced on different platforms. For a single platform across all samples, prefer `--seq_platform` instead. Per-sample values override the global parameter. |
+| `seq_center`        | **Optional**. Sequencing center for BAM read group `CN` tag. Use this column when samples come from different centers. For a single center across all samples, prefer `--seq_center` instead. Per-sample values override the global parameter.                                    |
+| `genome_bam`        | **Optional**. Full path to genome-aligned BAM file. Typically from previous pipeline runs (see [output documentation](https://nf-co.re/rnaseq/output#star-salmon-and-kallisto) or [STAR/RSEM](https://nf-co.re/rnaseq/output#star-via-rsem)).                                     |
+| `transcriptome_bam` | **Optional**. Full path to transcriptome-aligned BAM file. Typically from previous pipeline runs (see [output documentation](https://nf-co.re/rnaseq/output#star-salmon-and-kallisto) or [STAR/RSEM](https://nf-co.re/rnaseq/output#star-via-rsem)).                              |
+| `percent_mapped`    | **Optional**. Percentage of reads that mapped during alignment (0-100). Useful for quality assessment and filtering.                                                                                                                                                              |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -143,9 +154,9 @@ The `--skip_alignment` flag tells the pipeline to skip alignment, and in this si
 The `samplesheet_with_bams.csv` will look like:
 
 ```csv
-sample,fastq_1,fastq_2,strandedness,genome_bam,percent_mapped,transcriptome_bam
-SAMPLE1,/path/sample1_R1.fastq.gz,/path/sample1_R2.fastq.gz,forward,results/star_salmon/SAMPLE1.markdup.sorted.bam,85.2,results/star_salmon/SAMPLE1.Aligned.toTranscriptome.out.bam
-SAMPLE2,/path/sample2_R1.fastq.gz,,reverse,results/star_salmon/SAMPLE2.sorted.bam,92.1,results/star_salmon/SAMPLE2.Aligned.toTranscriptome.out.bam
+sample,fastq_1,fastq_2,strandedness,seq_platform,seq_center,genome_bam,percent_mapped,transcriptome_bam
+SAMPLE1,/path/sample1_R1.fastq.gz,/path/sample1_R2.fastq.gz,forward,ILLUMINA,,results/star_salmon/SAMPLE1.markdup.sorted.bam,85.2,results/star_salmon/SAMPLE1.Aligned.toTranscriptome.out.bam
+SAMPLE2,/path/sample2_R1.fastq.gz,,reverse,ILLUMINA,,results/star_salmon/SAMPLE2.sorted.bam,92.1,results/star_salmon/SAMPLE2.Aligned.toTranscriptome.out.bam
 ```
 
 #### Important limitations
@@ -194,10 +205,22 @@ Ribosomal RNA (rRNA) removal can be enabled with the `--remove_ribo_rna` paramet
 nextflow run nf-core/rnaseq --remove_ribo_rna --ribo_removal_tool sortmerna ...
 ```
 
-By default, [rRNA databases](https://github.com/biocore/sortmerna/tree/master/data/rRNA_databases) defined in the SortMeRNA GitHub repo are used. You can see an example in the pipeline GitHub repository in `assets/rrna-db-defaults.txt` which is used by default via the `--ribo_database_manifest` parameter.
+By default, the pipeline uses [`smr_v4.3_fast_db`](https://github.com/sortmerna/sortmerna/releases/tag/v4.3.7), a SILVA 138 and Rfam build clustered at 85/90 % (SILVA) and 90 % (Rfam). It covers archaeal, bacterial and eukaryotic 16S/18S/23S/28S rRNAs plus 5S/5.8S. The URL is listed in `assets/rrna-db-defaults.txt`, which is the default value of the `--ribo_database_manifest` parameter. SILVA 138+ is distributed under [CC-BY 4.0](https://www.arb-silva.de/silva-license-information), which permits commercial use with attribution.
 
-> [!NOTE]
-> The default databases are based on SILVA 119, which requires [licensing for commercial use](https://www.arb-silva.de/silva-license-information). SILVA 138+ uses CC-BY 4.0 licensing that freely permits commercial use with attribution. If you have licensing concerns, consider using Bowtie2 with custom rRNA reference sequences via `--ribo_removal_tool bowtie2`.
+SortMeRNA publishes four pre-built databases on its [v4.3.7 release](https://github.com/sortmerna/sortmerna/releases/tag/v4.3.7). They are the same underlying SILVA 138 + Rfam sequences progressively clustered: coarser clustering means a smaller reference, a smaller index and a faster run, at the cost of some sensitivity. The pipeline decompresses the gzipped FASTA before use.
+
+| Variant                            | Clustering               | Asset (gz) | Use when                                                                          |
+| ---------------------------------- | ------------------------ | ---------- | --------------------------------------------------------------------------------- |
+| `smr_v4.3_fast_db`                 | SILVA 85/90 %, Rfam 90 % | ~17 MB     | Pipeline default. Routine bulk RNA-seq with good-quality input                    |
+| `smr_v4.3_default_db`              | SILVA 90/95 %, Rfam 95 % | ~36 MB     | SortMeRNA upstream's balanced recommendation; moderate extra index footprint      |
+| `smr_v4.3_sensitive_db`            | SILVA 97 %, Rfam 97 %    | ~93 MB     | High-rRNA samples (e.g. total RNA without rRNA depletion), rare-lineage organisms |
+| `smr_v4.3_sensitive_db_rfam_seeds` | SILVA 97 % + Rfam seeds  | ~90 MB     | Maximum sensitivity, including the full Rfam seed set for non-rRNA ncRNA families |
+
+Picking a variant: `fast` keeps the index footprint close to what earlier pipeline versions used (~1-2 GB); `sensitive` and `sensitive_rfam_seeds` roughly triple that. Index size is a one-off cost per work directory (results are cached), but per-sample SortMeRNA memory and runtime also scale with the reference.
+
+To switch variant or use your own references, write a manifest file listing one FASTA URL or local path per line and pass it via `--ribo_database_manifest my_manifest.txt`. For example, a one-line manifest selecting the `default` variant would contain `https://github.com/sortmerna/sortmerna/releases/download/v4.3.7/smr_v4.3_default_db.fasta.gz`.
+
+Both plain `.fasta` and `.fasta.gz` entries are accepted; gzipped files are decompressed automatically before being handed to SortMeRNA.
 
 ### Bowtie2
 
@@ -219,6 +242,22 @@ nextflow run nf-core/rnaseq --remove_ribo_rna --ribo_removal_tool ribodetector .
 ```
 
 RiboDetector automatically determines read length from your data and uses its pre-trained neural network model to classify reads.
+
+#### GPU acceleration for RiboDetector
+
+RiboDetector supports GPU acceleration via `--use_gpu_ribodetector`. When enabled, the pipeline uses a CUDA-enabled container with PyTorch GPU support and switches to the GPU binary automatically.
+
+```bash
+nextflow run nf-core/rnaseq --remove_ribo_rna --ribo_removal_tool ribodetector --use_gpu_ribodetector ...
+```
+
+Requirements:
+
+- One or more NVIDIA GPUs (with appropriate drivers installed)
+- A container runtime (Docker, Singularity, or Apptainer); Conda is also supported
+- x86_64 architecture (ARM GPU is not currently supported)
+
+Container GPU flags (`--gpus all` for Docker, `--nv` for Singularity/Apptainer) are automatically applied and can be overridden via `--gpu_container_options`.
 
 ## Alignment options
 
@@ -291,6 +330,120 @@ If you're looking for documentation on how the nf-core Sentieon GitHub Actions a
 For detailed instructions on how to test the modules and subworkflows separately, see [here](https://github.com/nf-core/modules/blob/master/modules/nf-core/sentieon/README.md).
 :::
 
+### Parabricks GPU acceleration for STAR
+
+The STAR aligner can also be GPU-accelerated using NVIDIA Parabricks via the `--use_parabricks_star` parameter. Parabricks runs STAR alignment on NVIDIA GPUs, significantly reducing wall-clock time for large datasets.
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --outdir results \
+    --fasta genome.fa \
+    --gtf annotation.gtf \
+    --use_parabricks_star \
+    -profile docker
+```
+
+Container GPU flags (`--gpus all` for Docker, `--nv` for Singularity/Apptainer) are automatically applied to GPU tasks based on the container engine. These flags are scoped to GPU tasks only, so non-GPU steps will run normally on CPU-only nodes in mixed clusters.
+
+The container GPU flags can be overridden via `--gpu_container_options` (e.g. `--gpu_container_options '--gpus 1'`).
+
+#### Requirements
+
+- One or more NVIDIA GPUs (with appropriate drivers installed)
+- Docker or Singularity (Conda/Mamba is **not** supported for this module)
+- The Parabricks container (`nvcr.io/nvidia/clara/clara-parabricks:4.6.0-1`) will be pulled automatically
+
+#### Behaviour differences
+
+When using Parabricks, the pipeline automatically handles mark duplicates during the alignment step (via `pbrun rna_fq2bam`), so the separate Picard MarkDuplicates step is skipped.
+
+#### Known differences from native STAR
+
+Parabricks `rna_fq2bam` is based on STAR 2.7.2a. The following native STAR flags have no pbrun equivalent and are therefore not applied:
+
+- `--outFilterType BySJout` — pbrun uses its own splice junction filtering defaults
+- `--sjdbScore 1` — affects junction scoring priority
+- `--quantTranscriptomeBan Singleend` — Salmon handles mixed single/paired-end transcriptome records gracefully
+- `--runRNGseed 0` — pbrun uses deterministic primary alignment selection
+
+These differences are unlikely to materially affect downstream quantification results, but users should be aware of them for reproducibility purposes. All other STAR parameters (multi-mapping limits, intron sizes, mate gap, splice junction overhangs, etc.) have pbrun equivalents and are applied consistently.
+
+#### Resource configuration for full-size genomes
+
+The default resource configuration (`accelerator = 1` via the `process_gpu` label) is sized for small test datasets. Full-size genomes (e.g. GRCh37/GRCh38) require more GPUs, memory, and the `--low-memory` STAR flag to reduce GPU memory pressure.
+
+The following config was tested with the `test_full` dataset (GRCh37, 8 paired-end samples) on AWS g5 instances (NVIDIA A10G, 24GB VRAM per GPU). Adjust for your cloud provider and GPU type:
+
+```groovy
+process {
+    withName: '.*ALIGN_STAR:PARABRICKS_RNA_FQ2BAM' {
+        accelerator    = { task.attempt > 1 ? 8 : 4 }
+        cpus           = { 48 * task.attempt }
+        memory         = { task.attempt > 1 ? 370.GB : 186.GB }
+        resourceLimits = [cpus: 96, memory: 370.GB]
+        maxRetries     = 3
+        errorStrategy  = { task.exitStatus in [1,2,143,137,104,134,139,255] ? 'retry' : 'finish' }
+    }
+}
+```
+
+And pass the low-memory flag:
+
+```bash
+--extra_star_align_args '--low-memory'
+```
+
+Key considerations when adapting this for your environment:
+
+- **Multiple GPUs are needed** for full-size genomes. 4 GPUs with `--low-memory` was sufficient for GRCh37 on A10G (24GB VRAM). GPUs with more VRAM (e.g. A100 40GB/80GB) may work with fewer GPUs or without `--low-memory`.
+- **Request all GPUs on retry** to prevent multiple Parabricks tasks being co-scheduled on the same node. GPU memory is not managed by the scheduler, so two 4-GPU tasks on an 8-GPU node will contend for VRAM and fail.
+- **Parabricks returns exit code 255 for most failures** including GPU OOM, host OOM, and internal errors. The retry strategy above handles this, but be aware that not all 255 exits are resource-related.
+- **Ensure your compute environment includes GPU instance types large enough for the retry**. For example, on AWS you might include both `g5.12xlarge` (4 GPUs, 192GB RAM) and `g5.48xlarge` (8 GPUs, 768GB RAM).
+
+:::note
+Do not use `--genome` with `--use_parabricks_star`. The pre-built iGenomes STAR indices are incompatible with Parabricks' bundled STAR version. Supply `--fasta` and `--gtf` explicitly instead.
+:::
+
+### RustQC: accelerated post-alignment QC (experimental)
+
+:::warning
+RustQC support is experimental. We recommend trialling it alongside the default QC path on a pilot subset of your data before switching over for production runs. Results are designed to match the upstream tools, but minor numerical differences exist in some outputs (see below).
+:::
+
+[RustQC](https://github.com/seqeralabs/rustqc) is a high-performance tool that replaces multiple post-alignment QC steps with a single pass over the BAM file. It produces output files compatible with the same MultiQC modules, so the report content is equivalent.
+
+RustQC replaces the following tools: dupRadar, featureCounts (biotype QC), RSeQC (bam_stat, infer_experiment, read_distribution, read_duplication, junction_annotation, junction_saturation, inner_distance, TIN), Preseq, Qualimap, and SAMtools stats/flagstat/idxstats.
+
+To enable RustQC, use the `--use_rustqc` flag. The individual tools listed above are automatically skipped:
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --outdir results \
+    --fasta genome.fa \
+    --gtf annotation.gtf \
+    --use_rustqc \
+    -profile docker
+```
+
+RustQC outputs are published under `<ALIGNER>/rustqc/` with subdirectories matching the tools they replace (e.g. `rustqc/rseqc/bam_stat/`, `rustqc/qualimap/`). See the [output documentation](#rustqc) for the full list of files.
+
+#### Preseq and TIN
+
+The nf-core/rnaseq pipeline does not normally run Preseq and `tin.py` by default, as these QC steps are very slow and error prone. They are included in RustQC by default however, so these results will be produced when using `--use_rustqc`.
+
+The upstream tools can be enabled with the following options:
+
+```bash
+--skip_preseq false \
+--rseqc_modules bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication,tin
+```
+
+#### Validation status
+
+RustQC has been validated against the default QC tools on the nf-core/rnaseq test dataset (5 yeast samples, mixed PE/SE). The majority of outputs are byte-for-byte identical. Where differences exist (e.g. floating-point precision in curve fitting, randomized subsampling in TIN, and cosmetic formatting), they are minor and do not affect biological interpretation or MultiQC report content.
+
 ## Quantification options
 
 The current options align with STAR and quantify using either Salmon (`--aligner star_salmon`) / RSEM (`--aligner star_rsem`). You also have the option to pseudoalign and quantify your data with Salmon or Kallisto by providing the `--pseudo_aligner salmon` or `--pseudo_aligner kallisto` parameter, respectively.
@@ -298,6 +451,60 @@ The current options align with STAR and quantify using either Salmon (`--aligner
 Since v3.0 of the pipeline, featureCounts is no longer used to perform gene/transcript quantification, however it is still used to generate QC metrics based on [biotype](http://www.ensembl.org/info/genome/genebuild/biotypes.html) information available within GFF/GTF genome annotation files. This decision was made primarily because of the limitations of featureCounts to appropriately quantify gene expression data. Please see [Zhao et al., 2015](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0141910#pone-0141910-t001) and [Soneson et al., 2015](https://f1000research.com/articles/4-1521/v1).
 
 For similar reasons, quantification will not be performed if using `--aligner hisat2` due to the lack of an appropriate option to calculate accurate expression estimates from HISAT2 derived genomic alignments - this may change in future releases (see [#822](https://github.com/nf-core/rnaseq/issues/822)). HISAT2 has been made available for those who have a preference for the alignment, QC and other types of downstream analysis compatible with it's output.
+
+### Per-sample quantification (`--skip_quantification_merge`)
+
+By default, the pipeline merges quantification results across all samples, producing cross-sample count matrices, SummarizedExperiment objects, and a single merged MultiQC report. This works well for typical experiments, but can become a bottleneck for very large cohorts (hundreds to thousands of samples) where:
+
+- **Memory**: aggregation steps (tximport `.collect()`, SummarizedExperiment, RSEM merge counts, merged MultiQC) load all samples into a single process, which can exceed available memory
+- **Organization**: run-centric output directories (`fastqc/`, `salmon/`, `multiqc/`) mix files from all samples, making it harder to locate, deliver, or archive results per sample
+
+The `--skip_quantification_merge` parameter switches the pipeline to sample-centric operation. Each sample is processed independently and all its outputs are organized under `<outdir>/<sample_id>/`:
+
+```
+results/
+  SAMPLE_A/
+    fastqc/
+    trimgalore/
+    salmon/              # per-sample quant + tximport TSVs
+    multiqc/star_salmon/ # per-sample MultiQC report
+  SAMPLE_B/
+    ...
+  genome/                # shared reference files
+  pipeline_info/         # run metadata
+```
+
+When enabled:
+
+- **tximport** runs per-sample, producing individual gene-level and transcript-level count/TPM TSVs for each sample
+- The `*gene_counts_length_scaled.tsv` file is not published, because per-sample `lengthScaledTPM` values are not comparable across samples ([#1822](https://github.com/nf-core/rnaseq/issues/1822)). To obtain it, re-run tximport across all `quant.sf` files in a single call
+- **SummarizedExperiment** and **RSEM merge counts** are skipped entirely
+- **DESeq2 QC** is skipped (requires multiple samples)
+- **MultiQC** generates one report per sample rather than one merged report. Per-sample reports carry a manifest-only software versions section (pipeline name and Nextflow version); the full collated tool versions YAML is still published unchanged to `pipeline_info/`
+
+This mode works with any aligner or pseudo-aligner. For the fastest possible per-sample quantification, combine it with pseudo-alignment only:
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --pseudo_aligner salmon \
+    --skip_alignment \
+    --skip_quantification_merge \
+    --outdir results
+```
+
+A convenience profile `rapid_quant` bundles these options together with additional skips for alignment-dependent QC steps:
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    -profile rapid_quant,docker \
+    --outdir results
+```
+
+:::tip
+Per-sample tximport TSVs can be combined downstream using standard R or Python tooling if cross-sample matrices are needed later. This gives you flexibility to run the pipeline incrementally as new samples arrive without reprocessing the entire cohort. Note that `lengthScaledTPM` cannot simply be concatenated and must be recomputed by passing all `quant.sf` files to a single tximport call.
+:::
 
 ### Unique Molecular Identifiers (UMI)
 
@@ -309,13 +516,13 @@ The `--umitools_grouping_method` parameter affects [how similar, but non-identic
 
 #### Examples:
 
-| UMI type     | Source                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Pipeline parameters                                                                                                                                                         |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| In read name | [Illumina BCL convert >3.7.5](https://emea.support.illumina.com/content/dam/illumina-support/documents/documentation/software_documentation/bcl_convert/bcl-convert-v3-7-5-software-guide-1000000163594-00.pdf)                                                                                                                                                                                                                                                | `--with_umi --skip_umi_extract --umitools_umi_separator ":"`                                                                                                                |
+| UMI type     | Source                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Pipeline parameters                                                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| In read name | [Illumina BCL convert >3.7.5](https://emea.support.illumina.com/content/dam/illumina-support/documents/documentation/software_documentation/bcl_convert/bcl-convert-v3-7-5-software-guide-1000000163594-00.pdf)                                                                                                                                                                                                                                               | `--with_umi --skip_umi_extract --umitools_umi_separator ":"`                                                                                                                |
 | In sequence  | [Lexogen QuantSeq® 3’ mRNA-Seq V2 FWD](https://www.lexogen.com/quantseq-3mrna-sequencing) + [UMI Second Strand Synthesis Module](https://faqs.lexogen.com/faq/how-can-i-add-umis-to-my-quantseq-libraries)                                                                                                                                                                                                                                                    | `--with_umi --umitools_extract_method "regex" --umitools_bc_pattern "^(?P<umi_1>.{6})(?P<discard_1>.{4}).*"`                                                                |
 | In sequence  | [Lexogen CORALL® Total RNA-Seq V1](https://www.lexogen.com/corall-total-rna-seq/)<br> > _mind [Appendix H](https://www.lexogen.com/wp-content/uploads/2020/04/095UG190V0130_CORALL-Total-RNA-Seq_2020-03-31.pdf) regarding optional trimming_                                                                                                                                                                                                                 | `--with_umi --umitools_extract_method "regex" --umitools_bc_pattern "^(?P<umi_1>.{12}).*"`<br>Optional: `--clip_r2 9 --three_prime_clip_r2 12`                              |
 | In sequence  | Takara Bio [SMART-Seq Total RNA Pico Input with UMIs](https://www.takarabio.com/documents/User%20Manual/SMART/SMART-Seq%20Total%20RNA%20Pico%20Input%20with%20UMIs%20%28ZapR%20Mammalian%29%20User%20Manual.pdf) and [SMARTer® Stranded Total RNA-Seq Kit v3](https://www.takarabio.com/documents/User%20Manual/SMARTer%20Stranded%20Total%20RNA/SMARTer%20Stranded%20Total%20RNA-Seq%20Kit%20v3%20-%20Pico%20Input%20Mammalian%20User%20Manual-a_114950.pdf) | `--with_umi --umitools_extract_method "regex" --umitools_bc_pattern2 "^(?P<umi_1>.{8})(?P<discard_1>.{6}).*"`                                                               |
-| In sequence  | [Watchmaker mRNA Library Prep Kit](https://watchmakergenomics.com/wp-content/uploads/2023/11/M223_mRNA-Library-Prep-Kit-_UG_WMUG214_v1-1-0823.pdf) with [Twist UMI Adapter System](https://www.twistbioscience.com/sites/default/files/resources/2023-03/DOC-001337_TechNote-ProcessingSequencingDataUtilizingUMI-REV1-singles.pdf)                                                                                                                            | `--with_umi --umitools_extract_method "regex" --umitools_bc_pattern "^(?P<umi_1>.{5})(?P<discard_1>.{2}).*" --umitools_bc_pattern2 "^(?P<umi_2>.{5})(?P<discard_2>.{2}).*"` |
+| In sequence  | [Watchmaker mRNA Library Prep Kit](https://watchmakergenomics.com/wp-content/uploads/2023/11/M223_mRNA-Library-Prep-Kit-_UG_WMUG214_v1-1-0823.pdf) with [Twist UMI Adapter System](https://www.twistbioscience.com/sites/default/files/resources/2023-03/DOC-001337_TechNote-ProcessingSequencingDataUtilizingUMI-REV1-singles.pdf)                                                                                                                           | `--with_umi --umitools_extract_method "regex" --umitools_bc_pattern "^(?P<umi_1>.{5})(?P<discard_1>.{2}).*" --umitools_bc_pattern2 "^(?P<umi_2>.{5})(?P<discard_2>.{2}).*"` |
 
 > _No warranty for the accuracy or completeness of the parameters is implied_
 
@@ -328,8 +535,10 @@ Some bulk RNA-seq library preparation protocols capture only a 3' tag from each 
 Lexogen provides an example analysis workflow [on their website](https://www.lexogen.com/quantseq-data-analysis/), which includes the _ENCODE standard options_ for the [STAR aligner](<[https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf](https://github.com/alexdobin/STAR)>). In addition, Lexogen also decreases the tolerance for mismatches and clips poly(A) tails. To apply these settings, add the following parameters when running the pipeline:
 
 ```
---extra_star_align_args "--alignIntronMax 1000000 --alignIntronMin 20 --alignMatesGapMax 1000000 --alignSJoverhangMin 8 --outFilterMismatchNmax 999 --outFilterMultimapNmax 20 --outFilterType BySJout --outFilterMismatchNoverLmax 0.1 --clip3pAdapterSeq AAAAAAAA"
+--extra_star_align_args "--outFilterMismatchNoverLmax 0.1 --clip3pAdapterSeq AAAAAAAA"
 ```
+
+Note that many of the ENCODE standard STAR options (e.g. `--outFilterMultimapNmax 20`, `--alignIntronMax 1000000`) are already set as pipeline defaults. If you supply a parameter that duplicates a pipeline default, your value will take priority.
 
 #### Custom Salmon arguments
 
@@ -401,7 +610,7 @@ To take advantage of all the quality control modules implemented in the pipeline
 :::note
 **GTF vs GFF**
 
-GFF (General Feature Format) is a tab-separated text file format for representing genomic annotations, while GTF (General Transfer Format) is a specific implementation of this format corresponding to GFF version 2. The pipeline can accept both GFF and GTF but any GFF files will be converted to GTF so if a GTF is available for your annotation of choice it is better to provide that directly.
+GFF (General Feature Format) is a tab-separated text file format for representing genomic annotations, while GTF (General Transfer Format) is a specific implementation of this format corresponding to GFF version 2. The pipeline accepts both formats, but they must be provided via the correct parameter: use `--gtf` for GTF files (`.gtf`, `.gtf.gz`) and `--gff` for GFF3 files (`.gff`, `.gff3`, `.gff.gz`, `.gff3.gz`). GFF files provided via `--gff` will be automatically converted to GTF internally, so if a GTF is available for your annotation of choice it is better to provide that directly via `--gtf`.
 
 More information and links to further resources are [available from Ensembl](https://www.ensembl.org/info/website/upload/gff.html).
 :::
@@ -435,12 +644,97 @@ As well as the standard annotations, GENCODE also provides "basic" annotations, 
 
 #### Prokaryotic genome annotations
 
-This pipeline uses featureCounts to generate QC metrics based on [biotype](http://www.ensembl.org/info/genome/genebuild/biotypes.html) information available within GFF/GTF genome annotation files. The format of these annotation files can vary significantly depending on the source of the annotation and the type of organism. The default settings in the pipeline are tailored towards Ensembl GTF annotations available for eukaryotic genomes. Prokaryotic genome annotations tend to be distributed in GFF format which are structured differently in terms of the feature naming conventions. There are a number of ways you can tune the behaviour of the pipeline to cater for differences/absence of biotype information:
+The pipeline includes a dedicated profile for analysing bacterial and archaeal RNA-seq data:
 
-- Use `--skip_biotype_qc` to bypass this step altogether in case biotype information is of no interest or isn't present in your annotation file.
-- Use `--skip_rseqc` since features like splice junctions, transcription start (TSS) and ending sites (TES) are less prevalent and therefore, less informative in prokaryotes compared to eukaryotes.
-- Use `--featurecounts_feature_type transcript` instead of `--featurecounts_feature_type transcript exon` (default) since entries for the latter may not contain a `--featurecounts_group_type gene_biotype` entry in the last column of the annotation. You should make sure that the value defined by `--featurecounts_feature_type` ideally contain corresponding entries for `featurecounts_group_type`.
-- Use `--featurecounts_feature_type 'CDS' --featurecounts_group_type 'product'` to identify the number of hypothetical proteins. However, the featureCounts QC will no longer reflect the biotype information from your RNA.
+> [!NOTE]
+> This pipeline is primarily designed for eukaryotic RNA-seq. The prokaryotic profile provides basic support but does not include specialist features like operon detection or TSS mapping.
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --fasta genome.fasta \
+    --gff annotation.gff3 \
+    --outdir results \
+    -profile prokaryotic,docker
+```
+
+##### Input requirements
+
+| Input        | Parameter          | Requirements                                                                                                                                        |
+| ------------ | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Samplesheet  | `--input`          | Standard CSV format (see [Samplesheet input](#samplesheet-input))                                                                                   |
+| Genome FASTA | `--fasta`          | Genomic sequence file (`.fasta`, `.fa`, `.fna`, optionally gzipped)                                                                                 |
+| Annotation   | `--gff` or `--gtf` | Transcript-like features (CDS, tRNA, rRNA, tmRNA, ncRNA, etc.) with `gene_id` attributes. GFF3 format (`.gff3`, `.gff`) is typical for prokaryotes. |
+
+**Key points:**
+
+- **Use GFF3 format**: Prokaryotic annotations are typically distributed as GFF3 (not GTF). Provide GFF3 files via `--gff` and GTF files via `--gtf`.
+- **Transcripts are extracted from all transcript-like features**: GFFREAD will extract transcript sequences from CDS, tRNA, rRNA, tmRNA, ncRNA and other feature types present in the annotation, so non-coding RNAs are quantified alongside mRNAs.
+- **CDS used for featureCounts QC**: `featurecounts_feature_type` is set to `CDS`, so biotype/counting QC metrics are based on coding sequences. Your annotation should contain CDS features for these QC steps to be meaningful.
+- **Matching contig names**: Chromosome/contig names in your FASTA must exactly match those in your GFF/GTF (e.g., if your FASTA has `>NC_003197.2`, your GFF must use `NC_003197.2` in column 1).
+- **No transcript FASTA needed**: The pipeline generates the transcript FASTA automatically using GFFREAD.
+
+The `-profile prokaryotic` configures the pipeline with settings optimized for prokaryotic data:
+
+- **Bowtie2 alignment**: Uses Bowtie2 instead of STAR as the default aligner. Prokaryotic genomes lack introns, so splice-aware aligners are unnecessary.
+- **GFFREAD transcript extraction**: Uses GFFREAD instead of RSEM to generate transcript sequences. Prokaryotic annotations typically use CDS features rather than exon features, and RSEM requires exon features.
+- **CDS-based counting**: Sets `featurecounts_feature_type` to `CDS` for QC metrics.
+- **Skips eukaryote-specific QC**: Disables RSeQC and dupRadar, which assume eukaryotic gene structures.
+
+You can override the aligner while keeping other prokaryotic settings:
+
+```bash
+# Use STAR instead of Bowtie2 with prokaryotic settings
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --fasta genome.fasta \
+    --gff annotation.gff3 \
+    --outdir results \
+    --aligner star_salmon \
+    -profile prokaryotic,docker
+```
+
+When using STAR with `-profile prokaryotic`, the pipeline automatically configures STAR to use CDS features instead of exons for both index building and alignment.
+
+##### Annotation sources
+
+For prokaryotic genomes, we recommend using annotations from [Ensembl Bacteria](https://bacteria.ensembl.org/) when available, as these follow consistent formatting conventions. NCBI/RefSeq annotations can also work but may require additional attention:
+
+- **Contig name matching**: Ensure chromosome/contig names in your FASTA match those in your GTF/GFF. This is a common source of errors when mixing files from different sources.
+- **Empty transcript IDs**: Some bacterial GTFs from RefSeq contain gene entries with empty `transcript_id` fields, which can cause Salmon errors. If you encounter issues, check your annotation file and consider filtering problematic entries.
+
+##### Using GFFREAD independently
+
+The `--gffread_transcript_fasta` parameter can also be used independently of `-profile prokaryotic` for any situation where RSEM fails to extract transcripts correctly (e.g., non-standard annotation formats):
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input samplesheet.csv \
+    --fasta genome.fasta \
+    --gtf annotation.gtf \
+    --gffread_transcript_fasta \
+    --outdir results \
+    -profile docker
+```
+
+##### Manual configuration (advanced)
+
+If you prefer not to use the profile, you can manually configure the pipeline for prokaryotic data. The following parameters are set by `-profile prokaryotic`:
+
+| Parameter                      | Value            | Purpose                                     |
+| ------------------------------ | ---------------- | ------------------------------------------- |
+| `--aligner`                    | `bowtie2_salmon` | Splice-unaware alignment                    |
+| `--gffread_transcript_fasta`   | `true`           | Handle CDS-only annotations                 |
+| `--featurecounts_feature_type` | `CDS`            | QC counting on CDS features                 |
+| `--skip_rseqc`                 | `true`           | Skip eukaryote-specific QC                  |
+| `--skip_dupradar`              | `true`           | Skip eukaryote-specific QC                  |
+| `--skip_qualimap`              | `true`           | Skip eukaryote-specific QC                  |
+| `--skip_bigwig`                | `true`           | Inappropriate for transcriptomic alignments |
+
+Additionally, you may want to set:
+
+- `--skip_biotype_qc` - if biotype information is not present or not of interest
+- `--skip_deseq2_qc` - if you have fewer than 3 samples per condition
 
 Please get in touch with us on the #rnaseq channel in the [nf-core Slack workspace](https://nf-co.re/join) if you are having problems or need any advice.
 
@@ -461,18 +755,47 @@ For more information, see the upstream issues:
 - [nf-core/rnaseq#608](https://github.com/nf-core/rnaseq/issues/608)
 - [bxlab/bx-python#67](https://github.com/bxlab/bx-python/issues/67)
 
-### iGenomes (not recommended)
+### Reference catalogues via `--genome`
 
-If the `--genome` parameter is provided (e.g. `--genome GRCh37`) then the FASTA and GTF files (and existing indices) will be automatically obtained from AWS-iGenomes unless these have already been downloaded locally in the path specified by `--igenomes_base`.
+`--genome <key>` selects a bundle of reference paths from the `params.genomes` map and uses them in place of supplying `--fasta`/`--gtf`/etc. individually. The map is a generic catalogue mechanism: the pipeline ships the AWS iGenomes catalogue by default, but you can also author your own. iGenomes is the legacy use case; a user-maintained catalogue is the recommended way to get `--genome` ergonomics on modern reference data.
 
-However this is no longer recommended because:
+#### iGenomes (not recommended)
+
+The pipeline ships the AWS iGenomes catalogue as the default `params.genomes` content. With nothing else configured, `--genome GRCh37` (or any other iGenomes key) resolves to entries from this default catalogue, with paths pointing at AWS iGenomes (or the location specified by `--igenomes_base` if you've mirrored the catalogue locally). The bundled iGenomes STAR indices were built with an older STAR; the pipeline transparently adapts them so alignment runs with the modern STAR build the pipeline ships, no extra flags required.
+
+If you override the resolved index by supplying your own `--star_index`, the pipeline assumes it is compatible with the modern STAR build.
+
+The bundled iGenomes catalogue is provided for legacy compatibility but is **not recommended for new analyses**, because:
 
 - Gene annotations in iGenomes are extremely out of date. This can be particularly problematic for RNA-seq analysis, which relies on accurate gene annotation.
 - Some iGenomes references (e.g., GRCh38) point to annotation files that use gene symbols as the primary identifier. This can cause issues for downstream analysis, such as the nf-core [differential abundance](https://nf-co.re/differentialabundance) workflow where a conventional gene identifier distinct from symbol is expected.
 
-Notes:
+For new analyses, supply `--fasta`/`--gtf` directly (see [Explicit reference file specification](#explicit-reference-file-specification-recommended) above), or define your own catalogue using the same `params.genomes` shape (see below). A user-supplied catalogue can use whatever keys you want, including iGenomes-style names like `GRCh37` to shadow the default entries with current reference data.
 
-- As of v3.7 of the pipeline, if you are using a genome downloaded from AWS iGenomes and using `--aligner star_salmon` (default) the version of STAR to use for the alignment will be auto-detected (see [#808](https://github.com/nf-core/rnaseq/issues/808)).
+#### Custom catalogues
+
+The `params.genomes` map is not iGenomes-specific. If you re-run the pipeline against a stable reference set, defining your own catalogue avoids the iGenomes downsides (stale annotations, version-locked STAR indices) while keeping the convenience of a single `--genome <key>` flag. Author a config file using the same map shape:
+
+```groovy
+params {
+    genomes {
+        'my_grch38_2025' {
+            fasta            = '/refs/grch38/genome.fa'
+            gtf              = '/refs/grch38/genes.gtf'
+            transcript_fasta = '/refs/grch38/transcripts.fa'
+            bed12            = '/refs/grch38/genes.bed'
+            star             = '/refs/grch38/star_2.7.11b/'
+            salmon           = '/refs/grch38/salmon/'
+        }
+    }
+}
+```
+
+Run with `-c my_genomes.config --genome my_grch38_2025`. Any individual reference can still be overridden on the command line (e.g. `--star_index /alternate/path`).
+
+The map keys are the bare names used internally (`star`, `salmon`, `bed12`, `bowtie2`, `hisat2`, `kallisto`, `rsem`, `bbsplit`, `sortmerna`, `transcript_fasta`, `additional_fasta`, `gff`, `gtf`, `fasta`); the pipeline maps these onto the corresponding `--<name>_index` parameters where appropriate.
+
+Set `star_legacy = true` on an entry **only** if its `star` index was built with STAR 2.6.x (for example, an internal mirror of AWS iGenomes content). For indices built with modern STAR, leave the flag absent. The pipeline takes care of adapting flagged indices automatically; the flag has no effect if the user has overridden `--star_index`.
 
 ### GTF filtering
 
@@ -480,7 +803,7 @@ By default, the input GTF file will be filtered to ensure that sequence names co
 
 ## Contamination screening options
 
-The pipeline provides the option to scan unaligned reads for contamination from other species using either [Sylph](https://sylph-docs.github.io/) or [Kraken2](https://ccb.jhu.edu/software/kraken2/), with the possibility of applying corrections from [Bracken](https://ccb.jhu.edu/software/bracken/). Since running Bracken is not computationally expensive, we recommend always using it to refine the abundance estimates generated by Kraken2.
+The pipeline provides the option to scan reads for contamination from other species using either [Sylph](https://sylph-docs.github.io/) or [Kraken2](https://ccb.jhu.edu/software/kraken2/), with the possibility of applying corrections from [Bracken](https://ccb.jhu.edu/software/bracken/). By default, contaminant screening runs on aligner-unmapped reads to preserve the existing pipeline behavior and focus on reads rejected by STAR or HISAT2. If you instead want to inspect the reads entering alignment, for example when evaluating the effect of BBSplit filtering, set `--contaminant_screening_input trimmed`. Since running Bracken is not computationally expensive, we recommend always using it to refine the abundance estimates generated by Kraken2.
 
 Sylph is a [faster and much more memory-efficient tool](https://doi.org/10.1038/s41587-024-02412-y) with about equal precision in species detection to Kraken2/Bracken. Sylph also has lower rates of false positives. However, Sylph does not assign specific reads to species; it only provides overall abundance estimates. Sylph abundance estimates also [cannot assign a certain percentage of reads as unclassified](https://github.com/bluenote-1577/sylph/issues/49).
 
@@ -520,7 +843,7 @@ nextflow run \
 This is not usually recommended with Salmon unless you also supply a previously generated decoy-aware Salmon transcriptome index.
 
 :::note
-Loading iGenomes configuration remains the default for reasons of consistency with other workflows, but should be disabled when not using iGenomes, applying the recommended usage above.
+The pipeline auto-loads the iGenomes catalogue config by default for consistency with other nf-core workflows. If you are not using iGenomes (e.g., supplying `--fasta`/`--gtf` directly or selecting a custom catalogue entry via `--genome`), set `--igenomes_ignore` to skip loading the bundled iGenomes map.
 :::
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -538,9 +861,8 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-:::warning
-Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-:::
+> [!WARNING]
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -607,7 +929,7 @@ To further assist in reproducibility, you can use share and reuse [parameter fil
 
 ### `-profile`
 
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments or analyses.
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
@@ -624,6 +946,10 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
+- `test_prokaryotic`
+  - A test profile for prokaryotic (bacterial/archaeal) RNA-seq data
+  - Uses Salmonella Typhimurium SL1344 test data with Bowtie2 alignment
+  - Includes all prokaryotic-specific settings; use `--aligner star_salmon --skip_bigwig false` to test with STAR
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -642,6 +968,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 - `arm64`
   - A configuration profile that applies overrides supplying ARM-compatible containers and Conda environments. See [Running on Linux ARM architectures](#running-on-linux-arm-architectures).
+- `prokaryotic`
+  - A configuration profile optimized for bacterial and archaeal RNA-seq data. Uses Bowtie2 for alignment and configures the pipeline to handle CDS-based annotations. See [Prokaryotic genome annotations](#prokaryotic-genome-annotations).
 
 ### `-resume`
 
@@ -659,19 +987,19 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
 In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
 
-To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
 A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 

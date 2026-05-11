@@ -24,7 +24,7 @@ nextflow_process {
                 { assert snapshot(
                     process.out.dists_multiqc,
                     process.out.pca_multiqc,
-                    process.out.versions
+                    process.out.findAll { key, val -> key.startsWith('versions') }
                 ).match() }
             )
         }
