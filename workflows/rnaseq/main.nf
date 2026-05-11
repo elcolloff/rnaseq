@@ -154,11 +154,15 @@ workflow RNASEQ {
     channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
+            // Coerce meta.id to String so numeric sample IDs (allowed by schema)
+            // do not propagate as Integer into downstream channel keys, file
+            // names, or R column headers.
             meta, fastq_1, fastq_2, genome_bam, transcriptome_bam ->
+                def meta_str = meta + [ id: meta.id as String ]
                 if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ], genome_bam, transcriptome_bam ]
+                    return [ meta_str.id, meta_str + [ single_end:true ], [ fastq_1 ], genome_bam, transcriptome_bam ]
                 } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ], genome_bam, transcriptome_bam ]
+                    return [ meta_str.id, meta_str + [ single_end:false ], [ fastq_1, fastq_2 ], genome_bam, transcriptome_bam ]
                 }
         }
         .groupTuple()
