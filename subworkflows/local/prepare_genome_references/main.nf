@@ -171,7 +171,7 @@ workflow PREPARE_GENOME_REFERENCES {
                 ch_gtf.map { gtf_file -> [ [id: 'transcripts'], gtf_file ] },
                 ch_fasta
             )
-            ch_transcript_fasta = GFFREAD_TRANSCRIPTS.out.gffread_fasta.map { meta, fasta_file -> fasta_file }
+            ch_transcript_fasta = GFFREAD_TRANSCRIPTS.out.gffread_fasta.map { _meta, fasta_file -> fasta_file }
         } else if (use_sentieon_star) {
             // Build transcripts from genome if we have it
             ch_transcript_fasta = SENTIEON_MAKE_TRANSCRIPTS_FASTA(ch_fasta, ch_gtf).transcript_fasta

@@ -356,7 +356,7 @@ def roundOneDecimal(v) {
 // and are dropped before emission so MultiQC renders blanks (not
 // "None") in data exports.
 //
-def strandSummaryCells(meta, provided, status, salmon, rseqc) {
+def strandSummaryCells(_meta, provided, status, salmon, rseqc) {
     [
         provided:        provided,
         salmon_inferred: salmon?.inferred_strandedness ?: '-',
@@ -388,7 +388,7 @@ def strandCheckSummaryYaml(static_config, rows) {
     // Sort by sample id so the merged output is deterministic regardless of
     // which sample finished RSeQC/Salmon first, and so the rendered MultiQC
     // table has a consistent default row order.
-    def data = rows.toSorted { it[0].id }.collectEntries { row ->
+    def data = rows.toSorted { row -> row[0].id }.collectEntries { row ->
         def (meta, provided, status, salmon, rseqc) = row
         def raw = strandSummaryCells(meta, provided, status, salmon, rseqc)
         def unknown = raw.keySet() - header_keys
@@ -428,7 +428,7 @@ def strandCheckCompositionYaml(static_config, rows) {
     // Sort by sample id so the merged output is deterministic regardless of
     // which sample finished RSeQC/Salmon first, and so the rendered MultiQC
     // bargraph has a consistent default sample order.
-    rows.toSorted { it[0].id }.each { row ->
+    rows.toSorted { row -> row[0].id }.each { row ->
         def (meta, _p, _s, salmon, rseqc) = row
         if (rseqc)  rseqc_data[meta.id]  = strandCompositionMap(rseqc)
         if (salmon) salmon_data[meta.id] = strandCompositionMap(salmon)

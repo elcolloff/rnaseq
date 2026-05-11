@@ -216,7 +216,7 @@ workflow PREPARE_GENOME_INDICES {
     if ('bowtie2_salmon' in prepare_tool_indices) {
         if (bowtie2_index) {
             if (bowtie2_index.endsWith('.tar.gz')) {
-                ch_bowtie2_index = UNTAR_BOWTIE2_INDEX ([ [:], file(bowtie2_index, checkIfExists: true) ]).untar.map { meta, index -> index }
+                ch_bowtie2_index = UNTAR_BOWTIE2_INDEX ([ [:], file(bowtie2_index, checkIfExists: true) ]).untar.map { _meta, index -> index }
             } else {
                 ch_bowtie2_index = channel.value(file(bowtie2_index, checkIfExists: true))
             }
@@ -226,7 +226,7 @@ workflow PREPARE_GENOME_INDICES {
             BOWTIE2_BUILD(
                 ch_transcript_fasta.map { fasta_file -> [ [id: 'transcripts'], fasta_file ] }
             )
-            ch_bowtie2_index = BOWTIE2_BUILD.out.index.map { meta, index -> index }
+            ch_bowtie2_index = BOWTIE2_BUILD.out.index.map { _meta, index -> index }
         }
     }
 
