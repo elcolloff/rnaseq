@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [PR #1852](https://github.com/nf-core/rnaseq/pull/1852) - Flatten `workflows/rnaseq/assets/` back to top-level `assets/` so `nf-core pipelines bump-version` finds `assets/multiqc_config.yml` and updates the report-comment URLs automatically on release bumps
 - [PR #1853](https://github.com/nf-core/rnaseq/pull/1853) - Replace remaining pre-admonition `> **NB:**` / `> **Note**` / `> **Warning**` quoteblocks across `docs/usage.md`, `docs/output.md`, and `README.md` with nf-core flavored `:::note` / `:::warning` admonitions
 - [PR #1854](https://github.com/nf-core/rnaseq/pull/1854) - Switch the `SORTMERNA` ARM container in `conf/arm.config` to a Wave build from `bioconda::sortmerna=4.3.7`, retiring the last `seqera::` channel reference in the pipeline ([#1431](https://github.com/nf-core/rnaseq/issues/1431))
+- [PR #1855](https://github.com/nf-core/rnaseq/pull/1855) - Add experimental `--use_rustar_star` to swap STAR alignment and index generation for [rustar-aligner](https://github.com/scverse/rustar-aligner), a Rust port that reuses the STAR CLI and on-disk index format
 
 ## [[3.26.0](https://github.com/nf-core/rnaseq/releases/tag/3.26.0)] - 2026-05-07
 
