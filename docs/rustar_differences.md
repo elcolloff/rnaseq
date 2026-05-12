@@ -174,36 +174,23 @@ upstream (Nextflow / nf-schema), separately from rustar.
 
 ## Tracked upstream
 
-A categorical BAM-level comparison is in
-[`rustar_bam_comparison.md`](rustar_bam_comparison.md). Punch list (file
-ordering loosely by severity):
+All filed against [scverse/rustar-aligner](https://github.com/scverse/rustar-aligner/issues). Cross-references back to the doc that captured the evidence:
 
-- **Paired-end transcriptome BAM missing mate fields** ->
-  [scverse/rustar-aligner#22](https://github.com/scverse/rustar-aligner/issues/22)
-  (filed). Full evidence in
-  [`rustar_investigation_wt_rep2.md`](rustar_investigation_wt_rep2.md).
-  Salmon falls back to its default fragment-length prior, distorting
-  paired-end TPMs.
-- **`NM` tag replaced with `nM`, semantics changed** (high). rustar
-  emits `nM` everywhere STAR emits `NM`. STAR's `NM` is the SAM-spec
-  edit distance (mismatches + indels); rustar's `nM` counts only
-  substitutions. ~2% of identical-CIGAR records disagree. Any tool
-  reading `NM:i:` (samtools stats, Picard, MultiQC parsers) silently
-  gets nothing.
-- **`XS` tag never emitted** despite `--outSAMstrandField intronMotif`
-  (high). Breaks StringTie, Cufflinks, rseqc's `infer_experiment.py`.
-- **GTF splice junctions not seeded into pass 1** (medium). ~50% of
-  splices dropped; `Number of splices: Annotated (sjdb) = 0` in every
-  `Log.final.out`. Manifests as per-read CIGAR collapse from spliced
-  to plain `M` on ~70% of CIGAR diffs in WT_REP2.
-- **~17% more secondary alignments than STAR** (medium, possibly
-  intentional). `NH` tail extends to 20 vs STAR's 7 on the same data;
-  no `outFilterMultimapScoreRange`-equivalent appears to be applied.
-  Worth documenting upstream if intentional.
-- **`@PG` header is content-free** (low). Just `ID:rustar-aligner`,
-  no `PN`/`VN`/`CL`. Provenance loss.
-- **Transcriptome BAM missing per-record `RG:Z:`** (low). Sample
-  association lost on transcriptome records. Genome BAM is fine.
-- **`AS` tag drifts by ±2-5 score units on identical CIGAR** (low),
-  864 records. rustar's README promises byte-equivalent `AS` on
-  unique mappers, so this is a small contract break.
+| # | Severity | Summary | Evidence |
+|---|---|---|---|
+| [#22](https://github.com/scverse/rustar-aligner/issues/22) | high | Paired-end transcriptome BAM omits mate fields (`RNEXT`/`PNEXT`/`TLEN`) + proper-pair flag, Salmon falls back to its default fragment-length prior and distorts TPM. | [`rustar_investigation_wt_rep2.md`](rustar_investigation_wt_rep2.md) |
+| [#25](https://github.com/scverse/rustar-aligner/issues/25) | medium | `--limitGenomeGenerateRAM` rejected by the CLI parser. | [`rustar_differences.md`](rustar_differences.md) (module workaround) |
+| [#26](https://github.com/scverse/rustar-aligner/issues/26) | medium | `--outFileNamePrefix SAMPLE.` treated as a directory rather than a string prefix. | [`rustar_differences.md`](rustar_differences.md) (module workaround) |
+| [#27](https://github.com/scverse/rustar-aligner/issues/27) | medium | `Log.final.out` always reports `Annotated (sjdb) = 0` despite `--sjdbGTFfile`; ~50% of splices missing. Root cause: `is_annotated()` coord-space bug at `src/align/stitch.rs:1306-1314`. | [`rustar_two_pass_and_determinism.md`](rustar_two_pass_and_determinism.md) |
+| [#28](https://github.com/scverse/rustar-aligner/issues/28) | low | Output-shape gaps: `Log.out` / `Log.progress.out` not written, `SJ.pass1.out.tab` lives at the top level instead of under `<prefix>_STARpass1/`. | [`rustar_differences.md`](rustar_differences.md), [`rustar_bam_comparison.md`](rustar_bam_comparison.md) |
+| [#29](https://github.com/scverse/rustar-aligner/issues/29) | high | `--outSAMattributes NM` emits `nM:i:` instead of `NM:i:`, with different semantics (substitutions only, no indels). Breaks samtools stats, Picard, MultiQC. | [`rustar_bam_comparison.md`](rustar_bam_comparison.md), [`rustar_quant_and_multiqc.md`](rustar_quant_and_multiqc.md) |
+| [#30](https://github.com/scverse/rustar-aligner/issues/30) | high | `--outSAMstrandField intronMotif` accepted but no `XS:A:` tags ever emitted. Breaks StringTie, Cufflinks. (RSeQC `infer_experiment` uses the BAM strand bit instead so is unaffected.) | [`rustar_bam_comparison.md`](rustar_bam_comparison.md), [`rustar_quant_and_multiqc.md`](rustar_quant_and_multiqc.md) |
+| [#31](https://github.com/scverse/rustar-aligner/issues/31) | medium | Multi-mapper NH cap extends to 20 vs STAR's 7; ~17% more secondaries on identical input. Possibly missing an `--outFilterMultimapScoreRange`-equivalent threshold. | [`rustar_bam_comparison.md`](rustar_bam_comparison.md) |
+| [#32](https://github.com/scverse/rustar-aligner/issues/32) | low | Transcriptome BAM lacks per-record `RG:Z:` despite the `@RG` header being present. Genome BAM is fine. | [`rustar_bam_comparison.md`](rustar_bam_comparison.md) |
+| [#33](https://github.com/scverse/rustar-aligner/issues/33) | low | `@PG` header is content-free (just `ID:rustar-aligner`, no `PN`/`VN`/`CL`); `AS:i:` values disagree by 2-5 units on 864 records with identical CIGAR. | [`rustar_bam_comparison.md`](rustar_bam_comparison.md) |
+| [#34](https://github.com/scverse/rustar-aligner/issues/34) | high | BAM `QUAL` field is offset by +33 (Phred+33 ASCII bytes written instead of raw Phred values). Explains the "average_quality = 68 vs STAR's 35" symptom in MultiQC; spotted by the verification session, not our own audits. Highest-impact BAM-correctness issue after #22 because every downstream tool that reads QUAL is wrong. | [`rustar_quant_and_multiqc.md`](rustar_quant_and_multiqc.md) (symptom captured but mis-attributed at the time) |
+| [#35](https://github.com/scverse/rustar-aligner/issues/35) | medium | `--chimSegmentMin > 0` + `--twopassMode Basic` aborts the run when `--outFileNamePrefix` doesn't end in `/`. Silent run-killer: no `Aligned.out.bam`, no `Log.final.out`. | [`rustar_cli_compat.md`](rustar_cli_compat.md) |
+
+## Fixed in this PR (was originally suspected upstream)
+
+- **Prokaryotic mode + rustar produced an empty transcriptome BAM**. `conf/modules/prepare_genome.config`'s `withName:` selector for `--sjdbGTFfeatureExon CDS` listed STAR + Parabricks but not `RUSTAR_GENOMEGENERATE`, so the flag was silently dropped from rustar's index build. Adding `RUSTAR_GENOMEGENERATE` to the selector makes rustar byte-equivalent to STAR on the same inputs (13 `@SQ`, 8 082 records). Originally diagnosed as a rustar transcriptome-projection bug; reclassified after the verification session showed rustar honours the flag fine when it's plumbed through. See [`rustar_mode_smoke_tests.md`](rustar_mode_smoke_tests.md).
