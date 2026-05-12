@@ -91,7 +91,8 @@ nextflow_workflow {
                 input[20] = skip_pseudo_alignment
                 input[21] = use_sentieon_star
                 input[22] = use_parabricks_star
-                input[23] = false  // star_index_legacy
+                input[23] = false  // use_rustar_star
+                input[24] = false  // star_index_legacy
                 """
             }
         }
@@ -200,7 +201,8 @@ nextflow_workflow {
                 input[20] = skip_pseudo_alignment
                 input[21] = use_sentieon_star
                 input[22] = use_parabricks_star
-                input[23] = false  // star_index_legacy
+                input[23] = false  // use_rustar_star
+                input[24] = false  // star_index_legacy
                 """
             }
         }
