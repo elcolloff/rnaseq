@@ -174,13 +174,36 @@ upstream (Nextflow / nf-schema), separately from rustar.
 
 ## Tracked upstream
 
-- **Paired-end transcriptome BAM missing mate fields** -> filed as
-  [scverse/rustar-aligner#22](https://github.com/scverse/rustar-aligner/issues/22);
-  full evidence + reproducer in
+A categorical BAM-level comparison is in
+[`rustar_bam_comparison.md`](rustar_bam_comparison.md). Punch list (file
+ordering loosely by severity):
+
+- **Paired-end transcriptome BAM missing mate fields** ->
+  [scverse/rustar-aligner#22](https://github.com/scverse/rustar-aligner/issues/22)
+  (filed). Full evidence in
   [`rustar_investigation_wt_rep2.md`](rustar_investigation_wt_rep2.md).
-  Severity: high (blocks paired-end Salmon TPMs from being trustworthy).
-- **Annotated splice-junction count is zero in `Log.final.out`** despite
-  `--sjdbGTFfile` + `--twopassMode Basic`. Secondary; mapping rate
-  impact is < 0.25 pp so it's not driving the visible TPM divergence,
-  but suggests the pass-1 SJ database isn't being primed from the GTF.
-  File separately once the BAM fix lands.
+  Salmon falls back to its default fragment-length prior, distorting
+  paired-end TPMs.
+- **`NM` tag replaced with `nM`, semantics changed** (high). rustar
+  emits `nM` everywhere STAR emits `NM`. STAR's `NM` is the SAM-spec
+  edit distance (mismatches + indels); rustar's `nM` counts only
+  substitutions. ~2% of identical-CIGAR records disagree. Any tool
+  reading `NM:i:` (samtools stats, Picard, MultiQC parsers) silently
+  gets nothing.
+- **`XS` tag never emitted** despite `--outSAMstrandField intronMotif`
+  (high). Breaks StringTie, Cufflinks, rseqc's `infer_experiment.py`.
+- **GTF splice junctions not seeded into pass 1** (medium). ~50% of
+  splices dropped; `Number of splices: Annotated (sjdb) = 0` in every
+  `Log.final.out`. Manifests as per-read CIGAR collapse from spliced
+  to plain `M` on ~70% of CIGAR diffs in WT_REP2.
+- **~17% more secondary alignments than STAR** (medium, possibly
+  intentional). `NH` tail extends to 20 vs STAR's 7 on the same data;
+  no `outFilterMultimapScoreRange`-equivalent appears to be applied.
+  Worth documenting upstream if intentional.
+- **`@PG` header is content-free** (low). Just `ID:rustar-aligner`,
+  no `PN`/`VN`/`CL`. Provenance loss.
+- **Transcriptome BAM missing per-record `RG:Z:`** (low). Sample
+  association lost on transcriptome records. Genome BAM is fine.
+- **`AS` tag drifts by ±2-5 score units on identical CIGAR** (low),
+  864 records. rustar's README promises byte-equivalent `AS` on
+  unique mappers, so this is a small contract break.
